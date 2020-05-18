@@ -1,6 +1,5 @@
 package com.example.uscovidstatistics.appconstants
 
-import okhttp3.Response
 import okhttp3.ResponseBody
 
 class AppConstants {

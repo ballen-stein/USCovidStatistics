@@ -1,10 +1,11 @@
 package com.example.uscovidstatistics.network
 
-import android.app.Activity
 import com.example.uscovidstatistics.MainActivity
 import com.example.uscovidstatistics.appconstants.AppConstants
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
+
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -34,9 +35,10 @@ class NetworkObserver(private var usingLocation: Boolean, specificLocation: Stri
                 Observable.error<Exception>(e)
             }
         }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { onNext -> response = onNext as Response},
-                { onError -> println(onError.toString() + " onError area")},
+                { onError -> println(onError.toString())},
                 { AppConstants.RESPONSE_DATA = response.body!!
                     activity.printDataSet()}
             )

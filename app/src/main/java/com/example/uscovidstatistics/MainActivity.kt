@@ -12,6 +12,7 @@ import es.dmoral.toasty.Toasty
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.PublishSubject
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -29,10 +30,16 @@ class MainActivity : AppCompatActivity() {
 
         AppUtils().checkPermissions(this)
 
-        Thread(Runnable {
+        /*Thread(Runnable {
             NetworkObserver(false, "", this).createNewNetworkRequest()
             //println("${AppConstants.RESPONSE_DATA} new resp")
-        }).start()
+        }).start()*/
+
+        Observable.just(NetworkObserver(false, "", MainActivity()).createNewNetworkRequest())
+
+        /*Thread().run {
+            NetworkObserver(false, "", MainActivity()).createNewNetworkRequest()
+        }*/
 
         /*Observable.defer {
             try {
