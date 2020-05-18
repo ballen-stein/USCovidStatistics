@@ -8,24 +8,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.uscovidstatistics.appconstants.AppConstants
 
-class LaunchUtil(context: Context, activity: Activity) {
-    private val mContext: Context = context
-    private val mActivity: Activity = activity
+class AppUtils() {
 
-    fun checkPermissions(): Boolean {
-        return if (ContextCompat.checkSelfPermission(
-                mContext,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+    fun checkPermissions(context: Context) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
-                mActivity,
+                context as Activity,
                 arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
                 AppConstants.REQUEST_GPS_LOCATION
             )
-            false
-        } else {
-            true
         }
     }
 }
