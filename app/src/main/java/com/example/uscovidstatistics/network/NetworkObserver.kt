@@ -2,6 +2,11 @@ package com.example.uscovidstatistics.network
 
 import com.example.uscovidstatistics.MainActivity
 import com.example.uscovidstatistics.appconstants.AppConstants
+import com.example.uscovidstatistics.model.BaseCountryDataSet
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -9,6 +14,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.ResponseBody
 import java.lang.Exception
 
 class NetworkObserver(private var usingLocation: Boolean, specificLocation: String, private val activity: MainActivity) {
@@ -18,9 +24,9 @@ class NetworkObserver(private var usingLocation: Boolean, specificLocation: Stri
 
     init {
         useUrl = if (usingLocation)
-            AppConstants.LOCATION_DATA + "/" + specificLocation
+            AppConstants.API_DATA_BY_US_STATE
         else
-            AppConstants.ALL_DATA
+            AppConstants.API_DATA_BY_COUNTRY
     }
 
     fun createNewNetworkRequest() {
@@ -37,30 +43,36 @@ class NetworkObserver(private var usingLocation: Boolean, specificLocation: Stri
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { onNext -> response = onNext as Response},
+                { onNext -> response = onNext as Response
+                    setData(response.body!!)},
                 { onError -> println(onError.toString())},
-                { AppConstants.RESPONSE_DATA = response.body!!
-                    activity.printDataSet()}
+                { activity.printDataSet()
+                }
             )
     }
 
-    fun getData(specificLocation: Boolean): Response {
-        useUrl = if (specificLocation)
-            AppConstants.LOCATION_DATA + "/"
-        else
-            AppConstants.ALL_DATA
+    private fun setData(body: ResponseBody) {
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val type = Types.newParameterizedType(List::class.java, BaseCountryDataSet::class.java)
+        val jsonAdapter: JsonAdapter<List<BaseCountryDataSet>> = moshi.adapter(type)
 
-        return NetworkClient(useUrl).getData(specificLocation)
+        try {
+            AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
+            println("Data set is valid")
+        } catch (e: Exception) {
+            println("Data set is invalid")
+            e.printStackTrace()
+        }
     }
 
-    fun getAllData(): Response {
+    private fun getAllData(): Response {
         val request = Request.Builder()
             .url(useUrl)
             .build()
         return client.newCall(request).execute()
     }
 
-    fun getLocationData(): Response {
+    private fun getLocationData(): Response {
         val request = Request.Builder()
             .url(useUrl)
             .build()
