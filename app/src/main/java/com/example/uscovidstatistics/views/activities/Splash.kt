@@ -5,12 +5,10 @@ import android.content.Intent
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import com.example.uscovidstatistics.MainActivity
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
-import com.example.uscovidstatistics.model.LocationDataSet
 import com.example.uscovidstatistics.utils.AppUtils
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -49,11 +47,9 @@ class Splash : AppCompatActivity() {
 
     private fun setLocation() {
         try {
-            Log.d("LocationInfo", "${AppConstants.GPS_DATA[0]} x ${AppConstants.GPS_DATA[1]}")
             AppConstants.LOCATION_DATA = AppUtils().getLocationData(this)
-            Log.d("LocationInfo", AppConstants.LOCATION_DATA.city.toString())
         } catch (e: Exception) {
-            Log.d("LocationInfo", "No location found")
+            Toasty.error(this, R.string.no_location, Toast.LENGTH_SHORT).show()
             e.printStackTrace()
         }
         continueToLaunch()

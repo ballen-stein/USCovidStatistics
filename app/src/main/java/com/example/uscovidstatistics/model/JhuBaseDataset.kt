@@ -2,7 +2,7 @@ package com.example.uscovidstatistics.model
 
 import com.squareup.moshi.Json
 
-class JhuCountryDataSet {
+class JhuBaseDataset {
     @Json(name = "country") var country: String? = null
     @Json(name = "stats") var stats: Stats? = null
     @Json(name = "coordinates") var coordinates: Coordinates? = null
@@ -17,5 +17,4 @@ class JhuCountryDataSet {
         @Json(name = "latitude") var latitude: String? = null
         @Json(name = "longitude") var longitude: String? = null
     }
-
 }

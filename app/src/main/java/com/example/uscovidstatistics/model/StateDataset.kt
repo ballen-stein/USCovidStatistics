@@ -2,7 +2,7 @@ package com.example.uscovidstatistics.model
 
 import com.squareup.moshi.Json
 
-class StateDataSet {
+class StateDataset {
     @Json(name = "state") var state: String? = null
     @Json(name = "updated") var timeUpdated: String? = null
     @Json(name = "cases") var cases: Int? = null

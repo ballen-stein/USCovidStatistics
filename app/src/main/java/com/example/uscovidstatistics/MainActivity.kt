@@ -5,19 +5,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import com.example.uscovidstatistics.appconstants.AppConstants
-import com.example.uscovidstatistics.model.BaseCountryDataSet
-import com.example.uscovidstatistics.model.LocationDataSet
+import com.example.uscovidstatistics.model.BaseCountryDataset
+import com.example.uscovidstatistics.model.LocationDataset
 import com.example.uscovidstatistics.network.NetworkObserver
 import com.example.uscovidstatistics.utils.AppUtils
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.Response
 import java.lang.Exception
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivityTag"
@@ -29,7 +26,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         gpsCords = intent.getDoubleArrayExtra(AppConstants.CURRENT_GPS_LOCATION)
-        //printDataSet()
+
+        /*
 
         Observable.defer {
             try {
@@ -46,33 +44,26 @@ class MainActivity : AppCompatActivity() {
                 { println("Completed the observer")}
             )
 
+         */
+
         Thread(Runnable {
-            NetworkObserver(false, "", this).createNewNetworkRequest()
-            //println("${AppConstants.RESPONSE_DATA} new resp")
-            //printLocation()
+            NetworkObserver(false, this).createNewNetworkRequest()
+            NetworkObserver(true, this).createNewNetworkRequest()
         }).start()
 
-        //Observable.just(NetworkObserver(false, "", MainActivity()).createNewNetworkRequest())
-
-        /*Thread().run {
-            NetworkObserver(false, "", MainActivity()).createNewNetworkRequest()
-        }*/
-
-        /*
-        Observable.defer {
-            try {
-                Observable.just(AppConstants.RESPONSE_DATA)
-            } catch (e: Exception) {
-                Observable.error<Exception>(e)
+        Handler().postDelayed(
+            {
+                for (data in AppConstants.WORLD_DATA)
+                    AppConstants.WORLD_DATA_MAPPED[data.country!!] = data
+                println(AppConstants.US_DATA[0].state)
+                println("${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.country} had ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.deaths} deaths and ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.recovered} recovered")
+                println("${AppConstants.US_STATE_DATA["New York"]!!.state} had ${AppConstants.US_STATE_DATA["New York"]!!.deaths} deaths")
+                if (AppUtils().gpsPermissionGranted(this)) {
+                    println("${AppConstants.US_STATE_DATA[AppConstants.LOCATION_DATA.region]!!.state}")
+                }
             }
-        }.subscribeOn(Schedulers.io())
-                .subscribe(Subscriber<String>)
-                .subscribe(
-                    { onNext -> println("${AppConstants.RESPONSE_DATA} \nNew Resp Logged")},
-                    { onError -> println(onError.toString() + " onError area")},
-                    { }
-                )*/
-
+            , 8000
+        )
 
         //Observable.just(AppConstants.RESPONSE_DATA).subscribe({ onNext -> println(onNext)})
 
@@ -97,27 +88,27 @@ class MainActivity : AppCompatActivity() {
 
     fun printDataSet() {
         println("Received dataset --- printing...")
-        /*println("New dataset ${AppConstants.RESPONSE_DATA.string()}")
-
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        /*val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val type = Types.newParameterizedType(List::class.java, BaseCountryDataSet::class.java)
         val jsonAdapter: JsonAdapter<List<BaseCountryDataSet>> = moshi.adapter(type)
 
         try {
             AppConstants.WORLD_DATA = jsonAdapter.fromJson(AppConstants.RESPONSE_DATA.string())!!
-            println("Data set is valid")
         } catch (e: Exception) {
-            println("Data set is invalid")
             e.printStackTrace()
         }*/
-        println(AppConstants.WORLD_DATA[0].country)
+        try {
+            println(AppConstants.US_DATA[0].state)
+        } catch (e: Exception) {
+            println(AppConstants.WORLD_DATA[0].country)
+        }
     }
 
     private fun updateData() {
         // Moshi adapter code
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val type = Types.newParameterizedType(List::class.java, BaseCountryDataSet::class.java)
-        val jsonAdapter: JsonAdapter<List<BaseCountryDataSet>> = moshi.adapter(type)
+        val type = Types.newParameterizedType(List::class.java, BaseCountryDataset::class.java)
+        val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
 
         try {
             AppConstants.WORLD_DATA = jsonAdapter.fromJson(AppConstants.RESPONSE_DATA.string())!!
@@ -130,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun printLocation() {
         try {
-            val currentLocation: LocationDataSet = AppUtils().getLocationData(this)
+            val currentLocation: LocationDataset = AppUtils().getLocationData(this)
             Log.d("LocationInfo", currentLocation.toString())
         } catch (e: Exception) {
             Log.d("LocationInfo", "no location found")
