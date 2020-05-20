@@ -15,10 +15,10 @@ class ContinentDataset {
     @Json(name = "deathsPerOneMillion") var perMillionDeaths: Double? = null
     @Json(name = "tests") var tests: Int? = null
     @Json(name = "testsPerOneMillion") var perMillionTests: Double? = null
-    @Json(name = "population") var population: Int? = null
+    @Json(name = "population") var population: String? = null
     @Json(name = "continent") var continent: String? = null
     @Json(name = "activePerOneMillion") var perMillionActive: Double? = null
     @Json(name = "recoveredPerOneMillion") var perMillionRecovered: Double? = null
     @Json(name = "criticalPerOneMillion") var perMillionCritical: Double? = null
-    @Json(name = "countries") var countriesOnContinent: ArrayList<String>? = null
+    @Json(name = "countries") var countriesOnContinent: Array<String>? = null
 }

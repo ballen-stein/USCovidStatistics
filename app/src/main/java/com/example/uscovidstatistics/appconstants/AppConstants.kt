@@ -11,7 +11,8 @@ class AppConstants {
         // API Urls
         const val API_DATA_URL_GLOBAL = "https://corona.lmao.ninja/v2/countries?yesterday&sort"
         const val API_DATA_URL_USA = "https://corona.lmao.ninja/v2/states?sort&yesterday"
-        const val API_DATA_URL_USA_STATE = "https://corona.lmao.ninja/v2/states/<State>"
+        // https://corona.lmao.ninja/v2/states/<State>
+        const val API_DATA_URL_USA_STATE = "https://corona.lmao.ninja/v2/states/"
         const val API_DATA_ENDPOINT = "?yesterday=true"
 
         const val API_DATA_CONTINENT = "https://corona.lmao.ninja/v2/continents?yesterday=true&sort"

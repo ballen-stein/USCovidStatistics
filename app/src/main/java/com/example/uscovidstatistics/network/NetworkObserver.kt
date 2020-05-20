@@ -30,7 +30,6 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
     private lateinit var response: Response
 
     init {
-
         type = Types.newParameterizedType(
             when (getSpecifics) {
                 0,1,3 -> List::class.java
@@ -40,19 +39,18 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
                 0 -> BaseCountryDataset::class.java
                 1,2 -> StateDataset::class.java
                 3 -> ContinentDataset::class.java
-                4 -> JhuCountryDataset::class.java
-                5 -> JhuProvinceDataset::class.java
+                //4 -> JhuCountryDataset::class.java
+                //5 -> JhuProvinceDataset::class.java
                 else -> BaseCountryDataset::class.java
             })
 
         useUrl = when (getSpecifics) {
             0 -> AppConstants.API_DATA_URL_GLOBAL
             1 -> AppConstants.API_DATA_URL_USA
-            2 -> AppConstants.API_DATA_URL_USA_STATE
+            2 -> AppConstants.API_DATA_URL_USA_STATE + regionName + AppConstants.API_DATA_ENDPOINT
             3 -> AppConstants.API_DATA_CONTINENT
-            4 -> AppConstants.API_DATA_JHU_COUNTRY + countryName
-            5 -> AppConstants.API_DATA_JHU_COUNTRY + countryName + "/" + regionName
-
+            4 -> AppConstants.API_DATA_JHU_COUNTRY + countryName + AppConstants.API_DATA_JHU_ENDPOINT
+            5 -> AppConstants.API_DATA_JHU_COUNTRY + countryName + "/" + regionName + AppConstants.API_DATA_JHU_ENDPOINT
             else ->  AppConstants.API_DATA_URL_GLOBAL
         }
     }
@@ -72,13 +70,12 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
                     setData(response.body!!)},
                 { onError -> println(onError.toString())},
                 { activity.printDataSet()
-                    response.close()
+                    response.body?.close()
                 }
             )
     }
 
     private fun setData(body: ResponseBody) {
-
         try {
             when (getSpecifics) {
                 0 -> {
@@ -93,7 +90,7 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
                         AppConstants.US_STATE_DATA_MAPPED[data.state!!] = data
                     }
                 }
-                2 -> {//
+                2 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(StateDataset::class.java)
                     AppConstants.US_STATE_DATA = jsonAdapter.fromJson(body.string())!!
                 }
@@ -101,14 +98,17 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
                     val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
                     AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!
                 }
-                4 -> {//
+                4 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuCountryDataset::class.java)
                     AppConstants.COUNTRY_DATA = jsonAdapter.fromJson(body.string())!!
-                    Log.d("NetworkUrl", body.string())
                 }
-                5 -> {//
+                5 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuProvinceDataset::class.java)
                     AppConstants.COUNTRY_PROVINCE_DATA = jsonAdapter.fromJson(body.string())!!
+                }
+                else -> {
+                    val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
+                    AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
                 }
             }
         } catch (e: Exception) {
@@ -121,7 +121,6 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
         val request = Request.Builder()
             .url(useUrl)
             .build()
-        Log.d("NetworkUrl", useUrl)
         return client.newCall(request).execute()
     }
 }

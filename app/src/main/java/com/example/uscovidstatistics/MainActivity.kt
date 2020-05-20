@@ -28,51 +28,62 @@ class MainActivity : AppCompatActivity() {
         gpsCords = intent.getDoubleArrayExtra(AppConstants.CURRENT_GPS_LOCATION)
 
         Thread(Runnable {
-            //NetworkObserver(this, 0, null, null).createNewNetworkRequest()
-            //NetworkObserver(this, 1, null, null).createNewNetworkRequest()
+            NetworkObserver(this, 0, null, null).createNewNetworkRequest()
+            NetworkObserver(this, 1, null, null).createNewNetworkRequest()
+            NetworkObserver(this, 2, null, "California").createNewNetworkRequest()
+            NetworkObserver(this, 3, null, null).createNewNetworkRequest()
             NetworkObserver(this, 4, "Canada", null).createNewNetworkRequest()
+            NetworkObserver(this, 5, "Canada", "ontario").createNewNetworkRequest()
         }).start()
 
         Handler().postDelayed(
             {
-                /*
+                // Check for 0
                 for (data in AppConstants.WORLD_DATA)
                     AppConstants.WORLD_DATA_MAPPED[data.country!!] = data
-                 */
-                //println("${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.country} had ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.deaths} deaths and ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.recovered} recovered")
-                //println(AppConstants.US_DATA[0].state)
-                //println("${AppConstants.US_STATE_DATA_MAPPED["New York"]!!.state} had ${AppConstants.US_STATE_DATA_MAPPED["New York"]!!.deaths} deaths")
-                /*if (AppUtils().gpsPermissionGranted(this)) {
-                    println("${AppConstants.US_STATE_DATA_MAPPED[AppConstants.LOCATION_DATA.region]!!.state}")
-                }*/
 
+                println("${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.country} had ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.deaths} deaths and ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.recovered} recovered")
+
+                // Check for 1
+                println(AppConstants.US_DATA[0].state)
+                println("${AppConstants.US_STATE_DATA_MAPPED["New York"]!!.state} had ${AppConstants.US_STATE_DATA_MAPPED["New York"]!!.deaths} deaths")
+
+                // GPS Check (coincides with 1)
+                if (AppUtils().gpsPermissionGranted(this)) {
+                    println("${AppConstants.US_STATE_DATA_MAPPED[AppConstants.LOCATION_DATA.region]!!.state}")
+                }
+
+                // Check for 2
+                println("${AppConstants.US_STATE_DATA.state} has had ${AppConstants.US_STATE_DATA.deaths} as of today")
+
+                // Check for 3
+                var globalTotal: Int = 0
+                var globalDeaths: Int = 0
+                for (continent in AppConstants.CONTINENT_DATA) {
+                    println(continent.continent)
+                    println(continent.countriesOnContinent?.contentToString())
+                    globalTotal += continent.cases!!
+                    globalDeaths += continent.deaths!!
+                }
+                println("Global Cases : $globalTotal and Global Deaths : $globalDeaths")
+
+                // Check for 4
                 println("${AppConstants.COUNTRY_DATA.country}")
                 for (province in AppConstants.COUNTRY_DATA.province!!) {
                     println(province)
                 }
+
+                // Check for 5
+                val allKeys: ArrayList<String> = ArrayList()
+                for (key in AppConstants.COUNTRY_PROVINCE_DATA.timeline?.cases?.keys!!) {
+                    allKeys.add(key)
+                }
+                println(AppConstants.COUNTRY_PROVINCE_DATA.timeline?.cases)
+                println("${AppConstants.COUNTRY_PROVINCE_DATA.province} has had ${AppConstants.COUNTRY_PROVINCE_DATA.timeline!!.cases?.get(allKeys[allKeys.size-1])} cases on ${allKeys[allKeys.size-1]}")
             }
-            , 5000
+            , 60000
         )
 
-        //Observable.just(AppConstants.RESPONSE_DATA).subscribe({ onNext -> println(onNext)})
-
-        /*
-        Observable.defer {
-            try {
-                val apiResponse = NetworkObserver(false, "").getAllData()
-                Observable.just(apiResponse)
-            } catch (e: Exception) {
-                Observable.error<Exception>(e)
-            }
-        }.subscribeOn(Schedulers.io())
-            .subscribe(
-                { onNext -> response = onNext as Response},
-                { onError -> println(onError.toString() + " onError area")},
-                { AppConstants.RESPONSE_DATA = response.body!!
-                    println("New Response : ${AppConstants.RESPONSE_DATA.string()}")}
-            )
-
-         */
     }
 
     fun printDataSet() {
