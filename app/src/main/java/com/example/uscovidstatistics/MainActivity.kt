@@ -27,42 +27,31 @@ class MainActivity : AppCompatActivity() {
 
         gpsCords = intent.getDoubleArrayExtra(AppConstants.CURRENT_GPS_LOCATION)
 
-        /*
-
-        Observable.defer {
-            try {
-                val apiResponse = AppConstants.RESPONSE_DATA
-                Observable.just(apiResponse)
-            } catch (e: Exception) {
-                println("Error putting observer on Response_Data")
-                Observable.error<Exception>(e)
-            }
-        }.subscribeOn(Schedulers.io())
-            .subscribe(
-                { onNext -> println("onNext : " + onNext)},
-                { onError -> println("onError : " + onError)},
-                { println("Completed the observer")}
-            )
-
-         */
-
         Thread(Runnable {
-            NetworkObserver(false, this).createNewNetworkRequest()
-            NetworkObserver(true, this).createNewNetworkRequest()
+            //NetworkObserver(this, 0, null, null).createNewNetworkRequest()
+            //NetworkObserver(this, 1, null, null).createNewNetworkRequest()
+            NetworkObserver(this, 4, "Canada", null).createNewNetworkRequest()
         }).start()
 
         Handler().postDelayed(
             {
+                /*
                 for (data in AppConstants.WORLD_DATA)
                     AppConstants.WORLD_DATA_MAPPED[data.country!!] = data
-                println(AppConstants.US_DATA[0].state)
-                println("${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.country} had ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.deaths} deaths and ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.recovered} recovered")
-                println("${AppConstants.US_STATE_DATA["New York"]!!.state} had ${AppConstants.US_STATE_DATA["New York"]!!.deaths} deaths")
-                if (AppUtils().gpsPermissionGranted(this)) {
-                    println("${AppConstants.US_STATE_DATA[AppConstants.LOCATION_DATA.region]!!.state}")
+                 */
+                //println("${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.country} had ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.deaths} deaths and ${AppConstants.WORLD_DATA_MAPPED["Germany"]!!.recovered} recovered")
+                //println(AppConstants.US_DATA[0].state)
+                //println("${AppConstants.US_STATE_DATA_MAPPED["New York"]!!.state} had ${AppConstants.US_STATE_DATA_MAPPED["New York"]!!.deaths} deaths")
+                /*if (AppUtils().gpsPermissionGranted(this)) {
+                    println("${AppConstants.US_STATE_DATA_MAPPED[AppConstants.LOCATION_DATA.region]!!.state}")
+                }*/
+
+                println("${AppConstants.COUNTRY_DATA.country}")
+                for (province in AppConstants.COUNTRY_DATA.province!!) {
+                    println(province)
                 }
             }
-            , 8000
+            , 5000
         )
 
         //Observable.just(AppConstants.RESPONSE_DATA).subscribe({ onNext -> println(onNext)})
@@ -97,11 +86,11 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }*/
-        try {
+        /*try {
             println(AppConstants.US_DATA[0].state)
         } catch (e: Exception) {
             println(AppConstants.WORLD_DATA[0].country)
-        }
+        }*/
     }
 
     private fun updateData() {
