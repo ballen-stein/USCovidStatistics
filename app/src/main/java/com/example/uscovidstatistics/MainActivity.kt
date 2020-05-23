@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
+import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.appconstants.AppConstants
+import com.example.uscovidstatistics.databinding.ActivityMainBinding
 import com.example.uscovidstatistics.model.BaseCountryDataset
 import com.example.uscovidstatistics.model.LocationDataset
 import com.example.uscovidstatistics.network.NetworkObserver
@@ -16,25 +19,50 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Response
 import java.lang.Exception
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ViewBinding {
     private val TAG = "MainActivityTag"
     private lateinit var response: Response
     private var gpsCords: DoubleArray? = DoubleArray(2)
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        //setContentView(R.layout.activity_main)
+        setContentView(view)
 
         gpsCords = intent.getDoubleArrayExtra(AppConstants.CURRENT_GPS_LOCATION)
 
         Thread(Runnable {
-            NetworkObserver(this, 0, null, null).createNewNetworkRequest()
-            NetworkObserver(this, 1, null, null).createNewNetworkRequest()
-            NetworkObserver(this, 2, null, "California").createNewNetworkRequest()
+            //NetworkObserver(this, 0, null, null).createNewNetworkRequest()
+            //NetworkObserver(this, 1, null, null).createNewNetworkRequest()
+            //NetworkObserver(this, 2, null, "California").createNewNetworkRequest()
             NetworkObserver(this, 3, null, null).createNewNetworkRequest()
-            NetworkObserver(this, 4, "Canada", null).createNewNetworkRequest()
-            NetworkObserver(this, 5, "Canada", "ontario").createNewNetworkRequest()
+            //NetworkObserver(this, 4, "Canada", null).createNewNetworkRequest()
+            //NetworkObserver(this, 5, "Canada", "ontario").createNewNetworkRequest()
         }).start()
+
+        Handler().postDelayed( {
+            val dataArray = AppUtils().totalGlobalCases()
+
+            binding.globalCases.text = AppUtils().formatNumbers(dataArray[0])
+            binding.globalRecovered.text = AppUtils().formatNumbers(dataArray[1])
+            binding.globalDeaths.text = AppUtils().formatNumbers(dataArray[2])
+
+            binding.currentInfected.text = AppUtils().formatNumbers(dataArray[3])
+            val mildText = AppUtils().formatNumbers(dataArray[4]) + " (${AppUtils().getStringPercent(dataArray[4], dataArray[3])}%)"
+            binding.currentMild.text = mildText
+            val criticalText = AppUtils().formatNumbers(dataArray[5]) + " (${AppUtils().getStringPercent(dataArray[5], dataArray[3])}%)"
+            binding.currentCritical.text = criticalText
+
+            binding.currentClosed.text = AppUtils().formatNumbers(dataArray[6])
+            binding.currentDischarged.text = binding.globalRecovered.text
+            binding.currentDead.text = binding.globalDeaths.text
+        }, 10000)
+
+        /*
 
         Handler().postDelayed(
             {
@@ -84,10 +112,13 @@ class MainActivity : AppCompatActivity() {
             , 60000
         )
 
+         */
+
     }
 
     fun printDataSet() {
         println("Received dataset --- printing...")
+
         /*val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val type = Types.newParameterizedType(List::class.java, BaseCountryDataSet::class.java)
         val jsonAdapter: JsonAdapter<List<BaseCountryDataSet>> = moshi.adapter(type)
@@ -127,5 +158,9 @@ class MainActivity : AppCompatActivity() {
             Log.d("LocationInfo", "no location found")
             e.printStackTrace()
         }
+    }
+
+    override fun getRoot(): View {
+        TODO("Not yet implemented")
     }
 }

@@ -8,6 +8,10 @@
     <color name="colorSecondaryVariant"></color>
     <color name="colorSurface">#121212</color>
     <color name="colorTertiary">#504E77</color>
-
     <color name="colorAccent">#005A74</color>
+
+    <color name="colorRed">#ff1507</color>
+    <color name="error">#ff5436</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorGreen">#00ff00</color>
 </resources>
