@@ -41,43 +41,6 @@ class AppUtils {
         return setLocationData(address)
     }
 
-    fun totalGlobalCases(): IntArray {
-        var cases = 0
-        var recovered = 0
-        var deaths = 0
-        var activeCases = 0
-        var critical = 0
-
-        for (data in AppConstants.CONTINENT_DATA) {
-            cases += data.cases!!
-            recovered += data.recovered!!.toInt()
-            deaths += data.deaths!!
-            activeCases += data.activeCases!!
-            critical += data.criticalCases!!
-        }
-        val mild = activeCases - critical
-        val closedCases = cases - activeCases
-
-        return intArrayOf(cases, recovered, deaths, activeCases, mild, critical, closedCases)
-    }
-
-    fun formatNumbers(num: Int): String {
-        return if (num.toString().length <= 3) {
-            num.toString()
-        } else {
-            NumberFormat.getInstance().format(num.toDouble())
-        }
-    }
-
-    fun getPercent(num1: Int, num2: Int): Double {
-        return (num1.toDouble() / num2.toDouble()) * 100
-    }
-
-    fun getStringPercent(num1: Int, num2: Int): String {
-        val percent = getPercent(num1, num2)
-        return BigDecimal(percent.toString()).setScale(2, BigDecimal.ROUND_HALF_EVEN).toString()
-    }
-
     private fun setLocationData(address: List<Address>): LocationDataset {
         val locationDataSet = LocationDataset()
         locationDataSet.city = address[0].locality
@@ -86,5 +49,17 @@ class AppUtils {
         locationDataSet.postalCode = address[0].postalCode
         locationDataSet.knownName = address[0].featureName
         return locationDataSet
+    }
+
+    fun getCurrentData(designation: Int): Any {
+        return when (designation) {
+            0 -> MathUtils().totalGlobalCases()
+            1 -> AppConstants.US_DATA
+            2 -> AppConstants.US_STATE_DATA
+            3 -> AppConstants.CONTINENT_DATA
+            4 -> AppConstants.COUNTRY_DATA
+            5 ->  AppConstants.COUNTRY_PROVINCE_DATA
+            else -> AppConstants.WORLD_DATA
+        }
     }
 }

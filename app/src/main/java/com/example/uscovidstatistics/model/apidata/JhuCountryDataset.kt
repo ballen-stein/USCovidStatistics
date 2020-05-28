@@ -1,10 +1,10 @@
-package com.example.uscovidstatistics.model
+package com.example.uscovidstatistics.model.apidata
 
 import com.squareup.moshi.Json
 
-class JhuProvinceDataset {
+class JhuCountryDataset {
     @Json(name = "country") var country: String? = null
-    @Json(name = "province") var province: String? = null
+    @Json(name = "province") var province: Array<String>? = null
     @Json(name = "timeline") var timeline: Timeline? = null
 
     class Timeline {

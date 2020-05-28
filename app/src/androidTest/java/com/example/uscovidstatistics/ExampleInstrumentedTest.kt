@@ -2,11 +2,15 @@ package com.example.uscovidstatistics
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.android.gms.common.util.CollectionUtils
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -20,5 +24,26 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.example.uscovidstatistics", appContext.packageName)
+    }
+    @Test
+    fun testArrayDifferences() {
+        val temp1 = arrayOf(5,3,4)
+        val temp2 = arrayOf(4,3,10,6)
+
+        val set1 = HashSet<Int>()
+        Collections.addAll(set1, *temp1)
+
+        val set2 = HashSet<Int>()
+        Collections.addAll(set2, *temp2)
+
+        var answer1 = "\nNumbers in array 1 that aren't in array 2:\n"
+
+
+        for ((i, value) in set1.withIndex()) {
+            if (value != temp2[i]) {
+                answer1 += "$value\n"
+            }
+        }
+
     }
 }

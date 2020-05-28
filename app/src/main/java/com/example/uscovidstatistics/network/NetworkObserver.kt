@@ -1,11 +1,15 @@
 package com.example.uscovidstatistics.network
 
+import android.app.Activity
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.example.uscovidstatistics.DataResponseListener
 import com.example.uscovidstatistics.MainActivity
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
-import com.example.uscovidstatistics.model.*
+import com.example.uscovidstatistics.model.apidata.*
+import com.example.uscovidstatistics.utils.MathUtils
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -22,12 +26,14 @@ import okhttp3.ResponseBody
 import java.lang.Exception
 import java.lang.reflect.ParameterizedType
 
-class NetworkObserver(private val activity: MainActivity, private var getSpecifics: Int, countryName: String?, regionName: String?) {
+class NetworkObserver(private val context: Context, private var getSpecifics: Int, countryName: String?, regionName: String?, private val appOpen: Boolean) {
     private var useUrl: String
     private val client = OkHttpClient()
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     private var type: ParameterizedType
     private lateinit var response: Response
+
+    //var dataResponseListener: DataResponseListener? = null
 
     init {
         type = Types.newParameterizedType(
@@ -39,8 +45,6 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
                 0 -> BaseCountryDataset::class.java
                 1,2 -> StateDataset::class.java
                 3 -> ContinentDataset::class.java
-                //4 -> JhuCountryDataset::class.java
-                //5 -> JhuProvinceDataset::class.java
                 else -> BaseCountryDataset::class.java
             })
 
@@ -53,6 +57,15 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
             5 -> AppConstants.API_DATA_JHU_COUNTRY + countryName + "/" + regionName + AppConstants.API_DATA_JHU_ENDPOINT
             else ->  AppConstants.API_DATA_URL_GLOBAL
         }
+
+        /*if (appOpen) {
+            try {
+                dataResponseListener = context as DataResponseListener
+            } catch (e: Exception) {
+                dataResponseListener = MainActivity().applicationContext as DataResponseListener
+                e.printStackTrace()
+            }
+        }*/
     }
 
     fun createNewNetworkRequest() {
@@ -69,8 +82,7 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
                 { onNext -> response = onNext as Response
                     setData(response.body!!)},
                 { onError -> println(onError.toString())},
-                { activity.printDataSet()
-                    response.body?.close()
+                { //response.body?.close()
                 }
             )
     }
@@ -81,7 +93,7 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
                 0 -> {
                     val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
                     AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
-                    //Log.d("NetworkUrl", body.string())
+                    //dataResponseListener!!.uiUpdateData(getSpecifics)
                 }
                 1 -> {
                     val jsonAdapter: JsonAdapter<List<StateDataset>> = moshi.adapter(type)
@@ -97,6 +109,13 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
                 3 -> {
                     val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
                     AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!
+                    if (appOpen && AppConstants.dataResponseListener != null)
+                        AppConstants.dataResponseListener!!.uiUpdateData(true)
+                    else {
+                        Log.d("CovidTesting", "Received data . . .\n")
+                        println("Updated time  : ${AppConstants.CONTINENT_DATA[0].timeUpdated}")
+                        println("Current cases : ${AppConstants.CONTINENT_DATA[0].cases}")
+                    }
                 }
                 4 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuCountryDataset::class.java)
@@ -112,7 +131,8 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
                 }
             }
         } catch (e: Exception) {
-            Toasty.info(activity.applicationContext, R.string.no_connection, Toast.LENGTH_LONG).show()
+            Toasty.info(context.applicationContext, R.string.no_connection, Toast.LENGTH_LONG).show()
+            //dataResponseListener!!.uiUpdateData(false)
             e.printStackTrace()
         }
     }
@@ -123,4 +143,5 @@ class NetworkObserver(private val activity: MainActivity, private var getSpecifi
             .build()
         return client.newCall(request).execute()
     }
+
 }

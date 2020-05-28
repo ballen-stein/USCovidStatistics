@@ -1,5 +1,9 @@
 package com.example.uscovidstatistics
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -8,18 +12,22 @@ import android.view.View
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.ActivityMainBinding
-import com.example.uscovidstatistics.model.BaseCountryDataset
 import com.example.uscovidstatistics.model.LocationDataset
+import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.network.NetworkObserver
+import com.example.uscovidstatistics.service.AlarmReceiver
+import com.example.uscovidstatistics.service.ScheduledService
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.utils.MathUtils
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import io.reactivex.rxjava3.core.Scheduler
 import okhttp3.Response
 import java.lang.Exception
 
-class MainActivity : AppCompatActivity(), ViewBinding {
+class MainActivity : AppCompatActivity(), ViewBinding, DataResponseListener {
     private val TAG = "MainActivityTag"
     private lateinit var response: Response
     private var gpsCords: DoubleArray? = DoubleArray(2)
@@ -34,33 +42,17 @@ class MainActivity : AppCompatActivity(), ViewBinding {
         setContentView(view)
 
         gpsCords = intent.getDoubleArrayExtra(AppConstants.CURRENT_GPS_LOCATION)
+        AppConstants.dataResponseListener = this as DataResponseListener
+        AppConstants.APP_OPEN = true
 
         Thread(Runnable {
             //NetworkObserver(this, 0, null, null).createNewNetworkRequest()
             //NetworkObserver(this, 1, null, null).createNewNetworkRequest()
             //NetworkObserver(this, 2, null, "California").createNewNetworkRequest()
-            NetworkObserver(this, 3, null, null).createNewNetworkRequest()
+            NetworkObserver(this, 3, null, null, true).createNewNetworkRequest()
             //NetworkObserver(this, 4, "Canada", null).createNewNetworkRequest()
             //NetworkObserver(this, 5, "Canada", "ontario").createNewNetworkRequest()
         }).start()
-
-        Handler().postDelayed( {
-            val dataArray = AppUtils().totalGlobalCases()
-
-            binding.globalCases.text = AppUtils().formatNumbers(dataArray[0])
-            binding.globalRecovered.text = AppUtils().formatNumbers(dataArray[1])
-            binding.globalDeaths.text = AppUtils().formatNumbers(dataArray[2])
-
-            binding.currentInfected.text = AppUtils().formatNumbers(dataArray[3])
-            val mildText = AppUtils().formatNumbers(dataArray[4]) + " (${AppUtils().getStringPercent(dataArray[4], dataArray[3])}%)"
-            binding.currentMild.text = mildText
-            val criticalText = AppUtils().formatNumbers(dataArray[5]) + " (${AppUtils().getStringPercent(dataArray[5], dataArray[3])}%)"
-            binding.currentCritical.text = criticalText
-
-            binding.currentClosed.text = AppUtils().formatNumbers(dataArray[6])
-            binding.currentDischarged.text = binding.globalRecovered.text
-            binding.currentDead.text = binding.globalDeaths.text
-        }, 10000)
 
         /*
 
@@ -114,53 +106,65 @@ class MainActivity : AppCompatActivity(), ViewBinding {
 
          */
 
+        Handler().postDelayed(
+            {startBackgroundTask(this)}, 10000
+        )
+
     }
 
-    fun printDataSet() {
-        println("Received dataset --- printing...")
-
-        /*val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val type = Types.newParameterizedType(List::class.java, BaseCountryDataSet::class.java)
-        val jsonAdapter: JsonAdapter<List<BaseCountryDataSet>> = moshi.adapter(type)
-
-        try {
-            AppConstants.WORLD_DATA = jsonAdapter.fromJson(AppConstants.RESPONSE_DATA.string())!!
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }*/
-        /*try {
-            println(AppConstants.US_DATA[0].state)
-        } catch (e: Exception) {
-            println(AppConstants.WORLD_DATA[0].country)
-        }*/
+    override fun onPause() {
+        super.onPause()
+        AppConstants.APP_OPEN = false
+        startBackgroundTask(this)
     }
 
-    private fun updateData() {
-        // Moshi adapter code
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val type = Types.newParameterizedType(List::class.java, BaseCountryDataset::class.java)
-        val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
-
-        try {
-            AppConstants.WORLD_DATA = jsonAdapter.fromJson(AppConstants.RESPONSE_DATA.string())!!
-            println("Data set is valid")
-        } catch (e: Exception) {
-            println("Data set is invalid")
-            e.printStackTrace()
+    private fun startBackgroundTask(context: Context) {
+        val intent = Intent(context, ScheduledService::class.java)
+        if (!AppConstants.APP_OPEN) {
+            Log.d("CovidTesting", "Stopping service . . .")
+            stopService(intent)
         }
-    }
+        Log.d("CovidTesting", "Starting service . . .")
+        context.startService(intent)
+        /*
 
-    private fun printLocation() {
-        try {
-            val currentLocation: LocationDataset = AppUtils().getLocationData(this)
-            Log.d("LocationInfo", currentLocation.toString())
-        } catch (e: Exception) {
-            Log.d("LocationInfo", "no location found")
-            e.printStackTrace()
-        }
+        val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager;
+        val intent = Intent(context, AlarmReceiver::class.java)
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context.applicationContext, 0, intent, 0)
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10000, pendingIntent)
+
+         */
     }
 
     override fun getRoot(): View {
         TODO("Not yet implemented")
+    }
+
+    override fun uiUpdateData(success: Boolean) {
+        Log.d("CovidTesting","Getting data . . .")
+        if (success) {
+            val uiData = AppUtils().getCurrentData(0) as IntArray
+
+            if (binding.globalCases.text == null) {
+                binding.globalCases.text = MathUtils().formatNumbers(uiData[0])
+            } else if (binding.globalCases.text != MathUtils().formatNumbers(uiData[0])) {
+                Log.d("CovidTesting","Formatting data . . .")
+                binding.globalCases.text = MathUtils().formatNumbers(uiData[0])
+            }
+            binding.globalRecovered.text = MathUtils().formatNumbers(uiData[1])
+            binding.globalDeaths.text = MathUtils().formatNumbers(uiData[2])
+
+            binding.currentInfected.text = MathUtils().formatNumbers(uiData[3])
+            val mildText = MathUtils().formatNumbers(uiData[4]) + " (${MathUtils().getStringPercent(uiData[4], uiData[3])}%)"
+            binding.currentMild.text = mildText
+            val criticalText = MathUtils().formatNumbers(uiData[5]) + " (${MathUtils().getStringPercent(uiData[5], uiData[3])}%)"
+            binding.currentCritical.text = criticalText
+
+            binding.currentClosed.text = MathUtils().formatNumbers(uiData[6])
+            binding.currentDischarged.text = binding.globalRecovered.text
+            binding.currentDead.text = binding.globalDeaths.text
+        } else {
+            print("")
+        }
     }
 }

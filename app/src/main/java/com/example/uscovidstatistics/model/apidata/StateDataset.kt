@@ -1,4 +1,4 @@
-package com.example.uscovidstatistics.model
+package com.example.uscovidstatistics.model.apidata
 
 import com.squareup.moshi.Json
 

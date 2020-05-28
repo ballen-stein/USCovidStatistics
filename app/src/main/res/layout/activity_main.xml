@@ -5,10 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorSurface"
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/world_map"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/ic_world_map___low_resolution"

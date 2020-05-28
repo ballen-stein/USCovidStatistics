@@ -1,12 +1,20 @@
 package com.example.uscovidstatistics.appconstants
 
+import com.example.uscovidstatistics.DataResponseListener
 import com.example.uscovidstatistics.model.*
+import com.example.uscovidstatistics.model.apidata.*
 import okhttp3.ResponseBody
 
 class AppConstants {
     companion object {
         // Intents
         const val REQUEST_GPS_LOCATION = 101
+
+        // Booleans
+        var APP_OPEN = false
+
+        // Listener
+        var dataResponseListener: DataResponseListener? = null
 
         // API Urls
         const val API_DATA_URL_GLOBAL = "https://corona.lmao.ninja/v2/countries?yesterday&sort"
@@ -15,7 +23,7 @@ class AppConstants {
         const val API_DATA_URL_USA_STATE = "https://corona.lmao.ninja/v2/states/"
         const val API_DATA_ENDPOINT = "?yesterday=true"
 
-        const val API_DATA_CONTINENT = "https://corona.lmao.ninja/v2/continents?yesterday=true&sort"
+        const val API_DATA_CONTINENT = "https://corona.lmao.ninja/v2/continents?yesterday=falsecountries&sort"
 
         // John Hopkins University, used for non-US countries and breakdowns for Provinces/Counties/etc
         const val API_DATA_JHU = "https://corona.lmao.ninja/v2/jhucsse"
