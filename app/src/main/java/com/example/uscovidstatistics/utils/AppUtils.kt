@@ -2,12 +2,18 @@ package com.example.uscovidstatistics.utils
 
 import android.Manifest
 import android.app.Activity
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
+import android.os.Build
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.LocationDataset
 import java.math.BigDecimal
@@ -60,6 +66,29 @@ class AppUtils {
             4 -> AppConstants.COUNTRY_DATA
             5 ->  AppConstants.COUNTRY_PROVINCE_DATA
             else -> AppConstants.WORLD_DATA
+        }
+    }
+
+    fun newNotification(context: Context): NotificationCompat.Builder? {
+        createNotificationChannel(context)
+        return NotificationCompat.Builder(context, AppConstants.CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_earth)
+            .setContentTitle("Covid-19 Update")
+            .setContentText("Current cases : ${MathUtils().totalGlobalCases()[0]}")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+    }
+
+    private fun createNotificationChannel(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Channel_name_001"
+            val descriptionText = "Channel_text_001"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(AppConstants.CHANNEL_ID, name, importance).apply { description = descriptionText }
+
+            val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
         }
     }
 }

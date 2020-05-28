@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.uscovidstatistics.DataResponseListener
 import com.example.uscovidstatistics.MainActivity
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.apidata.*
+import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.MathUtils
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -115,6 +118,12 @@ class NetworkObserver(private val context: Context, private var getSpecifics: In
                         Log.d("CovidTesting", "Received data . . .\n")
                         println("Updated time  : ${AppConstants.CONTINENT_DATA[0].timeUpdated}")
                         println("Current cases : ${AppConstants.CONTINENT_DATA[0].cases}")
+
+                        with(NotificationManagerCompat.from(context)) {
+                            // notificationId is a unique int for each notification that you must define
+                            notify(1, AppUtils().newNotification(context)!!.build())
+                        }
+
                     }
                 }
                 4 -> { // Type isn't used since JSON data is not a list

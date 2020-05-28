@@ -9,6 +9,7 @@ class AppConstants {
     companion object {
         // Intents
         const val REQUEST_GPS_LOCATION = 101
+        const val CHANNEL_ID = "channel_id_01"
 
         // Booleans
         var APP_OPEN = false

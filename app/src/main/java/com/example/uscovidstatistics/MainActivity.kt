@@ -1,7 +1,5 @@
 package com.example.uscovidstatistics
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -12,20 +10,11 @@ import android.view.View
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.ActivityMainBinding
-import com.example.uscovidstatistics.model.LocationDataset
-import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.network.NetworkObserver
-import com.example.uscovidstatistics.service.AlarmReceiver
 import com.example.uscovidstatistics.service.ScheduledService
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.MathUtils
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import io.reactivex.rxjava3.core.Scheduler
 import okhttp3.Response
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity(), ViewBinding, DataResponseListener {
     private val TAG = "MainActivityTag"
@@ -126,14 +115,6 @@ class MainActivity : AppCompatActivity(), ViewBinding, DataResponseListener {
         }
         Log.d("CovidTesting", "Starting service . . .")
         context.startService(intent)
-        /*
-
-        val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager;
-        val intent = Intent(context, AlarmReceiver::class.java)
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(context.applicationContext, 0, intent, 0)
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10000, pendingIntent)
-
-         */
     }
 
     override fun getRoot(): View {
