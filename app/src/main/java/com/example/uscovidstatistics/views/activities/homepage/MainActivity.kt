@@ -1,4 +1,4 @@
-package com.example.uscovidstatistics
+package com.example.uscovidstatistics.views.activities.homepage
 
 import android.content.Context
 import android.content.Intent
@@ -8,33 +8,42 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.viewbinding.ViewBinding
+import com.example.uscovidstatistics.DataResponseListener
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.ActivityMainBinding
+import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
 import com.example.uscovidstatistics.network.NetworkObserver
 import com.example.uscovidstatistics.service.ScheduledService
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.MathUtils
 import okhttp3.Response
 
-class MainActivity : AppCompatActivity(), ViewBinding, DataResponseListener {
+class MainActivity : AppCompatActivity(), ViewBinding, MainContract.View {
     private val TAG = "MainActivityTag"
     private lateinit var response: Response
     private var gpsCords: DoubleArray? = DoubleArray(2)
 
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var presenter: MainContract.Presenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
-        //setContentView(R.layout.activity_main)
         setContentView(view)
 
-        gpsCords = intent.getDoubleArrayExtra(AppConstants.CURRENT_GPS_LOCATION)
-        AppConstants.dataResponseListener = this as DataResponseListener
+        //gpsCords = intent.getDoubleArrayExtra(AppConstants.CURRENT_GPS_LOCATION)
+        //AppConstants.dataResponseListener = this
         AppConstants.APP_OPEN = true
+        AppConstants.DATA_SPECIFICS = 3
+        AppConstants.TIMER_DELAY = AppUtils().setTimerDelay()
 
-        Thread(Runnable {
+        setPresenter(MainPresenter(this, DependencyInjectorImpl()))
+        presenter.onViewCreated()
+
+        /*
+        (Thread(Runnable {
             //NetworkObserver(this, 0, null, null).createNewNetworkRequest()
             //NetworkObserver(this, 1, null, null).createNewNetworkRequest()
             //NetworkObserver(this, 2, null, "California").createNewNetworkRequest()
@@ -96,15 +105,28 @@ class MainActivity : AppCompatActivity(), ViewBinding, DataResponseListener {
          */
 
         Handler().postDelayed(
-            {startBackgroundTask(this)}, 10000
+            {startBackgroundTask(this)}, AppConstants.TIMER_DELAY
         )
+        */
 
     }
 
-    override fun onPause() {
-        super.onPause()
+    fun onGpsClick(view: View) {
+        Log.d("CovidTesting", "Showing GPS Information . . .")
+        /*binding.root.fab.setOnClickListener {
+
+        }*/
+    }
+
+    override fun onStop() {
+        super.onStop()
         AppConstants.APP_OPEN = false
-        startBackgroundTask(this)
+        //startBackgroundTask(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //AppConstants.dataResponseListener = this
     }
 
     private fun startBackgroundTask(context: Context) {
@@ -121,10 +143,40 @@ class MainActivity : AppCompatActivity(), ViewBinding, DataResponseListener {
         TODO("Not yet implemented")
     }
 
-    override fun uiUpdateData(success: Boolean) {
+    override fun setPresenter(presenter: MainContract.Presenter) {
+        this.presenter = presenter
+    }
+
+    override fun displayContinentData(continentData: IntArray) {
+        Log.d("CovidTesting", "data is now : ${continentData.contentToString()}")
+
+        if (binding.globalCases.text == null) {
+            binding.globalCases.text = MathUtils().formatNumbers(continentData[0])
+        } else if (binding.globalCases.text != MathUtils().formatNumbers(continentData[0])) {
+            Log.d("CovidTesting","Formatting data . . .")
+            binding.globalCases.text = MathUtils().formatNumbers(continentData[0])
+        }
+        binding.globalRecovered.text = MathUtils().formatNumbers(continentData[1])
+        binding.globalDeaths.text = MathUtils().formatNumbers(continentData[2])
+
+        binding.currentInfected.text = MathUtils().formatNumbers(continentData[3])
+        val mildText = MathUtils().formatNumbers(continentData[4]) + " (${MathUtils().getStringPercent(continentData[4], continentData[3])}%)"
+        binding.currentMild.text = mildText
+        val criticalText = MathUtils().formatNumbers(continentData[5]) + " (${MathUtils().getStringPercent(continentData[5], continentData[3])}%)"
+        binding.currentCritical.text = criticalText
+
+        binding.currentClosed.text = MathUtils().formatNumbers(continentData[6])
+        binding.currentDischarged.text = binding.globalRecovered.text
+        binding.currentDead.text = binding.globalDeaths.text
+
+    }
+
+    /*override fun uiUpdateData(success: Boolean) {
         Log.d("CovidTesting","Getting data . . .")
         if (success) {
             val uiData = AppUtils().getCurrentData(0) as IntArray
+
+            println(uiData.contentToString())
 
             if (binding.globalCases.text == null) {
                 binding.globalCases.text = MathUtils().formatNumbers(uiData[0])
@@ -147,5 +199,5 @@ class MainActivity : AppCompatActivity(), ViewBinding, DataResponseListener {
         } else {
             print("")
         }
-    }
+    }*/
 }

@@ -11,27 +11,29 @@ class AppConstants {
         const val REQUEST_GPS_LOCATION = 101
         const val CHANNEL_ID = "channel_id_01"
 
-        // Booleans
+        // Basic Data
         var APP_OPEN = false
+        var DATA_SPECIFICS = 0
+        var TIMER_DELAY = 0L
 
         // Listener
         var dataResponseListener: DataResponseListener? = null
 
         // API Urls
-        const val API_DATA_URL_GLOBAL = "https://corona.lmao.ninja/v2/countries?yesterday&sort"
-        const val API_DATA_URL_USA = "https://corona.lmao.ninja/v2/states?sort&yesterday"
+        const val API_DATA_URL_GLOBAL = "https://corona.lmao.ninja/v2/countries"
+        const val API_DATA_URL_USA = "https://corona.lmao.ninja/v2/states"
         // https://corona.lmao.ninja/v2/states/<State>
         const val API_DATA_URL_USA_STATE = "https://corona.lmao.ninja/v2/states/"
-        const val API_DATA_ENDPOINT = "?yesterday=true"
+        const val API_DATA_ENDPOINT = "?yesterday=falsecountries&sort"
 
-        const val API_DATA_CONTINENT = "https://corona.lmao.ninja/v2/continents?yesterday=falsecountries&sort"
+        const val API_DATA_CONTINENT = "https://corona.lmao.ninja/v2/continents/?yesterday=falsecountries&sort"
 
         // John Hopkins University, used for non-US countries and breakdowns for Provinces/Counties/etc
         const val API_DATA_JHU = "https://corona.lmao.ninja/v2/jhucsse"
         // "https://corona.lmao.ninja/v2/historical/<Country>"
         const val API_DATA_JHU_COUNTRY = "https://corona.lmao.ninja/v2/historical/"
         // "https://corona.lmao.ninja/v2/historical/<Country>/<Province>"
-        const val API_DATA_JHU_PROVINCE = "https://corona.lmao.ninja/v2/historical/<Country>/<Province>"
+        const val API_DATA_JHU_PROVINCE = "https://corona.lmao.ninja/v2/historical/"
         const val API_DATA_JHU_ENDPOINT = "?lastdays=all"
 
         const val CURRENT_GPS_LOCATION = "current_location"

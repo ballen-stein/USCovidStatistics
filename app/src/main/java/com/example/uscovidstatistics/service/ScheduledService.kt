@@ -18,37 +18,23 @@ class ScheduledService : Service() {
         return null
     }
 
-    /*
-    override fun onHandleIntent(p0: Intent?) {
-        TODO("Not yet implemented")
-    }*/
-
     override fun onCreate() {
         super.onCreate()
-        /*timer.scheduleAtFixedRate(object: TimerTask() {
-            override fun run() {
-                Log.d("CovidTesting","Running data . . .")
-                Thread(Runnable {
-                    Looper.prepare()
-                    NetworkObserver(applicationContext, 3, null, null).createNewNetworkRequest()
-                }).start()
-            }
-        }, 60, 50*60*1000)
 
-         */
+        Log.d("CovidTesting", "Timer delay is ${AppConstants.TIMER_DELAY} minutes")
         timer.schedule(object: TimerTask() {
             override fun run() {
-                Log.d("CovidTesting","Running data . . .")
+                Log.d("CovidTesting","Running service . . .")
                 Thread(Runnable {
                     Looper.prepare()
-                    NetworkObserver(applicationContext, 3, null, null, AppConstants.APP_OPEN).createNewNetworkRequest()
+                    NetworkObserver(3, null, null, AppConstants.APP_OPEN).createNewNetworkRequest()
                 }).start()
             }
         }, 0, 2*60*1000)
     }
 
     override fun stopService(name: Intent?): Boolean {
-        Log.d("CovidTesting","Stopping data . . .")
+        Log.d("CovidTesting","Stopping service . . .")
         return super.stopService(name)
     }
 }

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
+import android.text.format.Time
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -38,12 +39,16 @@ class AppUtils {
     }
 
     fun gpsPermissionGranted(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     fun getLocationData(context: Context): LocationDataset {
         val geocoder = Geocoder(context, Locale.getDefault())
-        val address: List<Address> = geocoder.getFromLocation(AppConstants.GPS_DATA[1], AppConstants.GPS_DATA[0], 1)
+        val address: List<Address> =
+            geocoder.getFromLocation(AppConstants.GPS_DATA[1], AppConstants.GPS_DATA[0], 1)
         return setLocationData(address)
     }
 
@@ -64,7 +69,7 @@ class AppUtils {
             2 -> AppConstants.US_STATE_DATA
             3 -> AppConstants.CONTINENT_DATA
             4 -> AppConstants.COUNTRY_DATA
-            5 ->  AppConstants.COUNTRY_PROVINCE_DATA
+            5 -> AppConstants.COUNTRY_PROVINCE_DATA
             else -> AppConstants.WORLD_DATA
         }
     }
@@ -72,7 +77,7 @@ class AppUtils {
     fun newNotification(context: Context): NotificationCompat.Builder? {
         createNotificationChannel(context)
         return NotificationCompat.Builder(context, AppConstants.CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_earth)
+            .setSmallIcon(R.drawable.ic_virus)
             .setContentTitle("Covid-19 Update")
             .setContentText("Current cases : ${MathUtils().totalGlobalCases()[0]}")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -84,11 +89,20 @@ class AppUtils {
             val name = "Channel_name_001"
             val descriptionText = "Channel_text_001"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(AppConstants.CHANNEL_ID, name, importance).apply { description = descriptionText }
+            val channel = NotificationChannel(AppConstants.CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
 
-            val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
 
         }
+    }
+
+    fun setTimerDelay(): Long {
+        val currentTime = Calendar.getInstance().time
+        val formattedTime = currentTime.toString().split(" ")[3]
+        return MathUtils().findDelay(formattedTime)
     }
 }

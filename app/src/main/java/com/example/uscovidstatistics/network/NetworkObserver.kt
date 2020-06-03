@@ -1,18 +1,13 @@
 package com.example.uscovidstatistics.network
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.uscovidstatistics.DataResponseListener
-import com.example.uscovidstatistics.MainActivity
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.apidata.*
 import com.example.uscovidstatistics.utils.AppUtils
-import com.example.uscovidstatistics.utils.MathUtils
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -29,14 +24,12 @@ import okhttp3.ResponseBody
 import java.lang.Exception
 import java.lang.reflect.ParameterizedType
 
-class NetworkObserver(private val context: Context, private var getSpecifics: Int, countryName: String?, regionName: String?, private val appOpen: Boolean) {
+class NetworkObserver(private var getSpecifics: Int, countryName: String?, regionName: String?, private val appOpen: Boolean) {
     private var useUrl: String
     private val client = OkHttpClient()
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     private var type: ParameterizedType
     private lateinit var response: Response
-
-    //var dataResponseListener: DataResponseListener? = null
 
     init {
         type = Types.newParameterizedType(
@@ -60,15 +53,6 @@ class NetworkObserver(private val context: Context, private var getSpecifics: In
             5 -> AppConstants.API_DATA_JHU_COUNTRY + countryName + "/" + regionName + AppConstants.API_DATA_JHU_ENDPOINT
             else ->  AppConstants.API_DATA_URL_GLOBAL
         }
-
-        /*if (appOpen) {
-            try {
-                dataResponseListener = context as DataResponseListener
-            } catch (e: Exception) {
-                dataResponseListener = MainActivity().applicationContext as DataResponseListener
-                e.printStackTrace()
-            }
-        }*/
     }
 
     fun createNewNetworkRequest() {
@@ -83,9 +67,10 @@ class NetworkObserver(private val context: Context, private var getSpecifics: In
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { onNext -> response = onNext as Response
-                    setData(response.body!!)},
-                { onError -> println(onError.toString())},
-                { //response.body?.close()
+                    setData(response.body!!) },
+                { onError -> println(onError.toString()) },
+                { response.body?.close()
+                    updateDataDisplay()
                 }
             )
     }
@@ -96,7 +81,6 @@ class NetworkObserver(private val context: Context, private var getSpecifics: In
                 0 -> {
                     val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
                     AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
-                    //dataResponseListener!!.uiUpdateData(getSpecifics)
                 }
                 1 -> {
                     val jsonAdapter: JsonAdapter<List<StateDataset>> = moshi.adapter(type)
@@ -111,21 +95,7 @@ class NetworkObserver(private val context: Context, private var getSpecifics: In
                 }
                 3 -> {
                     val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
-                    AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!
-                    if (appOpen && AppConstants.dataResponseListener != null)
-                        AppConstants.dataResponseListener!!.uiUpdateData(true)
-                    else {
-                        Log.d("CovidTesting", "Received data . . .\n")
-                        println("Updated time  : ${AppConstants.CONTINENT_DATA[0].timeUpdated}")
-                        println("Current cases : ${AppConstants.CONTINENT_DATA[0].cases}")
-
-                        with(NotificationManagerCompat.from(context)) {
-                            // notificationId is a unique int for each notification that you must define
-                            notify(1, AppUtils().newNotification(context)!!.build())
-                        }
-
-                    }
-                }
+                    AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!                }
                 4 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuCountryDataset::class.java)
                     AppConstants.COUNTRY_DATA = jsonAdapter.fromJson(body.string())!!
@@ -140,10 +110,29 @@ class NetworkObserver(private val context: Context, private var getSpecifics: In
                 }
             }
         } catch (e: Exception) {
-            Toasty.info(context.applicationContext, R.string.no_connection, Toast.LENGTH_LONG).show()
+            //Toasty.info(context.applicationContext, R.string.no_connection, Toast.LENGTH_LONG).show()
             //dataResponseListener!!.uiUpdateData(false)
             e.printStackTrace()
         }
+    }
+
+    private fun updateDataDisplay() {
+        /*
+        if (appOpen && AppConstants.dataResponseListener != null) {
+            AppConstants.dataResponseListener!!.uiUpdateData(true)
+        }
+        else {
+            Log.d("CovidTesting", "Received data . . .\n")
+            println("Updated time  : ${AppConstants.CONTINENT_DATA[0].timeUpdated}")
+            println("Current cases : ${AppConstants.CONTINENT_DATA[0].cases}")
+
+            with(NotificationManagerCompat.from(context)) {
+                // notificationId is a unique int for each notification that you must define
+                notify(1, AppUtils().newNotification(context)!!.build())
+            }
+        }
+        */
+        Log.d("CovidTesting", "Data is now set")
     }
 
     private fun getLocationData(): Response {

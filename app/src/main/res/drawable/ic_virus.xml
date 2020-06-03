@@ -8,9 +8,9 @@
     <path android:fillColor="#FF7E00" android:pathData="M143.533,256m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
     <path android:fillColor="#FDEE00" android:pathData="M335.526,176.478m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
     <path android:fillColor="#FDEE00" android:pathData="M176.474,176.478m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
-    <path android:fillColor="#00000000" android:pathData="M223.867,288.133m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
-    <path android:fillColor="#00000000" android:pathData="M223.867,223.867m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
+    <path android:fillColor="#FDEE00" android:pathData="M223.867,288.133m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
+    <path android:fillColor="#B0BF1A" android:pathData="M223.867,223.867m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
     <path android:fillColor="#B0BF1A" android:pathData="M176.474,335.53m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
     <path android:fillColor="#B0BF1A" android:pathData="M335.526,335.53m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
-    <path android:fillColor="#00000000" android:pathData="M288.133,223.867m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
+    <path android:fillColor="#FF7E00" android:pathData="M288.133,223.867m-15,0a15,15 0,1 1,30 0a15,15 0,1 1,-30 0"/>
 </vector>
