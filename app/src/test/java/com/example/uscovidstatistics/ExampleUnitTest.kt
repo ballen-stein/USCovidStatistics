@@ -35,4 +35,9 @@ class ExampleUnitTest {
         val percent = AppUtils().getStringPercent(num1, num2)
         assertEquals("10.01", percent)
     }
+    @Test
+    fun test_capilizeAll() {
+        val string = AppUtils().capitalizeWords("marina two")
+        assertEquals("Marina Two", string)
+    }
 }

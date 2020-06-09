@@ -8,17 +8,44 @@
     android:background="@color/colorSurface"
     tools:context=".views.activities.homepage.MainActivity">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/world_map"
-        android:visibility="gone"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/ic_world_map___low_resolution"
-        android:layout_marginBottom="?attr/actionBarSize"/>
+        android:layout_height="50dp" >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/flag1"
+            android:visibility="visible"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="32dp"
+            android:background="@drawable/ic_world_map___low_resolution"
+            android:layout_marginBottom="?attr/actionBarSize"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/cases_header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/cases_header"
+            android:textSize="20sp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/flag2"
+            android:visibility="visible"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/ic_world_map___low_resolution"
+            android:layout_marginBottom="?attr/actionBarSize"/>
+
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
         android:layout_marginBottom="?attr/actionBarSize">
 
         <LinearLayout

@@ -2,18 +2,17 @@ package com.example.uscovidstatistics.model
 
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.apidata.*
+import dagger.Component
+import dagger.Module
+import dagger.Provides
+import javax.inject.Singleton
 
+@Module
 class DataModelRepository {
-    fun getData(dataSpecifier: Int): Any {
-        return when (dataSpecifier) {
-            0 -> AppConstants.WORLD_DATA
-            1 -> AppConstants.US_DATA
-            2 -> AppConstants.US_STATE_DATA
-            3 -> AppConstants.CONTINENT_DATA
-            4 -> AppConstants.COUNTRY_DATA
-            5 ->  AppConstants.COUNTRY_PROVINCE_DATA
-            else -> AppConstants.WORLD_DATA
-        }
+
+    @Provides
+    fun getDataModel(): DataModelRepository {
+        return DataModelRepository()
     }
 
     fun getWorldData(): List<BaseCountryDataset> {

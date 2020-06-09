@@ -1,4 +1,4 @@
-package com.example.uscovidstatistics.views.activities.homepage
+package com.example.uscovidstatistics.views.activities.country
 
 import android.content.Context
 import android.os.Looper
@@ -8,7 +8,6 @@ import com.example.uscovidstatistics.manualdependency.DependencyInjector
 import com.example.uscovidstatistics.model.DataModelRepository
 import com.example.uscovidstatistics.model.apidata.*
 import com.example.uscovidstatistics.network.NetworkRequests
-import com.example.uscovidstatistics.utils.AppUtils
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -20,45 +19,72 @@ import okhttp3.Response
 import java.lang.Exception
 import java.lang.reflect.ParameterizedType
 import java.util.*
-import javax.inject.Inject
 
-class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjector: DependencyInjector) : MainContract.Presenter {
+class CountryPresenter (view: CountryContract.View, dependencyInjector: DependencyInjector) : CountryContract.Presenter {
 
     private val dataModelRepository: DataModelRepository = dependencyInjector.covidDataRepository()
 
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-    private var view: MainContract.View? = view
+    private var view: CountryContract.View? = view
 
     override fun onDestroy() {
         this.view = null
     }
 
     override fun onViewCreated() {
-        loadData(AppConstants.DATA_SPECIFICS)
+        Log.d("CovidTesting", "${AppConstants.DATA_SPECIFICS}, ${AppConstants.REGION_NAME}, ${AppConstants.COUNTRY_NAME}")
+        loadData(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME)
+    }
+
+    override fun getRegionalData(regionList: Array<String>) {
+        for ((i, data) in regionList.withIndex()) {
+            Observable.defer {
+                try {
+                    val networkRequests = NetworkRequests(5, data, AppConstants.COUNTRY_NAME).getLocationData()
+                    Observable.just(networkRequests)
+                } catch (e: Exception) {
+                    Observable.error<Exception>(e)
+                }
+            }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe (
+                    { onNext -> onNext as Response
+                        setData(onNext, 5, true)},
+                    { onError ->  view?.dataError()
+                        Log.d("CovidTesting", "Error in the subscription  for country : $onError")},
+                    { if (AppConstants.COUNTRY_PROVINCE_LIST.size == regionList.size)
+                        view?.displayCountryList()
+                    }
+                )
+        }
     }
 
     override fun onDataUpdated() {
-        Log.d("CovidTesting", "Data was updated . . .")
+        TODO("Not yet implemented")
     }
 
     override fun onServiceStarted(context: Context) {
         val timer = Timer()
         timer.schedule(object: TimerTask() {
             override fun run() {
-                Log.d("CovidTesting","Running service . . .")
+                Log.d("CovidTesting","Running service for country . . .")
                 Thread(Runnable {
                     Looper.prepare()
-                    loadData(3)
+                    loadData(
+                        AppConstants.DATA_SPECIFICS,
+                        AppConstants.REGION_NAME,
+                        AppConstants.COUNTRY_NAME
+                    )
                 }).start()
             }
         },0, 2*60*1000)
     }
 
-    private fun loadData(getSpecifics: Int) {
+    private fun loadData(getSpecifics: Int, regionName: String?, countryName: String?) {
         Observable.defer {
             try {
-                val networkRequests = NetworkRequests(getSpecifics, null, null).getLocationData()
+                val networkRequests = NetworkRequests(getSpecifics, regionName, countryName).getLocationData()
                 Observable.just(networkRequests)
             } catch (e: Exception) {
                 Observable.error<Exception>(e)
@@ -67,33 +93,27 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
                 { onNext -> onNext as Response
-                    setData(onNext, getSpecifics)},
+                    setData(onNext, getSpecifics, false)},
                 { onError ->  view?.dataError()
-                    Log.d("CovidTesting", "Error in the subscription : $onError")},
-                { view?.displayContinentData(AppUtils().continentTotals(dataModelRepository.getContinentData())) }
+                    Log.d("CovidTesting", "Error in the subscription  for country : $onError")},
+                { view?.displayCountryData(dataModelRepository.getCountryData()) }
             )
     }
 
-    private fun setData(response: Response, getSpecifics: Int) {
+    private fun setData(response: Response, getSpecifics: Int, addToList: Boolean) {
         val body = response.body!!
         val type: ParameterizedType = Types.newParameterizedType(
             when (getSpecifics) {
-                0,1,3 -> List::class.java
+                1 -> List::class.java
                 else -> List::class.java
             },
             when (getSpecifics) {
-                0 -> BaseCountryDataset::class.java
                 1,2 -> StateDataset::class.java
-                3 -> ContinentDataset::class.java
                 else -> BaseCountryDataset::class.java
             })
 
         try {
             when (getSpecifics) {
-                0 -> {
-                    val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
-                    AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
-                }
                 1 -> {
                     val jsonAdapter: JsonAdapter<List<StateDataset>> = moshi.adapter(type)
                     AppConstants.US_DATA = jsonAdapter.fromJson(body.string())!!
@@ -105,10 +125,6 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
                     val jsonAdapter = moshi.adapter(StateDataset::class.java)
                     AppConstants.US_STATE_DATA = jsonAdapter.fromJson(body.string())!!
                 }
-                3 -> {
-                    val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
-                    AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!
-                }
                 4 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuCountryDataset::class.java)
                     AppConstants.COUNTRY_DATA = jsonAdapter.fromJson(body.string())!!
@@ -116,10 +132,15 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
                 5 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuProvinceDataset::class.java)
                     AppConstants.COUNTRY_PROVINCE_DATA = jsonAdapter.fromJson(body.string())!!
+                    if (addToList)
+                        AppConstants.COUNTRY_PROVINCE_LIST.add(AppConstants.COUNTRY_PROVINCE_DATA)
                 }
                 else -> {
-                    val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
-                    AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
+                    val jsonAdapter: JsonAdapter<List<StateDataset>> = moshi.adapter(type)
+                    AppConstants.US_DATA = jsonAdapter.fromJson(body.string())!!
+                    for (data in AppConstants.US_DATA) {
+                        AppConstants.US_STATE_DATA_MAPPED[data.state!!] = data
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -128,5 +149,4 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
         }
         body.close()
     }
-
 }

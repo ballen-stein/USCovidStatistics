@@ -2,7 +2,6 @@ package com.example.uscovidstatistics.utils
 
 import android.Manifest
 import android.app.Activity
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -10,18 +9,19 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
-import android.text.format.Time
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
+import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.model.LocationDataset
+import com.example.uscovidstatistics.model.apidata.ContinentDataset
+import com.example.uscovidstatistics.model.apidata.JhuProvinceDataset
 import java.math.BigDecimal
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class AppUtils {
 
@@ -62,24 +62,12 @@ class AppUtils {
         return locationDataSet
     }
 
-    fun getCurrentData(designation: Int): Any {
-        return when (designation) {
-            0 -> MathUtils().totalGlobalCases()
-            1 -> AppConstants.US_DATA
-            2 -> AppConstants.US_STATE_DATA
-            3 -> AppConstants.CONTINENT_DATA
-            4 -> AppConstants.COUNTRY_DATA
-            5 -> AppConstants.COUNTRY_PROVINCE_DATA
-            else -> AppConstants.WORLD_DATA
-        }
-    }
-
     fun newNotification(context: Context): NotificationCompat.Builder? {
         createNotificationChannel(context)
         return NotificationCompat.Builder(context, AppConstants.CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_virus)
             .setContentTitle("Covid-19 Update")
-            .setContentText("Current cases : ${MathUtils().totalGlobalCases()[0]}")
+            .setContentText("Current cases : ${AppUtils().totalGlobalCases()[0]}")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
     }
@@ -103,6 +91,117 @@ class AppUtils {
     fun setTimerDelay(): Long {
         val currentTime = Calendar.getInstance().time
         val formattedTime = currentTime.toString().split(" ")[3]
-        return MathUtils().findDelay(formattedTime)
+        return AppUtils().findDelay(formattedTime)
+    }
+
+    fun totalGlobalCases(): IntArray {
+        var cases = 0
+        var recovered = 0
+        var deaths = 0
+        var activeCases = 0
+        var critical = 0
+
+        for (data in AppConstants.CONTINENT_DATA) {
+            cases += data.cases!!
+            recovered += data.recovered!!.toInt()
+            deaths += data.deaths!!
+            activeCases += data.activeCases!!
+            critical += data.criticalCases!!
+        }
+        val mild = activeCases - critical
+        val closedCases = cases - activeCases
+
+        return intArrayOf(cases, recovered, deaths, activeCases, mild, critical, closedCases)
+    }
+
+    private var totalsArray = intArrayOf(0,0,0)
+
+    fun cleanCountryData(data: JhuProvinceDataset): CleanedUpData {
+        val cleanedUpData = CleanedUpData()
+        val keysList: ArrayList<String> = ArrayList()
+        val setOfKeys = data.timeline!!.cases!!.keys
+        for (key in setOfKeys)
+            keysList.add(key)
+
+        val cases = data.timeline!!.cases!![(keysList[keysList.size-1])]
+        val recovered = data.timeline!!.recovered!![keysList[keysList.size-1]]
+        val deaths = data.timeline!!.deaths!![(keysList[keysList.size-1])]
+
+        totalsArray[0] += cases!!.toInt()
+        totalsArray[1] += recovered!!.toInt()
+        totalsArray[2] += deaths!!.toInt()
+
+        cleanedUpData.name = capitalizeWords(data.province.toString())
+        cleanedUpData.cases = formatNumbers(cases)
+        cleanedUpData.recovered = formatNumbers(recovered)
+        cleanedUpData.deaths = formatNumbers(deaths)
+
+        return cleanedUpData
+    }
+
+    fun capitalizeWords(title: String): String {
+        return title.split(" ").joinToString(" \n") { it.capitalize() }
+    }
+
+    fun cleanCountryTotals(): CleanedUpData {
+        val totalCleaned = CleanedUpData()
+        totalCleaned.name = "Totals"
+        totalCleaned.cases = formatNumbers(totalsArray[0])
+        totalCleaned.recovered = formatNumbers(totalsArray[1])
+        totalCleaned.deaths = formatNumbers(totalsArray[2])
+
+        return totalCleaned
+    }
+
+    fun resetCountryTotals() {
+        totalsArray = intArrayOf(0,0,0)
+    }
+
+    fun continentTotals(continentData: List<ContinentDataset>): IntArray {
+        var cases = 0
+        var recovered = 0
+        var deaths = 0
+        var activeCases = 0
+        var critical = 0
+
+        for (data in continentData) {
+            cases += data.cases!!
+            recovered += data.recovered!!.toInt()
+            deaths += data.deaths!!
+            activeCases += data.activeCases!!
+            critical += data.criticalCases!!
+        }
+        val mild = activeCases - critical
+        val closedCases = cases - activeCases
+
+        return intArrayOf(cases, recovered, deaths, activeCases, mild, critical, closedCases)
+    }
+
+    fun formatNumbers(num: Int): String {
+        return if (num.toString().length <= 3) {
+            num.toString()
+        } else {
+            NumberFormat.getInstance().format(num.toDouble())
+        }
+    }
+
+    fun getPercent(num1: Int, num2: Int): Double {
+        return (num1.toDouble() / num2.toDouble()) * 100
+    }
+
+    fun getStringPercent(num1: Int, num2: Int): String {
+        val percent = getPercent(num1, num2)
+        return BigDecimal(percent.toString()).setScale(2, BigDecimal.ROUND_HALF_EVEN).toString()
+    }
+
+    fun findDelay(currentTime: String): Long {
+        val time = currentTime.split(":")[1].toLong()
+        return (10L - (time % 10L)) * 60 * 1025
+    }
+
+    companion object {
+        fun getInstance(): AppUtils {
+            return AppUtils()
+        }
     }
 }
