@@ -1,5 +1,7 @@
 package com.example.uscovidstatistics
 
+import android.app.Instrumentation
+import android.content.pm.InstrumentationInfo
 import com.example.uscovidstatistics.utils.AppUtils
 import org.junit.Test
 

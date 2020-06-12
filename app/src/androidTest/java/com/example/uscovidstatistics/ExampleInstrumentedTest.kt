@@ -2,14 +2,13 @@ package com.example.uscovidstatistics
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.android.gms.common.util.CollectionUtils
+import com.example.uscovidstatistics.utils.AppUtils
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 /**
@@ -45,5 +44,9 @@ class ExampleInstrumentedTest {
             }
         }
 
+    }
+    @Test
+    fun testTerritoriesChecker() {
+        val context = InstrumentationRegistry.getInstrumentation().context
     }
 }

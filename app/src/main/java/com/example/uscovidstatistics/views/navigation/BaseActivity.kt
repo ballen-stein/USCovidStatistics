@@ -11,6 +11,8 @@ import androidx.appcompat.widget.Toolbar
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.bottom_nav_dialog_fragment.*
+import kotlinx.android.synthetic.main.navigation_country_selection.*
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -43,17 +45,11 @@ open class BaseActivity : AppCompatActivity() {
         return true
     }
 
-    val navigationFragment: BottomDialog? = BottomDialog().newInstance()
+    private val navigationFragment: BottomDialog? = BottomDialog().newInstance()
 
     private fun setNavigationListeners() {
         navigationBar.setNavigationOnClickListener {
-            navigationFragment!!.show(supportFragmentManager, "")
-        }
-    }
-
-    fun closeNavigation() {
-        if (navigationFragment != null) {
-            navigationFragment.dismiss()
+            navigationFragment!!.show(supportFragmentManager, "NavigationDialog")
         }
     }
 }

@@ -38,7 +38,7 @@ class CountryPresenter (view: CountryContract.View, dependencyInjector: Dependen
     }
 
     override fun getRegionalData(regionList: Array<String>) {
-        for ((i, data) in regionList.withIndex()) {
+        for (data in regionList) {
             Observable.defer {
                 try {
                     val networkRequests = NetworkRequests(5, data, AppConstants.COUNTRY_NAME).getLocationData()

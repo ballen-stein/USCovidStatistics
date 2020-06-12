@@ -1,6 +1,5 @@
 package com.example.uscovidstatistics.views.activities.country
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,6 +15,7 @@ import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.navigation.BaseActivity
 import kotlinx.android.synthetic.main.app_toolbar.view.*
+import java.lang.Exception
 
 class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     private lateinit var binding: ActivityCountryBreakdownBinding
@@ -40,7 +40,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
         AppConstants.COUNTRY_NAME = countryDisplay
         AppConstants.DATA_SPECIFICS = 4
-        //AppConstants.TIMER_DELAY = appUtils.setTimerDelay()
 
         setHeader()
         setSupportActionBar(binding.root.bottom_toolbar)
@@ -52,15 +51,23 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     private fun setHeader() {
-        val url = AppConstants.WORLD_DATA_MAPPED[countryDisplay]!!.countryInfo!!.countryFlag
+        try {
+            val mappedName = if (countryDisplay == "Burma")
+                "Myanmar"
+            else
+                countryDisplay
+            val url = AppConstants.WORLD_DATA_MAPPED[mappedName]!!.countryInfo!!.countryFlag
+            Glide.with(this)
+                .load(url)
+                .into(binding.flag1)
+            Glide.with(this)
+                .load(url)
+                .into(binding.flag2)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
-        Glide.with(this)
-            .load(url)
-            .into(binding.flag1)
 
-        Glide.with(this)
-            .load(url)
-            .into(binding.flag2)
 
         val headerText = "$countryDisplay Information"
         binding.casesHeader.text = headerText
@@ -81,7 +88,13 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     override fun displayCountryData(countryData: JhuCountryDataset) {
-        val regionList = countryData.province!!
+        val regionList = if (countryData.province!!.contains("bonaire, sint eustatius and saba")) {
+            val temp = countryData.province!!.toMutableList()
+            temp.remove("bonaire, sint eustatius and saba")
+            temp.toTypedArray()
+        } else {
+            countryData.province!!
+        }
         presenter.getRegionalData(regionList)
     }
 

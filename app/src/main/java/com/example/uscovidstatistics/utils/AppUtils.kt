@@ -51,6 +51,7 @@ class AppUtils {
         val geocoder = Geocoder(context, Locale.getDefault())
         val address: List<Address> =
             geocoder.getFromLocation(AppConstants.GPS_DATA[1], AppConstants.GPS_DATA[0], 1)
+
         return setLocationData(address)
     }
 
@@ -61,11 +62,13 @@ class AppUtils {
         locationDataSet.county = address[0].countryName
         locationDataSet.postalCode = address[0].postalCode
         locationDataSet.knownName = address[0].featureName
+
         return locationDataSet
     }
 
     fun newNotification(context: Context): NotificationCompat.Builder? {
         createNotificationChannel(context)
+
         return NotificationCompat.Builder(context, AppConstants.CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_virus)
             .setContentTitle("Covid-19 Update")
@@ -93,6 +96,7 @@ class AppUtils {
     fun setTimerDelay(): Long {
         val currentTime = Calendar.getInstance().time
         val formattedTime = currentTime.toString().split(" ")[3]
+
         return AppUtils().findDelay(formattedTime)
     }
 
@@ -184,7 +188,19 @@ class AppUtils {
         for (data in AppConstants.CONTINENT_DATA) {
             hashMap[data.continent!!] = data.countriesOnContinent!!
         }
+
         return hashMap
+    }
+
+    fun cleanHashMap(continentCountryList: Array<String>, temp2: ArrayList<String>): Array<String> {
+        val tempList = continentCountryList.toMutableList()
+        for (data in temp2) {
+            if (tempList.contains(data)) {
+                tempList.remove(data)
+            }
+        }
+
+        return tempList.toTypedArray()
     }
 
     fun formatNumbers(num: Int): String {
@@ -201,12 +217,68 @@ class AppUtils {
 
     fun getStringPercent(num1: Int, num2: Int): String {
         val percent = getPercent(num1, num2)
+
         return BigDecimal(percent.toString()).setScale(2, BigDecimal.ROUND_HALF_EVEN).toString()
     }
 
-    fun findDelay(currentTime: String): Long {
+    private fun findDelay(currentTime: String): Long {
         val time = currentTime.split(":")[1].toLong()
+
         return (10L - (time % 10L)) * 60 * 1025
+    }
+
+    fun territoriesDirectLink(country: String, context: Context): String {
+        val territoryArrays = ArrayList<Array<String>>()
+        Collections.addAll(territoryArrays,
+            context.resources.getStringArray(R.array.burma_territories_list),
+            context.resources.getStringArray(R.array.china_territories_list),
+            context.resources.getStringArray(R.array.denmark_territories_list),
+            context.resources.getStringArray(R.array.france_territories_list),
+            context.resources.getStringArray(R.array.netherlands_territories_list),
+            context.resources.getStringArray(R.array.uk_territories_list))
+
+        if (context.resources.getStringArray(R.array.territories_list).contains(country)) {
+            return when {
+                territoryArrays[0].contains(country) -> {
+                    "Burma"
+                }
+                territoryArrays[1].contains(country) -> {
+                    "China"
+                }
+                territoryArrays[2].contains(country) -> {
+                    "Denmark"
+                }
+                territoryArrays[3].contains(country) -> {
+                    "France"
+                }
+                territoryArrays[4].contains(country) -> {
+                    "Netherlands"
+                }
+                territoryArrays[5].contains(country) -> {
+                    "UK"
+                }
+                else -> {
+                    "null"
+                }
+            }
+        } else {
+            return "null"
+        }
+    }
+
+    fun removeTerritories(continent: String, context: Context): ArrayList<String> {
+        val noDataTerritories = ArrayList<String>()
+        val countries = continentCountryList()
+
+        val noDataList = context.resources.getStringArray(R.array.no_data_territories_list)
+
+        for (countryName in countries[continent]!!) {
+            if (noDataList.contains(countryName)) {
+                noDataTerritories.add(countryName)
+            }
+        }
+
+        return noDataTerritories
     }
 
     companion object {

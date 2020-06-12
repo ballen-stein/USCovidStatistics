@@ -36,4 +36,125 @@
     <string name="rv_deaths">Deaths</string>
     <string name="rv_recovered">Recovered</string>
 
+    <string-array name="territories_list">
+        <item>Anguilla</item>
+        <item>Aruba</item>
+        <item>Bermuda</item>
+        <item>British Virgin Islands</item>
+        <item>Caribbean Netherlands</item>
+        <item>Cayman Islands</item>
+        <item>Channel Islands</item>
+        <item>Curaçao</item>
+        <item>Faroe Islands</item>
+        <item>French Guiana</item>
+        <item>French Polynesia</item>
+        <item>Gibraltar</item>
+        <item>Guadeloupe</item>
+        <item>Greenland</item>
+        <item>Holy See (Vatican City State)</item>
+        <item>Hong Kong</item>
+        <item>Isle of Man</item>
+        <item>Macao</item>
+        <item>Martinique</item>
+        <item>Mayotte</item>
+        <item>Montserrat</item>
+        <item>Myanmar</item>
+        <item>New Caledonia</item>
+        <item>Palestine</item>
+        <item>Réunion</item>
+        <item>Saint Martin</item>
+        <item>Saint Pierre Miquelon</item>
+        <item>Sint Maarten</item>
+        <item>St. Barth</item>
+        <item>Turks and Caicos Islands</item>
+    </string-array>
+
+    <string-array name="france_territories_list">
+        <item>French Guiana</item>
+        <item>French Polynesia</item>
+        <item>Guadeloupe</item>
+        <item>Martinique</item>
+        <item>Mayotte</item>
+        <item>New Caledonia</item>
+        <item>Réunion</item>
+        <item>Saint Martin</item>
+        <item>Saint Pierre Miquelon</item>
+        <item>St. Barth</item>
+    </string-array>
+
+    <string-array name="uk_territories_list">
+        <item>Anguilla</item>
+        <item>Bermuda</item>
+        <item>British Virgin Islands</item>
+        <item>Cayman Islands</item>
+        <item>Channel Islands</item>
+        <item>Gibraltar</item>
+        <item>Isle of Man</item>
+        <item>Montserrat</item>
+        <item>Turks and Caicos Islands</item>
+    </string-array>
+
+    <string-array name="netherlands_territories_list">
+        <item>Aruba</item>
+        <item>Curaçao</item>
+        <item>Sint Maarten</item>
+    </string-array>
+
+    <string-array name="china_territories_list">
+        <item>Hong Kong</item>
+    </string-array>
+
+    <string-array name="denmark_territories_list">
+        <item>Faroe Islands</item>
+        <item>Greenland</item>
+    </string-array>
+
+    <string-array name="burma_territories_list">
+        <item>Myanmar</item>
+    </string-array>
+
+    <string-array name="no_data_territories_list">
+        <item>Caribbean Netherlands</item>
+        <item>bonaire, sint eustatius and saba</item>
+        <item>Holy See (Vatican City State)</item>
+        <item>Macao</item>
+        <item>Palestine</item>
+    </string-array>
+
+    <!--
+    <string-array name="territories_list">
+        <item>Anguilla</item> - UK
+        <item>Aruba</item> - Netherlands
+        <item>Bermuda</item> - UK
+        <item>British Virgin Islands</item> - UK
+        <item>Caribbean Netherlands</item> - No Data
+        <item>Cayman Islands</item> - UK
+        <item>Channel Islands</item> - UK
+        <item>Curaçao</item> - Netherlands
+        <item>Faroe Islands</item> - Denmark
+        <item>French Guiana</item> - France
+        <item>French Polynesia</item> - France
+        <item>Gibraltar</item> - UK
+        <item>Guadeloupe</item> - France
+        <item>Greenland</item> - Denmark
+        <item>Holy See (Vatican City State)</item> - No Data
+        <item>Hong Kong</item> - China
+        <item>Isle of Man</item> - UK
+        <item>Macao</item> - No Data
+        <item>Martinique</item> - France
+        <item>Mayotte</item> - France
+        <item>Montserrat</item> - UK
+        <item>Myanmar</item> - Burma
+        <item>New Caledonia</item> - France
+        <item>Réunion</item> - France
+        <item>Saint Martin</item> - France
+        <item>Saint Pierre Miquelon</item> - France
+        <item>Sint Maarten</item> - Netherlands
+        <item>St. Barth</item> - France
+        <item>Turks and Caicos Islands</item> - UK
+
+        <item>Palestine</item> - No Data
+
+    </string-array>
+-->
 </resources>

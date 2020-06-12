@@ -1,24 +1,20 @@
 package com.example.uscovidstatistics.views.dialogs
 
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.databinding.BottomNavDialogFragmentBinding
 import com.example.uscovidstatistics.recyclerview.NavRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
-import com.example.uscovidstatistics.views.navigation.BaseActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import es.dmoral.toasty.Toasty
-import java.lang.Exception
 
 class BottomDialog : BottomSheetDialogFragment(), ViewBinding{
 
     private lateinit var recyclerViewData: NavRecyclerView
+
+    private val appUtils = AppUtils.getInstance()
 
     fun newInstance() : BottomDialog {
         return BottomDialog()
@@ -26,13 +22,14 @@ class BottomDialog : BottomSheetDialogFragment(), ViewBinding{
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = BottomNavDialogFragmentBinding.inflate(inflater)
-        recyclerViewData = NavRecyclerView(binding.root.context, newInstance(), binding.navigationRecycler)
+        recyclerViewData = NavRecyclerView(binding.root.context, this, binding.navigationRecycler)
         choicesListeners(binding)
         return binding.root
     }
 
     private fun choicesListeners(binding: BottomNavDialogFragmentBinding) {
         binding.settingsNa.setOnClickListener{
+            println(tag)
             changeViews(binding,View.GONE, View.VISIBLE)
             recyclerViewData.displayChoices("North America")
         }

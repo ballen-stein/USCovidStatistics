@@ -66,9 +66,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     }
 
     private fun setNavListener() {
-        Log.d("CovidTesting", "Navigation is set in MAIN")
         binding.root.bottom_toolbar.setNavigationOnClickListener {
-            Toasty.info(this, "Navigation is pressed", Toast.LENGTH_LONG).show()
             BottomDialog().newInstance().show(supportFragmentManager, "BottomDialog")
         }
     }
@@ -123,11 +121,9 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     }
 
     override fun displayContinentData(continentData: IntArray) {
-        Log.d("CovidTesting", "data is now : ${continentData.contentToString()}")
         if (binding.globalCases.text == null) {
             binding.globalCases.text = AppUtils().formatNumbers(continentData[0])
         } else if (binding.globalCases.text != AppUtils().formatNumbers(continentData[0])) {
-            Log.d("CovidTesting","Formatting data . . .")
             binding.globalCases.text = AppUtils().formatNumbers(continentData[0])
         }
         binding.globalRecovered.text = AppUtils().formatNumbers(continentData[1])
@@ -144,6 +140,16 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         binding.currentClosed.text = AppUtils().formatNumbers(continentData[6])
         binding.currentDischarged.text = binding.globalRecovered.text
         binding.currentDead.text = binding.globalDeaths.text
+
+        cleanData()
+    }
+
+    private fun cleanData() {
+        for (continent in AppConstants.CONTINENT_DATA) {
+            val continentName = continent.continent
+            val temp = appUtils.removeTerritories(continentName!!, binding.root.context)
+            continent.countriesOnContinent = appUtils.cleanHashMap(appUtils.continentCountryList()[continentName]!!, temp)
+        }
     }
 
     override fun dataError() {
