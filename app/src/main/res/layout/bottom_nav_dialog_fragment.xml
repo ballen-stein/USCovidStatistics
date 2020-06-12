@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/linear_layout_divider"
+    android:showDividers="beginning|middle|end"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/selection_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/settings_na"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_choice_square"
+            android:orientation="horizontal" >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/menu_settings_na"
+                android:theme="@style/SettingsTextTheme"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_arrow_right_24px"
+                android:theme="@style/SettingsImageTheme"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_sa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_choice_square"
+            android:orientation="horizontal" >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/menu_settings_sa"
+                android:theme="@style/SettingsTextTheme"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_arrow_right_24px"
+                android:theme="@style/SettingsImageTheme"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_eu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_choice_square"
+            android:orientation="horizontal" >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/menu_settings_eu"
+                android:theme="@style/SettingsTextTheme"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_arrow_right_24px"
+                android:theme="@style/SettingsImageTheme"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_as"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_choice_square"
+            android:orientation="horizontal" >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/menu_settings_as"
+                android:theme="@style/SettingsTextTheme"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_arrow_right_24px"
+                android:theme="@style/SettingsImageTheme"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_af"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_choice_square"
+            android:orientation="horizontal" >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/menu_settings_af"
+                android:theme="@style/SettingsTextTheme"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_arrow_right_24px"
+                android:theme="@style/SettingsImageTheme"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_au"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_choice_square"
+            android:orientation="horizontal" >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/menu_settings_au"
+                android:theme="@style/SettingsTextTheme"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_arrow_right_24px"
+                android:theme="@style/SettingsImageTheme"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/country_selection"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/navigation_choice_square"
+            android:orientation="horizontal" >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/settings_back_btn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_arrow_left_24px"
+                android:theme="@style/SettingsImageTheme"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/navigation_recycler"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:scrollbars="vertical"
+            android:elevation="0dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

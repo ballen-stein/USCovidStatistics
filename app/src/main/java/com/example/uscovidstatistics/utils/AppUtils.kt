@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class AppUtils {
 
@@ -175,6 +177,14 @@ class AppUtils {
         val closedCases = cases - activeCases
 
         return intArrayOf(cases, recovered, deaths, activeCases, mild, critical, closedCases)
+    }
+
+    fun continentCountryList(): HashMap<String, Array<String>> {
+        val hashMap = HashMap<String, Array<String>>()
+        for (data in AppConstants.CONTINENT_DATA) {
+            hashMap[data.continent!!] = data.countriesOnContinent!!
+        }
+        return hashMap
     }
 
     fun formatNumbers(num: Int): String {

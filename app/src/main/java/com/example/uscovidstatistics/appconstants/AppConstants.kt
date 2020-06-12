@@ -46,6 +46,7 @@ class AppConstants {
         var US_STATE_DATA_MAPPED: HashMap<String, StateDataset> = HashMap()
 
         lateinit var CONTINENT_DATA: List<ContinentDataset>
+
         lateinit var COUNTRY_DATA: JhuCountryDataset
         lateinit var COUNTRY_PROVINCE_DATA: JhuProvinceDataset
         var COUNTRY_PROVINCE_LIST: ArrayList<JhuProvinceDataset> = ArrayList()

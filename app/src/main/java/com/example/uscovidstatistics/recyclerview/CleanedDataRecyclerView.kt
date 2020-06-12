@@ -27,7 +27,7 @@ class CleanedDataRecyclerView (private val mContext: Context, private val activi
 
     private fun setListener(){
         adapterCleanedData.setOnClickListener(object : CleanedDataRecyclerViewAdapter.OnClickListener {
-            override fun onRepoClick(position: Int, cleanedUpData: CleanedUpData, v: View) {
+            override fun onRegionClick(position: Int, cleanedUpData: CleanedUpData, v: View) {
                 //activity
             }
         })

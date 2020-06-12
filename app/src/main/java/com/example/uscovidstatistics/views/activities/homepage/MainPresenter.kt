@@ -108,6 +108,9 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
                 3 -> {
                     val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
                     AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!
+                    /*for (data in AppConstants.CONTINENT_DATA) {
+                        AppConstants.CONTINENT_COUNTRY_LIST[data.continent!!] = data.countriesOnContinent
+                    }*/
                 }
                 4 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuCountryDataset::class.java)

@@ -6,8 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
@@ -17,10 +20,16 @@ import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.service.ScheduledService
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
+import com.example.uscovidstatistics.views.dialogs.BottomDialog
+import com.example.uscovidstatistics.views.navigation.BaseActivity
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.navigation.NavigationView
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.app_toolbar.view.*
+import java.lang.Exception
 
-class MainActivity : AppCompatActivity(), ViewBinding, MainContract.View {
+class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var presenter: MainContract.Presenter
@@ -52,6 +61,16 @@ class MainActivity : AppCompatActivity(), ViewBinding, MainContract.View {
         }).start()
         */
 
+        setSupportActionBar(binding.root.bottom_toolbar)
+        setNavListener()
+    }
+
+    private fun setNavListener() {
+        Log.d("CovidTesting", "Navigation is set in MAIN")
+        binding.root.bottom_toolbar.setNavigationOnClickListener {
+            Toasty.info(this, "Navigation is pressed", Toast.LENGTH_LONG).show()
+            BottomDialog().newInstance().show(supportFragmentManager, "BottomDialog")
+        }
     }
 
     fun onGpsClick(view: View) {
@@ -125,7 +144,6 @@ class MainActivity : AppCompatActivity(), ViewBinding, MainContract.View {
         binding.currentClosed.text = AppUtils().formatNumbers(continentData[6])
         binding.currentDischarged.text = binding.globalRecovered.text
         binding.currentDead.text = binding.globalDeaths.text
-
     }
 
     override fun dataError() {

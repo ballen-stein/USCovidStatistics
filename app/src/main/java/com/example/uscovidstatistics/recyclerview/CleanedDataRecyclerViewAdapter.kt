@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.country_layout.view.*
 class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpData: List<CleanedUpData>) : RecyclerView.Adapter<CleanedDataRecyclerViewAdapter.ViewHolder>(), ViewBinding {
 
     companion object{
-        private var clickListener : OnClickListener ?= null
+        private var clickListener : OnClickListener? = null
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -27,7 +27,6 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = CountryLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
-        //return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.country_layout, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -42,7 +41,7 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
         }
 
         override fun onClick(view : View) {
-            clickListener!!.onRepoClick(adapterPosition, currentData, view)
+            clickListener!!.onRegionClick(adapterPosition, currentData, view)
         }
 
         fun bind(cleanedUpData: CleanedUpData) {
@@ -55,7 +54,7 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
     }
 
     interface OnClickListener{
-        fun onRepoClick(position : Int, cleanedUpData: CleanedUpData, v : View)
+        fun onRegionClick(position : Int, cleanedUpData: CleanedUpData, v : View)
     }
 
     override fun getRoot(): View {

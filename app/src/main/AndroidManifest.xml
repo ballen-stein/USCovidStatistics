@@ -23,9 +23,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".views.activities.homepage.MainActivity"></activity>
+        <activity android:name=".views.navigation.BaseActivity" />
 
         <service android:name=".service.ScheduledService"
-            android:icon="@drawable/ic_world_map___low_resolution"
+            android:icon="@drawable/ic_virus"
             android:label="@string/app_name"
             android:enabled="true"/>
     </application>

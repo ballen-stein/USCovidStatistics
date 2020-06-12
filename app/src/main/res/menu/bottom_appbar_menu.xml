@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/app_bar_home"
+        android:icon="@drawable/ic_home_24px"
+        android:iconTint="@color/colorAccent"
+        android:title="@string/menu_home"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/app_bar_gps"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:iconTint="@color/colorAccent"
+        android:title="@string/menu_gps"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/app_bar_settings"
+        android:title="@string/menu_settings"
+        app:showAsAction="never"/>
+</menu>

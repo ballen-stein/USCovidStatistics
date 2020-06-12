@@ -13,11 +13,11 @@ import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.model.apidata.JhuCountryDataset
 import com.example.uscovidstatistics.recyclerview.CleanedDataRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.views.dialogs.BottomDialog
+import com.example.uscovidstatistics.views.navigation.BaseActivity
 import kotlinx.android.synthetic.main.app_toolbar.view.*
-import okhttp3.internal.notify
-import okhttp3.internal.notifyAll
 
-class CountryActivity : AppCompatActivity(), ViewBinding, CountryContract.View {
+class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     private lateinit var binding: ActivityCountryBreakdownBinding
 
     private lateinit var presenter: CountryContract.Presenter
@@ -43,6 +43,8 @@ class CountryActivity : AppCompatActivity(), ViewBinding, CountryContract.View {
         //AppConstants.TIMER_DELAY = appUtils.setTimerDelay()
 
         setHeader()
+        setSupportActionBar(binding.root.bottom_toolbar)
+
         setPresenter(CountryPresenter(this, DependencyInjectorImpl()))
         presenter.onViewCreated()
 
@@ -88,6 +90,11 @@ class CountryActivity : AppCompatActivity(), ViewBinding, CountryContract.View {
             cleanedDataList.add(appUtils.cleanCountryData(data))
 
         recyclerViewData.displayCleanedData()
+    }
+
+    fun onGpsClick(view: View) {
+        Log.d("CovidTesting", "Showing GPS Information . . .$view")
+        BottomDialog().newInstance().show(supportFragmentManager, "BottomDialog")
     }
 
     override fun onStop() {
