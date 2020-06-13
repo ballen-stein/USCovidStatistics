@@ -11,13 +11,18 @@
     <style name="SettingsTextTheme">
         <item name="android:textSize">14sp</item>
         <item name="android:padding">12dp</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">left</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="SettingsImageTheme">
         <item name="android:backgroundTint">@color/colorWhite</item>
+    </style>
+
+    <style name="BottomDialogAnimations">
+        <item name="android:windowEnterAnimation">@anim/enter_bottom</item>
+        <item name="android:windowExitAnimation">@anim/exit_bottom</item>
     </style>
 
 </resources>

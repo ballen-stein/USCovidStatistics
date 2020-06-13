@@ -20,13 +20,19 @@
             android:layout_height="50dp"
             android:elevation="8dp">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/flag1"
-                android:layout_width="60dp"
+            <LinearLayout
+                android:id="@+id/view_back_btn"
+                android:layout_width="40dp"
                 android:layout_height="50dp"
-                android:layout_weight=".25"
-                android:background="@color/colorPrimary"
-                android:visibility="visible" />
+                android:gravity="center">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/ic_return_24px"
+                    android:visibility="visible" />
+
+            </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cases_header"
@@ -39,12 +45,11 @@
                 android:textSize="20sp" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/flag2"
+                android:id="@+id/flag"
                 android:layout_width="60dp"
                 android:layout_height="50dp"
                 android:layout_weight=".25"
-                android:background="@color/colorPrimary"
-                android:visibility="visible" />
+                android:scaleType="fitXY" />
 
         </LinearLayout>
 

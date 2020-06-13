@@ -42,24 +42,12 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         val view = binding.root
         setContentView(view)
 
-        //gpsCords = intent.getDoubleArrayExtra(AppConstants.CURRENT_GPS_LOCATION)
         AppConstants.APP_OPEN = true
         AppConstants.DATA_SPECIFICS = 3
         AppConstants.TIMER_DELAY = AppUtils().setTimerDelay()
 
         setPresenter(MainPresenter(this, DependencyInjectorImpl()))
         presenter.onViewCreated()
-
-        /*
-        (Thread(Runnable {
-            //NetworkRequests(this, 0, null, null).createNewNetworkRequest()
-            //NetworkRequests(this, 1, null, null).createNewNetworkRequest()
-            //NetworkRequests(this, 2, null, "California").createNewNetworkRequest()
-            NetworkRequests(this, 3, null, null, true).createNewNetworkRequest()
-            //NetworkRequests(this, 4, "Canada", null).createNewNetworkRequest()
-            //NetworkRequests(this, 5, "Canada", "ontario").createNewNetworkRequest()
-        }).start()
-        */
 
         setSupportActionBar(binding.root.bottom_toolbar)
         setNavListener()
@@ -68,27 +56,6 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     private fun setNavListener() {
         binding.root.bottom_toolbar.setNavigationOnClickListener {
             BottomDialog().newInstance().show(supportFragmentManager, "BottomDialog")
-        }
-    }
-
-    fun onGpsClick(view: View) {
-        Log.d("CovidTesting", "Showing GPS Information . . .$view")
-        if (appUtils.gpsPermissionGranted(this)) {
-            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    AppConstants.GPS_DATA[0] = location.longitude
-                    AppConstants.GPS_DATA[1] = location.latitude
-                }
-
-                val intent = Intent(this, CountryActivity::class.java)
-                //intent.putExtra(AppConstants.DISPLAY_GPS, 0)
-                intent.putExtra(AppConstants.DISPLAY_COUNTRY, "Canada")
-                startActivity(intent)
-            }
-        } else {
-            appUtils.checkLaunchPermissions(this)
         }
     }
 
@@ -122,29 +89,36 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     override fun displayContinentData(continentData: IntArray) {
         if (binding.globalCases.text == null) {
-            binding.globalCases.text = AppUtils().formatNumbers(continentData[0])
-        } else if (binding.globalCases.text != AppUtils().formatNumbers(continentData[0])) {
-            binding.globalCases.text = AppUtils().formatNumbers(continentData[0])
+            binding.globalCases.text = appUtils.formatNumbers(continentData[0])
+        } else if (binding.globalCases.text != appUtils.formatNumbers(continentData[0])) {
+            binding.globalCases.text = appUtils.formatNumbers(continentData[0])
         }
-        binding.globalRecovered.text = AppUtils().formatNumbers(continentData[1])
-        binding.globalDeaths.text = AppUtils().formatNumbers(continentData[2])
 
-        binding.currentInfected.text = AppUtils().formatNumbers(continentData[3])
+        binding.globalRecovered.text = appUtils.formatNumbers(continentData[1])
+        binding.globalDeaths.text = appUtils.formatNumbers(continentData[2])
 
-        val mildText = AppUtils().formatNumbers(continentData[4]) + " (${AppUtils().getStringPercent(continentData[4], continentData[3])}%)"
+        val activeText = "${appUtils.formatNumbers(continentData[3])} (${appUtils.getStringPercent(continentData[3], continentData[0])}%)"
+        binding.currentInfected.text = activeText
+
+        val mildText = appUtils.formatNumbers(continentData[4]) + " (${appUtils.getStringPercent(continentData[4], continentData[3])}%)"
         binding.currentMild.text = mildText
 
-        val criticalText = AppUtils().formatNumbers(continentData[5]) + " (${AppUtils().getStringPercent(continentData[5], continentData[3])}%)"
+        val criticalText = appUtils.formatNumbers(continentData[5]) + " (${appUtils.getStringPercent(continentData[5], continentData[3])}%)"
         binding.currentCritical.text = criticalText
 
-        binding.currentClosed.text = AppUtils().formatNumbers(continentData[6])
-        binding.currentDischarged.text = binding.globalRecovered.text
-        binding.currentDead.text = binding.globalDeaths.text
+        val closedText = "${appUtils.formatNumbers(continentData[6])} (${appUtils.getStringPercent(continentData[6], continentData[0])}%)"
+        binding.currentClosed.text = closedText
 
-        cleanData()
+        val recoveredText = "${appUtils.formatNumbers(continentData[1])} (${appUtils.getStringPercent(continentData[1], continentData[6])}%)"
+        binding.currentDischarged.text = recoveredText
+
+        val deathText = "${appUtils.formatNumbers(continentData[2])} (${appUtils.getStringPercent(continentData[2], continentData[6])}%)"
+        binding.currentDead.text = deathText
+
+        cleanDataForCountries()
     }
 
-    private fun cleanData() {
+    private fun cleanDataForCountries() {
         for (continent in AppConstants.CONTINENT_DATA) {
             val continentName = continent.continent
             val temp = appUtils.removeTerritories(continentName!!, binding.root.context)

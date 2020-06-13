@@ -15,7 +15,7 @@ class NavRecyclerViewAdapter internal constructor(private val countryList: Array
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val countryName = countryList[position]
+        val countryName = if (countryList[position] == "Burma") "Myanmar/Burma" else countryList[position]
         holder.bind(countryName)
         holder.itemView.country_name.text = countryName
     }

@@ -16,10 +16,12 @@ class AppConstants {
 
         // Basic Data
         var APP_OPEN = false
+        var COUNTRY_NAME: String? = null
         var DATA_SPECIFICS = 3
         var REGION_NAME: String? = null
-        var COUNTRY_NAME: String? = null
+        var RECYCLER_CLICKABLE = true
         var TIMER_DELAY = 0L
+
 
         // API Urls
         const val API_DATA_URL_GLOBAL = "https://corona.lmao.ninja/v2/countries"

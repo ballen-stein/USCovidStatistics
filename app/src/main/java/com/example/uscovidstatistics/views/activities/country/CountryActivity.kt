@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.View
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.ActivityCountryBreakdownBinding
 import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
@@ -42,6 +44,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         AppConstants.DATA_SPECIFICS = 4
 
         setHeader()
+        setNavOptions()
         setSupportActionBar(binding.root.bottom_toolbar)
 
         setPresenter(CountryPresenter(this, DependencyInjectorImpl()))
@@ -57,20 +60,23 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             else
                 countryDisplay
             val url = AppConstants.WORLD_DATA_MAPPED[mappedName]!!.countryInfo!!.countryFlag
+
             Glide.with(this)
                 .load(url)
-                .into(binding.flag1)
-            Glide.with(this)
-                .load(url)
-                .into(binding.flag2)
+                .apply(RequestOptions().placeholder(R.drawable.ic_earth_flag))
+                .into(binding.flag)
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-
-
         val headerText = "$countryDisplay Information"
         binding.casesHeader.text = headerText
+    }
+
+    private fun setNavOptions() {
+        binding.viewBackBtn.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     fun getCleanedUpData(): List<CleanedUpData> {
@@ -103,11 +109,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             cleanedDataList.add(appUtils.cleanCountryData(data))
 
         recyclerViewData.displayCleanedData()
-    }
-
-    fun onGpsClick(view: View) {
-        Log.d("CovidTesting", "Showing GPS Information . . .$view")
-        BottomDialog().newInstance().show(supportFragmentManager, "BottomDialog")
     }
 
     override fun onStop() {

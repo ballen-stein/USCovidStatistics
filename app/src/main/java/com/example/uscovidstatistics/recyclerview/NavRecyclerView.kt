@@ -35,22 +35,24 @@ class NavRecyclerView(private val mContext: Context, private val bottomDialog: B
     private fun setListener(){
         adapterNavView.setOnClickListener(object : NavRecyclerViewAdapter.OnClickListener {
             override fun onCountryClick(position: Int, countryName: String, v: View) {
-                val temp = AppUtils.getInstance().territoriesDirectLink(countryName, mContext)
-                if (temp != "null") {
-                    val intent = Intent(mContext, CountryActivity::class.java)
-                    intent.putExtra(AppConstants.DISPLAY_COUNTRY, temp)
-                    Log.d("CovidTesting", "$countryName is going to $temp")
-                    bottomDialog.dismiss()
-                    mContext.startActivity(intent)
-                } else {
-                    val intent = if (countryName != "USA") {
-                        Intent(mContext, CountryActivity::class.java)
+                if (AppConstants.RECYCLER_CLICKABLE) {
+                    val temp = AppUtils.getInstance().territoriesDirectLink(countryName, mContext)
+                    if (temp != "null") {
+                        val intent = Intent(mContext, CountryActivity::class.java)
+                        intent.putExtra(AppConstants.DISPLAY_COUNTRY, temp)
+                        Log.d("CovidTesting", "$countryName is going to $temp")
+                        bottomDialog.dismiss()
+                        mContext.startActivity(intent)
                     } else {
-                        Intent(mContext, MainActivity::class.java)
+                        val intent = if (countryName != "USA") {
+                            Intent(mContext, CountryActivity::class.java)
+                        } else {
+                            Intent(mContext, MainActivity::class.java)
+                        }
+                        intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
+                        bottomDialog.dismiss()
+                        mContext.startActivity(intent)
                     }
-                    intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
-                    bottomDialog.dismiss()
-                    mContext.startActivity(intent)
                 }
             }
         })

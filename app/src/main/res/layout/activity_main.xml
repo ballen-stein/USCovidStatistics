@@ -177,14 +177,6 @@
                             android:gravity="center"/>
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"
-                            android:text="@string/cases_infected"
-                            android:textSize="12sp"/>
-
-                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/current_infected"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -196,6 +188,7 @@
                             android:layout_height="wrap_content"
                             android:paddingStart="5dp"
                             android:paddingEnd="5dp"
+                            android:gravity="center"
                             android:text="@string/cases_mild"
                             android:textSize="12sp"/>
 
@@ -212,6 +205,7 @@
                             android:layout_height="wrap_content"
                             android:paddingStart="5dp"
                             android:paddingEnd="5dp"
+                            android:gravity="center"
                             android:text="@string/cases_critical"
                             android:textSize="12sp"/>
 
@@ -245,14 +239,6 @@
                             android:gravity="center"/>
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="5dp"
-                            android:paddingEnd="5dp"
-                            android:text="@string/cases_outcome"
-                            android:textSize="12sp"/>
-
-                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/current_closed"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -264,6 +250,7 @@
                             android:layout_height="wrap_content"
                             android:paddingStart="5dp"
                             android:paddingEnd="5dp"
+                            android:gravity="center"
                             android:text="@string/cases_recovered"
                             android:textSize="12sp"/>
 
@@ -280,6 +267,7 @@
                             android:layout_height="wrap_content"
                             android:paddingStart="5dp"
                             android:paddingEnd="5dp"
+                            android:gravity="center"
                             android:text="@string/cases_deaths"
                             android:textSize="12sp"/>
 
@@ -298,10 +286,4 @@
 
     <include layout="@layout/app_toolbar" />
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:menu="@menu/navigation_menu"/>
 </androidx.drawerlayout.widget.DrawerLayout>

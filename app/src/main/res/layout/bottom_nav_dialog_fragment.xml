@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,8 +10,20 @@
     <LinearLayout
         android:id="@+id/selection_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
+        android:elevation="0dp"
         android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_settings_header"
+            android:background="@drawable/navigation_choice_square"
+            android:gravity="center"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:elevation="4dp"
+            android:theme="@style/SettingsTextTheme"/>
 
         <LinearLayout
             android:id="@+id/settings_na"
@@ -24,6 +36,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="24dp"
                 android:text="@string/menu_settings_na"
                 android:theme="@style/SettingsTextTheme"/>
 
@@ -47,6 +60,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="24dp"
                 android:text="@string/menu_settings_sa"
                 android:theme="@style/SettingsTextTheme"/>
 
@@ -70,6 +84,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="24dp"
                 android:text="@string/menu_settings_eu"
                 android:theme="@style/SettingsTextTheme"/>
 
@@ -93,6 +108,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="24dp"
                 android:text="@string/menu_settings_as"
                 android:theme="@style/SettingsTextTheme"/>
 
@@ -116,6 +132,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="24dp"
                 android:text="@string/menu_settings_af"
                 android:theme="@style/SettingsTextTheme"/>
 
@@ -139,6 +156,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="24dp"
                 android:text="@string/menu_settings_au"
                 android:theme="@style/SettingsTextTheme"/>
 
@@ -155,9 +173,10 @@
 
     <LinearLayout
         android:id="@+id/country_selection"
-        android:visibility="gone"
+        android:visibility="visible"
+        android:translationX="420dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -186,4 +205,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

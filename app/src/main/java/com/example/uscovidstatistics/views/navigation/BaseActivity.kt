@@ -1,5 +1,6 @@
 package com.example.uscovidstatistics.views.navigation
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -9,8 +10,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.uscovidstatistics.R
+import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_country_breakdown.*
 import kotlinx.android.synthetic.main.bottom_nav_dialog_fragment.*
 import kotlinx.android.synthetic.main.navigation_country_selection.*
 
@@ -39,7 +42,12 @@ open class BaseActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.app_bar_gps -> Toasty.info(this, "Gps", Toast.LENGTH_SHORT).show()
-            R.id.app_bar_home -> Toasty.info(this, "Home", Toast.LENGTH_SHORT).show()
+            R.id.app_bar_home -> {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
+                overridePendingTransition(R.anim.enter_left, R.anim.exit_left)
+            }
             R.id.app_bar_settings -> Toasty.info(this, "Settings", Toast.LENGTH_SHORT).show()
         }
         return true
