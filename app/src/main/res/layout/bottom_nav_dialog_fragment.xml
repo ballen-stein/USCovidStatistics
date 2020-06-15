@@ -2,28 +2,108 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:divider="@drawable/linear_layout_divider"
-    android:showDividers="beginning|middle|end"
-    android:orientation="vertical">
+    android:showDividers="beginning|middle|end">
+
+    <LinearLayout
+        android:id="@+id/base_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/navigation_choice_square"
+        android:divider="@drawable/linear_layout_divider"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:showDividers="middle"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/menu_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="@drawable/ic_home_24px"
+            android:foregroundGravity="center|left"
+            android:layout_marginStart="16dp"
+            android:paddingStart="48dp"
+            android:paddingEnd="48dp"
+            android:text="@string/menu_home"
+            android:theme="@style/SettingsTextTheme"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/menu_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="@drawable/ic_location_on_24px"
+            android:foregroundGravity="center|left"
+            android:layout_marginStart="16dp"
+            android:paddingStart="48dp"
+            android:paddingEnd="48dp"
+            android:text="@string/bot_menu_location"
+            android:theme="@style/SettingsTextTheme"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/menu_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="@drawable/ic_notifications_24px"
+            android:foregroundGravity="center|left"
+            android:layout_marginStart="16dp"
+            android:paddingStart="48dp"
+            android:paddingEnd="48dp"
+            android:text="@string/bot_menu_notifications"
+            android:theme="@style/SettingsTextTheme"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/menu_toggle_gps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="@drawable/ic_gps_fixed_24px"
+            android:foregroundGravity="center|left"
+            android:layout_marginStart="16dp"
+            android:paddingStart="48dp"
+            android:paddingEnd="48dp"
+            android:text="@string/bot_menu_toggle"
+            android:theme="@style/SettingsTextTheme"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/selection_layout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
+        android:translationX="420dp"
         android:elevation="0dp"
+        android:showDividers="middle"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/menu_settings_header"
-            android:background="@drawable/navigation_choice_square"
-            android:gravity="center"
-            android:textStyle="normal"
-            android:textAllCaps="false"
             android:elevation="4dp"
-            android:theme="@style/SettingsTextTheme"/>
+            android:background="@drawable/navigation_choice_square"
+            android:orientation="horizontal" >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/selection_back_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_arrow_left_24px"
+                android:theme="@style/SettingsImageTheme"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/menu_settings_header"
+                android:textStyle="normal"
+                android:textAllCaps="false"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/navigation_choice_square"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/settings_na"
@@ -173,10 +253,9 @@
 
     <LinearLayout
         android:id="@+id/country_selection"
-        android:visibility="visible"
-        android:translationX="420dp"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        android:translationX="420dp"
         android:orientation="vertical">
 
         <LinearLayout

@@ -281,6 +281,19 @@ class AppUtils {
         return noDataTerritories
     }
 
+    fun formatName(name: String): String {
+        val nameArr = name.split("\n")
+        return if (nameArr.size == 1) {
+            name
+        } else {
+            var newName = ""
+            for (value in nameArr) {
+                newName += "$value "
+            }
+            return newName.trim()
+        }
+    }
+
     companion object {
         fun getInstance(): AppUtils {
             return AppUtils()

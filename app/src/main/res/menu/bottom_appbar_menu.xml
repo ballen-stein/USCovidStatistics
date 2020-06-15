@@ -4,21 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/app_bar_home"
-        android:icon="@drawable/ic_home_24px"
-        android:iconTint="@color/colorAccent"
-        android:title="@string/menu_home"
-        app:showAsAction="always"/>
-
-    <item
-        android:id="@+id/app_bar_gps"
-        android:icon="@android:drawable/ic_menu_mylocation"
-        android:iconTint="@color/colorAccent"
-        android:title="@string/menu_gps"
-        app:showAsAction="always"/>
-
-    <item
         android:id="@+id/app_bar_settings"
+        android:icon="@drawable/ic_settings_24px"
         android:title="@string/menu_settings"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/app_bar_contact"
+        android:title="@string/menu_contact_us"
         app:showAsAction="never"/>
 </menu>

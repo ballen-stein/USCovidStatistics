@@ -1,33 +1,23 @@
 package com.example.uscovidstatistics.views.activities.homepage
 
 import android.content.Intent
-import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.ActivityMainBinding
 import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
-import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.service.ScheduledService
 import com.example.uscovidstatistics.utils.AppUtils
-import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.navigation.BaseActivity
-import com.google.android.gms.location.LocationServices
-import com.google.android.material.navigation.NavigationView
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.app_toolbar.view.*
-import java.lang.Exception
+import kotlinx.android.synthetic.main.loading_screen.view.*
 
 class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     private lateinit var binding: ActivityMainBinding
@@ -55,7 +45,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     private fun setNavListener() {
         binding.root.bottom_toolbar.setNavigationOnClickListener {
-            BottomDialog().newInstance().show(supportFragmentManager, "BottomDialog")
+            BottomDialog(this).newInstance().show(supportFragmentManager, "BottomDialog")
         }
     }
 
@@ -124,6 +114,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
             val temp = appUtils.removeTerritories(continentName!!, binding.root.context)
             continent.countriesOnContinent = appUtils.cleanHashMap(appUtils.continentCountryList()[continentName]!!, temp)
         }
+        binding.root.loading_layout.visibility = View.GONE
     }
 
     override fun dataError() {

@@ -2,13 +2,10 @@ package com.example.uscovidstatistics.recyclerview
 
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.activities.country.CountryActivity

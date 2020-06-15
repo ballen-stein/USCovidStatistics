@@ -38,6 +38,7 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
 
         init {
             super.itemView
+            itemView.setOnClickListener(this)
         }
 
         override fun onClick(view : View) {

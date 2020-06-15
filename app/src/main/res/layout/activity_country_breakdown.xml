@@ -29,7 +29,7 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:background="@drawable/ic_return_24px"
+                    android:background="@drawable/ic_back_24px"
                     android:visibility="visible" />
 
             </LinearLayout>
@@ -115,5 +115,7 @@
     </LinearLayout>
 
     <include layout="@layout/app_toolbar" />
+
+    <include layout="@layout/loading_screen" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

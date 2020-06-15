@@ -2,7 +2,6 @@ package com.example.uscovidstatistics.views.navigation
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -13,9 +12,6 @@ import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_country_breakdown.*
-import kotlinx.android.synthetic.main.bottom_nav_dialog_fragment.*
-import kotlinx.android.synthetic.main.navigation_country_selection.*
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -41,23 +37,26 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.app_bar_gps -> Toasty.info(this, "Gps", Toast.LENGTH_SHORT).show()
-            R.id.app_bar_home -> {
-                val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(intent)
-                overridePendingTransition(R.anim.enter_left, R.anim.exit_left)
+            R.id.app_bar_settings -> {
+                Toasty.info(this, "Settings", Toast.LENGTH_SHORT).show()
+                //val intent = Intent(this, MainActivity::class.java)
+                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                //startActivity(intent)
+                //overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
             }
-            R.id.app_bar_settings -> Toasty.info(this, "Settings", Toast.LENGTH_SHORT).show()
+            R.id.app_bar_contact -> Toasty.info(this, "Contact Us", Toast.LENGTH_SHORT).show()
         }
         return true
     }
 
-    private val navigationFragment: BottomDialog? = BottomDialog().newInstance()
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
+    }
 
     private fun setNavigationListeners() {
         navigationBar.setNavigationOnClickListener {
-            navigationFragment!!.show(supportFragmentManager, "NavigationDialog")
+            BottomDialog(this).newInstance().show(supportFragmentManager, "NavigationDialog")
         }
     }
 }

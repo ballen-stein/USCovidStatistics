@@ -286,4 +286,6 @@
 
     <include layout="@layout/app_toolbar" />
 
+    <include layout="@layout/loading_screen" />
+
 </androidx.drawerlayout.widget.DrawerLayout>

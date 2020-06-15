@@ -9,7 +9,7 @@
     <color name="colorDialogButton">#353535</color>
     <color name="colorTertiary">#7a97bc</color>
     <color name="colorAccent">#9f7abc</color>
-
+    <color name="colorMask">#99000000</color>
     <color name="colorTransParent">#00000000</color>
     <color name="colorRed">#ff1507</color>
     <color name="error">#ff5436</color>

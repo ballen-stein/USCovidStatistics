@@ -20,7 +20,7 @@ import java.lang.Exception
 import java.lang.reflect.ParameterizedType
 import java.util.*
 
-class CountryPresenter (view: CountryContract.View, dependencyInjector: DependencyInjector) : CountryContract.Presenter {
+class CountryPresenter(view: CountryContract.View, dependencyInjector: DependencyInjector) : CountryContract.Presenter {
 
     private val dataModelRepository: DataModelRepository = dependencyInjector.covidDataRepository()
 
@@ -71,10 +71,7 @@ class CountryPresenter (view: CountryContract.View, dependencyInjector: Dependen
                 Log.d("CovidTesting","Running service for country . . .")
                 Thread(Runnable {
                     Looper.prepare()
-                    loadData(
-                        AppConstants.DATA_SPECIFICS,
-                        AppConstants.REGION_NAME,
-                        AppConstants.COUNTRY_NAME
+                    loadData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME
                     )
                 }).start()
             }

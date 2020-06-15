@@ -17,6 +17,7 @@ import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.navigation.BaseActivity
 import kotlinx.android.synthetic.main.app_toolbar.view.*
+import kotlinx.android.synthetic.main.loading_screen.view.*
 import java.lang.Exception
 
 class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
@@ -43,14 +44,14 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         AppConstants.COUNTRY_NAME = countryDisplay
         AppConstants.DATA_SPECIFICS = 4
 
-        setHeader()
-        setNavOptions()
-        setSupportActionBar(binding.root.bottom_toolbar)
-
         setPresenter(CountryPresenter(this, DependencyInjectorImpl()))
         presenter.onViewCreated()
 
         recyclerViewData = CleanedDataRecyclerView(this, this)
+
+        setSupportActionBar(binding.root.bottom_toolbar)
+        setHeader()
+        setNavOptions()
     }
 
     private fun setHeader() {
@@ -76,6 +77,11 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     private fun setNavOptions() {
         binding.viewBackBtn.setOnClickListener {
             onBackPressed()
+            overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
+        }
+
+        binding.root.bottom_toolbar.setNavigationOnClickListener {
+            BottomDialog(this).newInstance().show(supportFragmentManager, "BottomDialog")
         }
     }
 
@@ -109,6 +115,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             cleanedDataList.add(appUtils.cleanCountryData(data))
 
         recyclerViewData.displayCleanedData()
+        binding.root.loading_layout.visibility = View.GONE
     }
 
     override fun onStop() {
