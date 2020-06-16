@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,11 +24,8 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
 
     private lateinit var recyclerViewData: NavRecyclerView
 
-    private lateinit var enterAnimation: Animation
-
-    private lateinit var exitAnimation: Animation
-
     private lateinit var entAnim: TranslateAnimation
+
     private lateinit var extAnim: TranslateAnimation
 
     fun newInstance() : BottomDialog {
@@ -36,9 +34,7 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = BottomNavDialogFragmentBinding.inflate(inflater)
-        recyclerViewData = NavRecyclerView(binding.root.context, this, binding.navigationRecycler)
-        enterAnimation =  AnimationUtils.loadAnimation(binding.root.context, R.anim.enter_right)
-        exitAnimation = AnimationUtils.loadAnimation(binding.root.context, R.anim.exit_right)
+        recyclerViewData = NavRecyclerView(mContext as Activity, this, binding.navigationRecycler)
         setTranslateAnimations(binding)
         choicesListeners(binding)
         return binding.root
@@ -47,11 +43,15 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
     private fun choicesListeners(binding: BottomNavDialogFragmentBinding) {
 
         binding.menuHome.setOnClickListener {
-            val intent = Intent(mContext, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
-            (mContext as Activity).overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
-
+            if (mContext !is MainActivity) {
+                val intent = Intent(mContext, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                (mContext as Activity).overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
+            } else {
+                Log.d("CovidTesting", "Context is of main activity")
+                //TODO Add Snackbar
+            }
         }
 
         binding.menuLocation.setOnClickListener{
@@ -141,37 +141,6 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
             override fun onAnimationStart(p0: Animation?) {
             }
 
-        })
-    }
-
-    private fun setAnimations(binding: BottomNavDialogFragmentBinding) {
-        exitAnimation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation) {}
-
-            override fun onAnimationEnd(animation: Animation) {
-                if (binding.countrySelection.translationX < 400f) {
-                    binding.selectionLayout.translationX = 20f
-                    binding.countrySelection.translationX = 1600f
-                }
-                else {
-                    binding.baseLayout.translationX = 0f
-                    binding.selectionLayout.translationX = 3600f
-                }
-            }
-
-            override fun onAnimationStart(animation: Animation) {
-                AppConstants.RECYCLER_CLICKABLE = false
-            }
-        })
-
-        enterAnimation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation) {}
-
-            override fun onAnimationEnd(animation: Animation) {
-                AppConstants.RECYCLER_CLICKABLE = true
-            }
-
-            override fun onAnimationStart(animation: Animation) {}
         })
     }
 

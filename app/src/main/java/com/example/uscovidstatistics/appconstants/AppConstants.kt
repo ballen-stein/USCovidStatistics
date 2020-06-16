@@ -20,6 +20,7 @@ class AppConstants {
         var REGION_NAME: String? = null
         var RECYCLER_CLICKABLE = true
         var TIMER_DELAY = 0L
+        val NON_CLICK_IDS = arrayOf("Other", "Territories", "Totals", "States & DC")
 
 
         // API Urls
@@ -42,7 +43,7 @@ class AppConstants {
         lateinit var WORLD_DATA: List<BaseCountryDataset>
         var WORLD_DATA_MAPPED: HashMap<String, BaseCountryDataset> = HashMap()
 
-        lateinit var US_DATA: List<StateDataset>
+        lateinit var US_DATA: ArrayList<StateDataset>
         lateinit var US_STATE_DATA: StateDataset
         var US_STATE_DATA_MAPPED: HashMap<String, StateDataset> = HashMap()
 

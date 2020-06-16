@@ -119,5 +119,6 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     override fun dataError() {
         Toasty.info(this, R.string.no_connection, Toast.LENGTH_LONG).show()
+        //TODO Add Snackbar
     }
 }

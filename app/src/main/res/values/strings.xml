@@ -125,6 +125,23 @@
         <item>Palestine</item>
     </string-array>
 
+    <string-array name="us_territories">
+        <item>Guam</item>
+        <item>Northern Mariana Islands</item>
+        <item>Puerto Rico</item>
+        <item>United States Virgin Islands</item>
+    </string-array>
+
+    <string-array name="us_other">
+        <item>Diamond Princess Ship</item>
+        <item>Federal Prisons</item>
+        <item>Grand Princess Ship</item>
+        <item>Navajo Nation</item>
+        <item>US Military</item>
+        <item>Veteran Affairs</item>
+        <item>Wuhan Repatriated</item>
+    </string-array>
+
     <!--
     <string-array name="territories_list">
         <item>Anguilla</item> - UK

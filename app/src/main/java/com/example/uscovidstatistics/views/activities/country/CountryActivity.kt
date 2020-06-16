@@ -1,5 +1,6 @@
 package com.example.uscovidstatistics.views.activities.country
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -14,11 +15,13 @@ import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.model.apidata.JhuCountryDataset
 import com.example.uscovidstatistics.recyclerview.CleanedDataRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.navigation.BaseActivity
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import kotlinx.android.synthetic.main.loading_screen.view.*
 import java.lang.Exception
+import kotlin.collections.ArrayList
 
 class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     private lateinit var binding: ActivityCountryBreakdownBinding
@@ -33,19 +36,22 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
     private lateinit var recyclerViewData: CleanedDataRecyclerView
 
+    private var usaCheck: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCountryBreakdownBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(root)
 
         countryDisplay = intent.getStringExtra(AppConstants.DISPLAY_COUNTRY)!!
+        usaCheck = (countryDisplay == "USA")
+        Log.d("CovidTesting", "$countryDisplay and: It is the USA : $usaCheck ")
 
         AppConstants.COUNTRY_NAME = countryDisplay
-        AppConstants.DATA_SPECIFICS = 4
+        AppConstants.DATA_SPECIFICS = if (usaCheck) 1 else 4
 
-        setPresenter(CountryPresenter(this, DependencyInjectorImpl()))
-        presenter.onViewCreated()
+        setPresenter(CountryPresenter(this, DependencyInjectorImpl(), this))
+        presenter.onViewCreated(countryDisplay)
 
         recyclerViewData = CleanedDataRecyclerView(this, this)
 
@@ -77,7 +83,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     private fun setNavOptions() {
         binding.viewBackBtn.setOnClickListener {
             onBackPressed()
-            overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
         }
 
         binding.root.bottom_toolbar.setNavigationOnClickListener {
@@ -86,7 +91,14 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     fun getCleanedUpData(): List<CleanedUpData> {
-        cleanedDataList.sortBy { it.name }
+        if (usaCheck) {
+            val tempData = ArrayList<CleanedUpData>()
+            tempData.addAll(cleanedDataList)
+            cleanedDataList.clear()
+            cleanedDataList.addAll(appUtils.cleanUsaData(this, tempData))
+        } else {
+            cleanedDataList.sortBy { it.name }
+        }
         cleanedDataList.add(appUtils.cleanCountryTotals())
         return cleanedDataList
     }
@@ -96,7 +108,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     override fun getRoot(): View {
-        TODO("Not yet implemented")
+        return binding.root
     }
 
     override fun displayCountryData(countryData: JhuCountryDataset) {
@@ -107,15 +119,75 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         } else {
             countryData.province!!
         }
-        presenter.getRegionalData(regionList)
+        AppConstants.DATA_SPECIFICS = 5
+        presenter.getRegionalData(AppConstants.DATA_SPECIFICS, regionList)
     }
 
     override fun displayCountryList() {
-        for (data in AppConstants.COUNTRY_PROVINCE_LIST)
-            cleanedDataList.add(appUtils.cleanCountryData(data))
+        if (usaCheck) {
+            for (state in AppConstants.US_DATA)
+                cleanedDataList.add(appUtils.createCleanUsaData(state))
+        } else {
+            for (province in AppConstants.COUNTRY_PROVINCE_LIST)
+                cleanedDataList.add(appUtils.cleanCountryData(province))
+        }
 
         recyclerViewData.displayCleanedData()
         binding.root.loading_layout.visibility = View.GONE
+    }
+
+    override fun displayUsList() {
+        /*
+        val territoryList = ArrayList<StateDataset>()
+        val territories = StateDataset()
+        territories.state = "Territories"
+        territoryList.add(territories)
+        val nonStateList = ArrayList<StateDataset>()
+        val nonStates = StateDataset()
+        nonStates.state = "Other"
+        nonStateList.add(nonStates)
+
+        val stateList = ArrayList<StateDataset>()
+        for (data in AppConstants.US_DATA) {
+            when {
+                resources.getStringArray(R.array.us_territories).contains(data.state) -> {
+                    territoryList.add(data)
+                }
+                resources.getStringArray(R.array.us_other).contains(data.state) -> {
+                    nonStateList.add(data)
+                }
+                else -> {
+                    stateList.add(data)
+                }
+            }
+        }
+        val temp = java.util.ArrayList<StateDataset>()
+        temp.addAll(stateList)
+        temp.addAll(territoryList)
+        temp.addAll(nonStateList)
+
+         */
+
+        for (data in AppConstants.US_DATA) {
+            when {
+                resources.getStringArray(R.array.us_territories).contains(data.state) -> {
+                    data.state = "YYYY${data.state}"
+                }
+                resources.getStringArray(R.array.us_other).contains(data.state) -> {
+                    data.state = "ZZZZ${data.state}"
+                }
+                else -> {
+                    data.state = data.state
+                }
+            }
+        }
+
+        displayCountryList()
+    }
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+        overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
     }
 
     override fun onStop() {
@@ -124,7 +196,8 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         appUtils.resetCountryTotals()
     }
 
-    override fun dataError() {
+    override fun dataError(throwable: Throwable) {
         Log.d("CovidTesting", "Error with country list! ")
+        //TODO Add Snackbar
     }
 }

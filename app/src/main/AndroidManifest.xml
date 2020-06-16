@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.activities.region.RegionActivity"></activity>
+        <activity android:name=".views.activities.usabase.UsaActivity"></activity>
+        <activity android:name=".views.activities.region.RegionActivity" />
         <activity android:name=".views.activities.country.CountryActivity" />
         <activity android:name=".views.activities.Splash">
             <intent-filter>

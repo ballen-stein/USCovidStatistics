@@ -84,7 +84,7 @@ class ScheduledService : Service() {
                     AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
                 }
                 1 -> {
-                    val jsonAdapter: JsonAdapter<List<StateDataset>> = moshi.adapter(type)
+                    val jsonAdapter: JsonAdapter<ArrayList<StateDataset>> = moshi.adapter(type)
                     AppConstants.US_DATA = jsonAdapter.fromJson(body.string())!!
                     for (data in AppConstants.US_DATA) {
                         AppConstants.US_STATE_DATA_MAPPED[data.state!!] = data

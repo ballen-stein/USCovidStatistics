@@ -7,8 +7,8 @@ import com.example.uscovidstatistics.presenter.BaseView
 
 interface CountryContract {
     interface Presenter : BasePresenter {
-        fun onViewCreated()
-        fun getRegionalData(regionList: Array<String>)
+        fun onViewCreated(countryName: String)
+        fun getRegionalData(getSpecifics: Int, regionList: Array<String>)
         fun onDataUpdated()
         fun onServiceStarted(context: Context)
     }
@@ -16,6 +16,7 @@ interface CountryContract {
     interface View : BaseView<Presenter> {
         fun displayCountryData(countryData: JhuCountryDataset)
         fun displayCountryList()
-        fun dataError()
+        fun displayUsList()
+        fun dataError(throwable: Throwable)
     }
 }

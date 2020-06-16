@@ -19,6 +19,7 @@ import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.model.LocationDataset
 import com.example.uscovidstatistics.model.apidata.ContinentDataset
 import com.example.uscovidstatistics.model.apidata.JhuProvinceDataset
+import com.example.uscovidstatistics.model.apidata.StateDataset
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
@@ -143,6 +144,58 @@ class AppUtils {
         cleanedUpData.deaths = formatNumbers(deaths)
 
         return cleanedUpData
+    }
+
+    fun createCleanUsaData(data: StateDataset): CleanedUpData {
+        val cleanedUpData = CleanedUpData()
+
+        val cases = data.cases
+        val recovered = data.cases!! - data.activeCases!! - data.deaths!!
+        val deaths = data.deaths
+
+        totalsArray[0] += cases!!.toInt()
+        totalsArray[1] += recovered
+        totalsArray[2] += deaths!!
+
+        cleanedUpData.name = capitalizeWords(data.state!!)
+        cleanedUpData.cases = formatNumbers(cases)
+        cleanedUpData.recovered = formatNumbers(recovered)
+        cleanedUpData.deaths = formatNumbers(deaths)
+
+        return cleanedUpData
+    }
+
+    fun cleanUsaData(context: Context, cleanedDataList: ArrayList<CleanedUpData>): ArrayList<CleanedUpData> {
+        val temp1 = CleanedUpData()
+        val temp2 = CleanedUpData()
+        val temp3 = CleanedUpData()
+
+        temp1.name = "YYYTerritories"
+        temp1.cases = ""
+        temp2.name = "ZZZOther"
+        temp2.cases = ""
+        temp3.name = "AAAStates & DC"
+        temp3.cases = ""
+
+        cleanedDataList.add(temp1)
+        cleanedDataList.add(temp2)
+        cleanedDataList.add(temp3)
+
+        cleanedDataList.sortBy { it.name }
+
+        for (data in cleanedDataList) {
+            val tempArr = data.name.substring(4, data.name.length).split("\n")
+            val tempName = tempArr.joinToString("")
+            if (context.resources.getStringArray(R.array.us_territories).contains(tempName)) {
+                data.name = data.name.substring(4, data.name.length)
+            } else if (data.name == "YYYTerritories" || data.name == "ZZZOther" || data.name == "AAAStates & DC") {
+                data.name = data.name.substring(3, data.name.length)
+            } else if (context.resources.getStringArray(R.array.us_other).contains(tempName)) {
+                data.name = data.name.substring(4, data.name.length)
+            }
+        }
+
+        return cleanedDataList
     }
 
     fun capitalizeWords(title: String): String {

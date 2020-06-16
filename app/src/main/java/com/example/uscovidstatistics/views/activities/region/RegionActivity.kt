@@ -25,6 +25,8 @@ class RegionActivity : BaseActivity(), ViewBinding, RegionContract.View {
         binding = ActivityRegionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val countryName = intent.getStringExtra(AppConstants.DISPLAY_COUNTRY)
+
         val namePreFormat = intent.getStringExtra(AppConstants.DISPLAY_REGION)!!
         regionName = appUtils.formatName(namePreFormat)
 

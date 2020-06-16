@@ -20,7 +20,7 @@ class NetworkRequests(getSpecifics: Int, regionName: String?, countryName: Strin
         1 -> AppConstants.API_DATA_URL_USA
         2 -> AppConstants.API_DATA_URL_USA + "/" + regionName + AppConstants.API_DATA_ENDPOINT
         3 -> AppConstants.API_DATA_CONTINENT
-        4 -> AppConstants.API_DATA_JHU_COUNTRY + "/" + countryName + AppConstants.API_DATA_JHU_ENDPOINT
+        4 -> AppConstants.API_DATA_JHU_COUNTRY + "/$countryName/${AppConstants.API_DATA_JHU_ENDPOINT}"
         5 -> AppConstants.API_DATA_JHU_COUNTRY + "/$countryName/$regionName"
         else ->  AppConstants.API_DATA_URL_GLOBAL
     }
