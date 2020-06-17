@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">USCovidStatistics</string>
 
-    <string name="bot_menu_toggle">Toggle GPS</string>
+    <string name="bot_menu_my_location">My Location Data</string>
     <string name="bot_menu_location">Select Location</string>
     <string name="bot_menu_notifications">Notifications</string>
 

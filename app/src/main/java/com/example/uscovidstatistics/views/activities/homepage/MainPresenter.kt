@@ -67,64 +67,20 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
                 { onNext -> onNext as Response
-                    setData(onNext, getSpecifics)},
+                    setData(onNext)},
                 { onError ->  view?.dataError()
                     Log.d("CovidTesting", "Error in the subscription : $onError")},
                 { view?.displayContinentData(AppUtils().continentTotals(dataModelRepository.getContinentData())) }
             )
     }
 
-    private fun setData(response: Response, getSpecifics: Int) {
+    private fun setData(response: Response) {
         val body = response.body!!
-        val type: ParameterizedType = Types.newParameterizedType(
-            when (getSpecifics) {
-                0,1,3 -> List::class.java
-                else -> List::class.java
-            },
-            when (getSpecifics) {
-                0 -> BaseCountryDataset::class.java
-                1,2 -> StateDataset::class.java
-                3 -> ContinentDataset::class.java
-                else -> BaseCountryDataset::class.java
-            })
+        val type: ParameterizedType = Types.newParameterizedType(List::class.java, ContinentDataset::class.java)
 
         try {
-            when (getSpecifics) {
-                0 -> {
-                    val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
-                    AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
-                }
-                1 -> {
-                    val jsonAdapter: JsonAdapter<ArrayList<StateDataset>> = moshi.adapter(type)
-                    AppConstants.US_DATA = jsonAdapter.fromJson(body.string())!!
-                    for (data in AppConstants.US_DATA) {
-                        AppConstants.US_STATE_DATA_MAPPED[data.state!!] = data
-                    }
-                }
-                2 -> { // Type isn't used since JSON data is not a list
-                    val jsonAdapter = moshi.adapter(StateDataset::class.java)
-                    AppConstants.US_STATE_DATA = jsonAdapter.fromJson(body.string())!!
-                }
-                3 -> {
-                    val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
-                    AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!
-                    /*for (data in AppConstants.CONTINENT_DATA) {
-                        AppConstants.CONTINENT_COUNTRY_LIST[data.continent!!] = data.countriesOnContinent
-                    }*/
-                }
-                4 -> { // Type isn't used since JSON data is not a list
-                    val jsonAdapter = moshi.adapter(JhuCountryDataset::class.java)
-                    AppConstants.COUNTRY_DATA = jsonAdapter.fromJson(body.string())!!
-                }
-                5 -> { // Type isn't used since JSON data is not a list
-                    val jsonAdapter = moshi.adapter(JhuProvinceDataset::class.java)
-                    AppConstants.COUNTRY_PROVINCE_DATA = jsonAdapter.fromJson(body.string())!!
-                }
-                else -> {
-                    val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
-                    AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
-                }
-            }
+            val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
+            AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!
         } catch (e: Exception) {
             view?.dataError()
             e.printStackTrace()

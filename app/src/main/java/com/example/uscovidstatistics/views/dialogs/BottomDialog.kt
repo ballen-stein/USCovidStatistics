@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.view.animation.TranslateAnimation
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.R
@@ -18,7 +17,11 @@ import com.example.uscovidstatistics.databinding.BottomNavDialogFragmentBinding
 import com.example.uscovidstatistics.recyclerview.NavRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
+import com.example.uscovidstatistics.views.activities.region.RegionActivity
+import com.example.uscovidstatistics.views.activities.usersettings.UserSettings
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.app_toolbar.view.*
 
 class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(), ViewBinding{
 
@@ -49,13 +52,32 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
                 startActivity(intent)
                 (mContext as Activity).overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
             } else {
-                Log.d("CovidTesting", "Context is of main activity")
-                //TODO Add Snackbar
+                dismiss()
             }
         }
 
         binding.menuLocation.setOnClickListener{
             translateViews(binding.selectionLayout, binding.baseLayout, true)
+        }
+
+        binding.menuNotifications.setOnClickListener{
+            val intent = Intent(mContext, UserSettings::class.java)
+            startActivity(intent)
+            (mContext as Activity).overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+            dismiss()
+        }
+
+        binding.menuToggleGps.setOnClickListener{
+            if (AppConstants.LOCATION_DATA.country != null) {
+                val country = AppConstants.LOCATION_DATA.country
+                val region = AppConstants.LOCATION_DATA.region
+                val intent = Intent(mContext, RegionActivity::class.java)
+                intent.putExtra(AppConstants.DISPLAY_COUNTRY, country)
+                intent.putExtra(AppConstants.DISPLAY_REGION, region)
+                startActivity(intent)
+                (mContext as Activity).overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+            }
+            dismiss()
         }
 
         binding.selectionBackButton.setOnClickListener {
@@ -105,9 +127,7 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
         extAnim.duration = 750
 
         extAnim.setAnimationListener(object : Animation.AnimationListener{
-            override fun onAnimationRepeat(p0: Animation?) {
-                TODO("Not yet implemented")
-            }
+            override fun onAnimationRepeat(p0: Animation?) {}
 
             override fun onAnimationEnd(p0: Animation?) {
                 if (binding.countrySelection.translationX < 400f) {
@@ -127,20 +147,16 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
             override fun onAnimationStart(p0: Animation?) {
                 AppConstants.RECYCLER_CLICKABLE = false
             }
-
         })
 
         entAnim.setAnimationListener(object : Animation.AnimationListener{
-            override fun onAnimationRepeat(p0: Animation?) {
-            }
+            override fun onAnimationRepeat(p0: Animation?) {}
 
             override fun onAnimationEnd(p0: Animation?) {
                 AppConstants.RECYCLER_CLICKABLE = true
             }
 
-            override fun onAnimationStart(p0: Animation?) {
-            }
-
+            override fun onAnimationStart(p0: Animation?) {}
         })
     }
 

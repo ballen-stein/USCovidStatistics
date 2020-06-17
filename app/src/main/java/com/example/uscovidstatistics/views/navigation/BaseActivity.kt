@@ -12,6 +12,10 @@ import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_country_breakdown.*
+import kotlinx.android.synthetic.main.app_toolbar.*
+import kotlinx.android.synthetic.main.app_toolbar.view.*
+import kotlinx.android.synthetic.main.app_toolbar.view.bottom_toolbar
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -21,7 +25,6 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.app_toolbar)
         navigationBar = findViewById(R.id.bottom_toolbar)
-        //setSupportActionBar(navigationBar)
     }
 
     override fun setContentView(view: View?) {

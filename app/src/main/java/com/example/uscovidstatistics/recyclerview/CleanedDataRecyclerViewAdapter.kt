@@ -1,6 +1,5 @@
 package com.example.uscovidstatistics.recyclerview
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +53,6 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
 
         override fun onClick(view : View) {
             if (!AppConstants.NON_CLICK_IDS.contains(currentData.name)) {
-                Log.d("CovidTesting", "Value was pressed")
                 clickListener!!.onRegionClick(adapterPosition, currentData, view)
             }
         }

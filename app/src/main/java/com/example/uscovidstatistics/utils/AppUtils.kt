@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -60,7 +59,7 @@ class AppUtils {
         val locationDataSet = LocationDataset()
         locationDataSet.city = address[0].locality
         locationDataSet.region = address[0].adminArea
-        locationDataSet.county = address[0].countryName
+        locationDataSet.country = address[0].countryName
         locationDataSet.postalCode = address[0].postalCode
         locationDataSet.knownName = address[0].featureName
 

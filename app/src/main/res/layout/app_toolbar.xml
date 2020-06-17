@@ -23,7 +23,6 @@
         android:padding="0dp"
         android:scaleType="center"
         android:src="@android:drawable/ic_menu_mylocation"
-        android:onClick="onGpsClick"
         app:borderWidth="0dp"
         app:layout_anchor="@id/bottom_toolbar"
         app:useCompatPadding="false" />

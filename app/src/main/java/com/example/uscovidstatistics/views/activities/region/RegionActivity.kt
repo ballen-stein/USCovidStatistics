@@ -1,16 +1,16 @@
 package com.example.uscovidstatistics.views.activities.region
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.viewbinding.ViewBinding
-import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.ActivityRegionBinding
 import com.example.uscovidstatistics.model.apidata.JhuProvinceDataset
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.navigation.BaseActivity
+import kotlinx.android.synthetic.main.app_toolbar.view.*
 
 class RegionActivity : BaseActivity(), ViewBinding, RegionContract.View {
 
@@ -32,8 +32,23 @@ class RegionActivity : BaseActivity(), ViewBinding, RegionContract.View {
 
         binding.regionHeader.text = regionName
 
+        if (countryName == "USA" || countryName == "United States of America") {
+            Log.d("CovidTesting", "Url is : ${AppConstants.API_DATA_URL_USA}/$regionName/${AppConstants.API_DATA_ENDPOINT}")
+        } else {
+            Log.d("CovidTesting", "Url is : ${AppConstants.API_DATA_JHU_COUNTRY}/$countryName/$regionName")
+        }
+
+        setSupportActionBar(binding.root.bottom_toolbar)
+        setNavOptions()
+    }
+
+    private fun setNavOptions() {
         binding.regionBackBtn.setOnClickListener {
             onBackPressed()
+        }
+
+        binding.root.bottom_toolbar.setNavigationOnClickListener {
+            BottomDialog(this).newInstance().show(supportFragmentManager, "BottomDialog")
         }
     }
 

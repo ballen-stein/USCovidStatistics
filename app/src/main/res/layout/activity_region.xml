@@ -22,7 +22,7 @@
 
             <LinearLayout
                 android:id="@+id/region_back_btn"
-                android:layout_width="40dp"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:gravity="center">
 
@@ -42,7 +42,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/cases_header"
-                android:layout_marginEnd="40dp"
+                android:layout_marginEnd="50dp"
                 android:textSize="20sp" />
 
         </LinearLayout>

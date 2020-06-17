@@ -14,9 +14,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.activities.usabase.UsaActivity"></activity>
-        <activity android:name=".views.activities.region.RegionActivity" />
-        <activity android:name=".views.activities.country.CountryActivity" />
+        <activity android:name=".views.activities.usersettings.UserSettings"
+            android:launchMode="singleTop"/>
+        <activity android:name=".views.activities.region.RegionActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name=".views.activities.country.CountryActivity"/>
         <activity android:name=".views.activities.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.activities.homepage.MainActivity" />
+        <activity android:name=".views.activities.homepage.MainActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".views.navigation.BaseActivity" />
 
         <service

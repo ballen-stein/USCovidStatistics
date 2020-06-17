@@ -137,37 +137,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     override fun displayUsList() {
-        /*
-        val territoryList = ArrayList<StateDataset>()
-        val territories = StateDataset()
-        territories.state = "Territories"
-        territoryList.add(territories)
-        val nonStateList = ArrayList<StateDataset>()
-        val nonStates = StateDataset()
-        nonStates.state = "Other"
-        nonStateList.add(nonStates)
-
-        val stateList = ArrayList<StateDataset>()
-        for (data in AppConstants.US_DATA) {
-            when {
-                resources.getStringArray(R.array.us_territories).contains(data.state) -> {
-                    territoryList.add(data)
-                }
-                resources.getStringArray(R.array.us_other).contains(data.state) -> {
-                    nonStateList.add(data)
-                }
-                else -> {
-                    stateList.add(data)
-                }
-            }
-        }
-        val temp = java.util.ArrayList<StateDataset>()
-        temp.addAll(stateList)
-        temp.addAll(territoryList)
-        temp.addAll(nonStateList)
-
-         */
-
         for (data in AppConstants.US_DATA) {
             when {
                 resources.getStringArray(R.array.us_territories).contains(data.state) -> {

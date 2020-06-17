@@ -5,6 +5,7 @@ import android.content.Intent
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.R
@@ -67,10 +68,10 @@ class Splash : AppCompatActivity() {
             Toasty.error(this, R.string.no_location, Toast.LENGTH_SHORT).show()
             e.printStackTrace()
         }
-        setFlags()
+        setCountryFlags()
     }
 
-    private fun setFlags() {
+    private fun setCountryFlags() {
         Observable.defer {
             try {
                 val networkRequests = NetworkRequests(0, null, null).getLocationData()
@@ -84,7 +85,8 @@ class Splash : AppCompatActivity() {
                 {onNext -> onNext as Response
                     setWorldData(onNext)
                 },
-                {Toasty.error(this, "Could not connect to internet", Toast.LENGTH_SHORT).show()},
+                { // Snackbar
+                    Toasty.error(this, "Could not connect to internet", Toast.LENGTH_SHORT).show()},
                 {continueToLaunch()}
             )
     }
@@ -114,7 +116,8 @@ class Splash : AppCompatActivity() {
             permissionMap[perm] = grantResults[i]
 
         if (requestCode == AppConstants.REQUEST_GPS_LOCATION && permissionMap[Manifest.permission.ACCESS_COARSE_LOCATION] != 0) {
-            setFlags()
+            Toasty.error(this, "GPS Permission not granted", Toast.LENGTH_SHORT).show()
+            setCountryFlags()
         } else {
             Toasty.info(this, "GPS Permission granted", Toast.LENGTH_SHORT).show()
             setGpsCoords()

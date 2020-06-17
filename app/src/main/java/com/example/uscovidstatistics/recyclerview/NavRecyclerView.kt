@@ -11,6 +11,7 @@ import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.activities.region.RegionActivity
+import com.example.uscovidstatistics.views.activities.usersettings.UserSettings
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 
 class NavRecyclerView(private val mContext: Activity, private val bottomDialog: BottomDialog, private val navigationRecycler: RecyclerView) {
@@ -48,9 +49,14 @@ class NavRecyclerView(private val mContext: Activity, private val bottomDialog: 
                         intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         bottomDialog.dismiss()
+
                         if (mContext is MainActivity) {
                             mContext.startActivity(intent)
                             mContext.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+                        } else if (mContext is UserSettings || mContext is RegionActivity) {
+                            mContext.startActivity(intent)
+                            mContext.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+                            mContext.finish()
                         } else {
                             mContext.intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
                             mContext.recreate()
