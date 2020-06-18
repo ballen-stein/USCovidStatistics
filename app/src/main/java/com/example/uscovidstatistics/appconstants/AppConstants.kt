@@ -22,6 +22,10 @@ class AppConstants {
         var TIMER_DELAY = 0L
         val NON_CLICK_IDS = arrayOf("Other", "Territories", "Totals", "States & DC")
 
+        // Service Data
+        var GLOBAL_SERVICE_ON = false
+        var COUNTRY_SERVICE_ON = false
+        var REGIONAL_SERVICE_ON = false
 
         // API Urls
         const val API_DATA_URL_GLOBAL = "https://corona.lmao.ninja/v2/countries"
@@ -36,7 +40,7 @@ class AppConstants {
 
         const val CURRENT_GPS_LOCATION = "current_location"
 
-        // Global data
+        // App-Global Covid Data Models
         val GPS_DATA = DoubleArray(2)
         lateinit var LOCATION_DATA: LocationDataset
 

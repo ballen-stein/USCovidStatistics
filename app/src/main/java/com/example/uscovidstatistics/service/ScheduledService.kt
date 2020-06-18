@@ -37,7 +37,6 @@ class ScheduledService : Service() {
 
         timer.schedule(object: TimerTask() {
             override fun run() {
-                Log.d("CovidTesting","Running service . . .")
                 Thread(Runnable {
                     Looper.prepare()
 
@@ -53,7 +52,7 @@ class ScheduledService : Service() {
                         .subscribe (
                             { onNext -> response = onNext as Response
                                 setData(response) },
-                            { onError ->  Log.d("CovidTesting", "Error in the subscription : $onError")},
+                            { onError ->  Log.d("CovidTesting", "Error in the subscription for service : $onError")},
                             { notifications()
                                 //response.body!!.close()
                             }
@@ -127,7 +126,7 @@ class ScheduledService : Service() {
     }
 
     override fun stopService(name: Intent?): Boolean {
-        Log.d("CovidTesting","Stopping service . . .")
+        Log.d("CovidTesting","Stopping service . . . $name")
         return super.stopService(name)
     }
 }

@@ -1,5 +1,6 @@
 package com.example.uscovidstatistics.recyclerview
 
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,16 +22,24 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
         if (currentData.name == "Territories" || currentData.name == "Other" || currentData.name == "States & DC") {
             holder.bind(currentData)
             holder.itemView.rv_region.text = currentData.name
-            //holder.itemView.rv_region.textSize
             holder.itemView.rv_cases.visibility = View.GONE
             holder.itemView.rv_recovered.visibility = View.GONE
             holder.itemView.rv_deaths.visibility = View.GONE
+            bold(holder)
         } else {
             holder.bind(currentData)
             holder.itemView.rv_region.text = currentData.name
             holder.itemView.rv_cases.text = currentData.cases
             holder.itemView.rv_recovered.text = currentData.recovered
             holder.itemView.rv_deaths.text = currentData.deaths
+
+            if (currentData.name == "Totals") {
+                holder.itemView.bottom_divider.visibility = View.GONE
+                bold(holder)
+            } else if (currentData.name == "Wyoming" || currentData.name == "United \nStates \nVirgin \nIslands") {
+                holder.itemView.bottom_fill.visibility = View.VISIBLE
+                //holder.itemView.bottom_divider.visibility = View.GONE
+            }
         }
     }
 
@@ -74,4 +83,11 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
         TODO("Not yet implemented")
     }
 
+
+    private fun bold(holder: ViewHolder) {
+        holder.itemView.rv_region.typeface =  Typeface.defaultFromStyle(Typeface.BOLD)
+        holder.itemView.rv_cases.typeface =  Typeface.defaultFromStyle(Typeface.BOLD);
+        holder.itemView.rv_recovered.typeface =  Typeface.defaultFromStyle(Typeface.BOLD);
+        holder.itemView.rv_deaths.typeface =  Typeface.defaultFromStyle(Typeface.BOLD);
+    }
 }

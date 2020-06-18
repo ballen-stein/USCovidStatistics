@@ -1,6 +1,7 @@
 package com.example.uscovidstatistics.views.activities.country
 
 import android.content.Context
+import android.content.Intent
 import android.os.Looper
 import android.util.Log
 import com.example.uscovidstatistics.R
@@ -9,6 +10,7 @@ import com.example.uscovidstatistics.manualdependency.DependencyInjector
 import com.example.uscovidstatistics.model.DataModelRepository
 import com.example.uscovidstatistics.model.apidata.*
 import com.example.uscovidstatistics.network.NetworkRequests
+import com.example.uscovidstatistics.service.ScheduledService
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -29,17 +31,20 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
 
     private var view: CountryContract.View? = view
 
+    private var countryName: String? = null
+
+    private val dataToIgnore = arrayOf("Territories", "Totals", "Others", "States & DC")
+
     override fun onDestroy() {
         this.view = null
+        AppConstants.COUNTRY_SERVICE_ON = false
     }
 
     override fun onViewCreated(countryName: String) {
-        Log.d("CovidTesting", "${AppConstants.DATA_SPECIFICS}, ${AppConstants.REGION_NAME}, ${AppConstants.COUNTRY_NAME}")
+        this.countryName = countryName
         if (countryName == "USA") {
-            Log.d("CovidTesting", "Looking at the USA for special purposes")
             loadUsData(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME)
         } else {
-            Log.d("CovidTesting", "Looking at $countryName for generic purposes")
             loadData(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME)
         }
     }
@@ -84,13 +89,9 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
 
     private fun setData(response: Response, getSpecifics: Int, addToList: Boolean) {
         val body = response.body!!
-        val type: ParameterizedType = Types.newParameterizedType(
+        val type: ParameterizedType = Types.newParameterizedType(List::class.java,
             when (getSpecifics) {
-                1 -> List::class.java
-                else -> List::class.java
-            },
-            when (getSpecifics) {
-                1,2 -> StateDataset::class.java
+                1 -> StateDataset::class.java
                 else -> BaseCountryDataset::class.java
             })
 
@@ -102,11 +103,6 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
                     for (data in AppConstants.US_DATA) {
                         AppConstants.US_STATE_DATA_MAPPED[data.state!!] = data
                     }
-                    //cleanUsData()
-                }
-                2 -> { // Type isn't used since JSON data is not a list
-                    val jsonAdapter = moshi.adapter(StateDataset::class.java)
-                    AppConstants.US_STATE_DATA = jsonAdapter.fromJson(body.string())!!
                 }
                 4 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuCountryDataset::class.java)
@@ -118,13 +114,6 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
                     if (addToList)
                         AppConstants.COUNTRY_PROVINCE_LIST.add(AppConstants.COUNTRY_PROVINCE_DATA)
                 }
-                else -> {
-                    val jsonAdapter: JsonAdapter<ArrayList<StateDataset>> = moshi.adapter(type)
-                    AppConstants.US_DATA = jsonAdapter.fromJson(body.string())!!
-                    for (data in AppConstants.US_DATA) {
-                        AppConstants.US_STATE_DATA_MAPPED[data.state!!] = data
-                    }
-                }
             }
         } catch (e: Exception) {
             view?.dataError(e)
@@ -133,52 +122,30 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
         body.close()
     }
 
-    fun cleanUsData() {
-        val territoryList = ArrayList<StateDataset>()
-        val territories = StateDataset()
-        territories.state = "Territories"
-        territoryList.add(territories)
-        val nonStateList = ArrayList<StateDataset>()
-        val nonStates = StateDataset()
-        nonStates.state = "Other"
-        nonStateList.add(nonStates)
-        for (data in AppConstants.US_DATA) {
-            if (mContext.resources.getStringArray(R.array.us_territories).contains(data.state)) {
-                AppConstants.US_DATA.remove(data)
-                territoryList.add(data)
-            } else if (mContext.resources.getStringArray(R.array.us_other).contains(data.state)) {
-                AppConstants.US_DATA.remove(data)
-                nonStateList.add(data)
-            }
-        }
-        val temp = ArrayList<StateDataset>()
-        temp.addAll(AppConstants.US_DATA)
-        temp.addAll(territoryList)
-        temp.addAll(nonStateList)
-
-        AppConstants.US_DATA = temp
-    }
-
     override fun getRegionalData(getSpecifics: Int, regionList: Array<String>) {
         for (data in regionList) {
-            Observable.defer {
-                try {
-                    val networkRequests = NetworkRequests(getSpecifics, data, AppConstants.COUNTRY_NAME).getLocationData()
-                    Observable.just(networkRequests)
-                } catch (e: Exception) {
-                    Observable.error<Exception>(e)
-                }
-            }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe (
-                    { onNext -> onNext as Response
-                        setData(onNext, getSpecifics, true)},
-                    { onError ->  view?.dataError(onError)
-                        Log.d("CovidTesting", "Error in the subscription  for country : $onError")},
-                    { if (AppConstants.COUNTRY_PROVINCE_LIST.size == regionList.size)
-                        view?.displayCountryList()
+            if (dataToIgnore.contains(data)) {
+                continue
+            } else {
+                Observable.defer {
+                    try {
+                        val networkRequests = NetworkRequests(getSpecifics, data, AppConstants.COUNTRY_NAME).getLocationData()
+                        Observable.just(networkRequests)
+                    } catch (e: Exception) {
+                        Observable.error<Exception>(e)
                     }
-                )
+                }.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe (
+                        { onNext -> onNext as Response
+                            setData(onNext, getSpecifics, true)},
+                        { onError ->  view?.dataError(onError)
+                            Log.d("CovidTesting", "Error in the subscription  for country : $onError")},
+                        { if (AppConstants.COUNTRY_PROVINCE_LIST.size == regionList.size)
+                            view?.displayCountryList()
+                        }
+                    )
+            }
         }
     }
 
@@ -190,11 +157,13 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
         val timer = Timer()
         timer.schedule(object: TimerTask() {
             override fun run() {
-                Log.d("CovidTesting","Running service for country . . .")
                 Thread(Runnable {
                     Looper.prepare()
-                    loadData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME
-                    )
+                    if (countryName == "USA") {
+                        loadUsData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)
+                    } else {
+                        loadData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)
+                    }
                 }).start()
             }
         },0, 2*60*1000)

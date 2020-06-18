@@ -5,18 +5,38 @@
     <string name="bot_menu_location">Select Location</string>
     <string name="bot_menu_notifications">Notifications</string>
 
+    <string name="base_covid_stats">Base Statistics</string>
+    <string name="base_covid_cases">Cases Open</string>
+
     <string name="cases_active">Active Cases</string>
     <string name="cases_closed">Closed Cases</string>
     <string name="cases_critical">Critical Cases</string>
+    <string name="cases_deaths">Current Deaths</string>
     <string name="cases_header">Global Cases</string>
     <string name="cases_infected">Of those infected . . .</string>
-    <string name="cases_outcome">With the outcomes of . . .</string>
     <string name="cases_mild">Mild Cases</string>
+    <string name="cases_outcome">With the outcomes of . . .</string>
     <string name="cases_recovered">Recovered/Discharged</string>
-    <string name="cases_deaths">Current Deaths</string>
-    <string name="deaths">Deaths:</string>
-    <string name="global_cases">Coronavirus Cases:</string>
+    <string name="cases_tests">Tests Conducted:</string>
+
+    <string name="details_header_perOneMillion">Statistics (Per One Million)</string>
+    <string name="details_casesPerOneMil">Cases per One Million:</string>
+    <string name="details_deathsPerOneMil">Deaths per One Million:</string>
+    <string name="details_testsPerOneMil">Tests per One Million:</string>
+    <string name="details_activePerOneMil">Active per One Million:</string>
+    <string name="details_recoveredPerOneMil">Recovered per One Million:</string>
+    <string name="details_criticalPerOneMil">Critical per One Million:</string>
+    <string name="details_oneCasePerPeople"></string>
+    <string name="details_oneDeathPerPeople"></string>
+    <string name="details_oneTestPerPeople"></string>
+
     <string name="global_stats">Global Coronavirus Statistics</string>
+
+    <string name="header_cases">Total Cases:</string>
+    <string name="header_deaths">Patient Deaths:</string>
+    <string name="header_population">Current Population:</string>
+    <string name="header_recovered">Patients Recovered:</string>
+
     <string name="loading">Loading information . . .</string>
 
     <string name="menu_contact_us">Contact Us</string>
@@ -34,7 +54,7 @@
 
     <string name="no_connection">Could not get data at this time</string>
     <string name="no_location">Could not find auto-find location</string>
-    <string name="recovered">Recovered:</string>
+
     <string name="rv_country">Region</string>
     <string name="rv_cases">Cases</string>
     <string name="rv_deaths">Deaths</string>
@@ -141,41 +161,4 @@
         <item>Veteran Affairs</item>
         <item>Wuhan Repatriated</item>
     </string-array>
-
-    <!--
-    <string-array name="territories_list">
-        <item>Anguilla</item> - UK
-        <item>Aruba</item> - Netherlands
-        <item>Bermuda</item> - UK
-        <item>British Virgin Islands</item> - UK
-        <item>Caribbean Netherlands</item> - No Data
-        <item>Cayman Islands</item> - UK
-        <item>Channel Islands</item> - UK
-        <item>Curaçao</item> - Netherlands
-        <item>Faroe Islands</item> - Denmark
-        <item>French Guiana</item> - France
-        <item>French Polynesia</item> - France
-        <item>Gibraltar</item> - UK
-        <item>Guadeloupe</item> - France
-        <item>Greenland</item> - Denmark
-        <item>Holy See (Vatican City State)</item> - No Data
-        <item>Hong Kong</item> - China
-        <item>Isle of Man</item> - UK
-        <item>Macao</item> - No Data
-        <item>Martinique</item> - France
-        <item>Mayotte</item> - France
-        <item>Montserrat</item> - UK
-        <item>Myanmar</item> - Burma
-        <item>New Caledonia</item> - France
-        <item>Réunion</item> - France
-        <item>Saint Martin</item> - France
-        <item>Saint Pierre Miquelon</item> - France
-        <item>Sint Maarten</item> - Netherlands
-        <item>St. Barth</item> - France
-        <item>Turks and Caicos Islands</item> - UK
-
-        <item>Palestine</item> - No Data
-
-    </string-array>
--->
 </resources>

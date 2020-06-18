@@ -34,7 +34,6 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
         AppConstants.APP_OPEN = true
         AppConstants.DATA_SPECIFICS = 3
-        AppConstants.TIMER_DELAY = AppUtils().setTimerDelay()
 
         setPresenter(MainPresenter(this, DependencyInjectorImpl()))
         presenter.onViewCreated()
@@ -52,21 +51,24 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     override fun onStop() {
         super.onStop()
         AppConstants.APP_OPEN = false
-        val intent = Intent(this, ScheduledService::class.java)
-        if (!AppConstants.APP_OPEN) {
-            Log.d("CovidTesting", "Stopping service . . .")
-            stopService(intent)
-        }
-        Log.d("CovidTesting", "Starting service . . .")
-        //this.startService(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AppConstants.APP_OPEN = true
     }
 
     override fun onStart() {
         super.onStart()
-        Log.d("CovidTesting", "Starting service with ${AppConstants.TIMER_DELAY/60000} minute delay")
-        Handler().postDelayed(
-            {presenter.onServiceStarted(this)}, AppConstants.TIMER_DELAY
-        )
+        AppConstants.TIMER_DELAY = AppUtils().setTimerDelay()
+        if (!AppConstants.GLOBAL_SERVICE_ON) {
+            Handler().postDelayed(
+                {presenter.onServiceStarted(this)}, AppConstants.TIMER_DELAY
+            )
+            AppConstants.GLOBAL_SERVICE_ON = true
+        } else {
+            Log.d("CovidTesting", "Service is already running")
+        }
     }
 
     override fun getRoot(): View {
@@ -78,7 +80,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     }
 
     override fun displayContinentData(continentData: IntArray) {
-        if (binding.globalCases.text == null) {
+        if (binding.globalCases.text == "") {
             binding.globalCases.text = appUtils.formatNumbers(continentData[0])
         } else if (binding.globalCases.text != appUtils.formatNumbers(continentData[0])) {
             binding.globalCases.text = appUtils.formatNumbers(continentData[0])

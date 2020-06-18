@@ -2,6 +2,7 @@ package com.example.uscovidstatistics.views.activities.country
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.viewbinding.ViewBinding
@@ -12,6 +13,7 @@ import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.ActivityCountryBreakdownBinding
 import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
 import com.example.uscovidstatistics.model.CleanedUpData
+import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.model.apidata.JhuCountryDataset
 import com.example.uscovidstatistics.recyclerview.CleanedDataRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
@@ -45,7 +47,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
         countryDisplay = intent.getStringExtra(AppConstants.DISPLAY_COUNTRY)!!
         usaCheck = (countryDisplay == "USA")
-        Log.d("CovidTesting", "$countryDisplay and: It is the USA : $usaCheck ")
 
         AppConstants.COUNTRY_NAME = countryDisplay
         AppConstants.DATA_SPECIFICS = if (usaCheck) 1 else 4
@@ -103,6 +104,19 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         return cleanedDataList
     }
 
+    override fun onStart() {
+        super.onStart()
+        AppConstants.TIMER_DELAY = AppUtils().setTimerDelay()
+        if (!AppConstants.COUNTRY_SERVICE_ON) {
+            Handler().postDelayed(
+                {presenter.onServiceStarted(this)}, AppConstants.TIMER_DELAY
+            )
+            AppConstants.COUNTRY_SERVICE_ON = true
+        } else {
+            Log.d("CovidTesting", "Country Service is already running")
+        }
+    }
+
     override fun setPresenter(presenter: CountryContract.Presenter) {
         this.presenter = presenter
     }
@@ -119,8 +133,29 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         } else {
             countryData.province!!
         }
+
+        displayGeneralData(AppConstants.WORLD_DATA_MAPPED[countryData.country!!]!!)
+
         AppConstants.DATA_SPECIFICS = 5
         presenter.getRegionalData(AppConstants.DATA_SPECIFICS, regionList)
+    }
+
+    private fun displayGeneralData(baseCountryDataset: BaseCountryDataset) {
+
+        //val countryHeaderText = "${countryBaseData.country} ${resources.getString(R.string.base_covid_stats)}"
+        //binding.countryLayoutHeader.text = countryHeaderText
+
+        val popFormatted = "${baseCountryDataset.population?.let { appUtils.formatNumbers(it) }} as of ${appUtils.getFormattedDate()}"
+        binding.countryLayoutPopulation.text = popFormatted
+
+        val casesFormatted = "${baseCountryDataset.cases?.let { appUtils.formatNumbers(it) }} (${appUtils.formatPopulation(baseCountryDataset, 0)})"
+        binding.countryLayoutCases.text = casesFormatted
+
+        val recoveredFormatted = "${baseCountryDataset.recovered?.let {appUtils.formatNumbers(it)}} (${appUtils.formatPopulation(baseCountryDataset, 1)})"
+        binding.countryLayoutRecovered.text = recoveredFormatted
+
+        val deathsFormatted = "${baseCountryDataset.deaths?.let { appUtils.formatNumbers(it) }} (${appUtils.formatPopulation(baseCountryDataset, 2)})"
+        binding.countryLayoutDeaths.text = deathsFormatted
     }
 
     override fun displayCountryList() {
@@ -151,6 +186,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             }
         }
 
+        displayGeneralData(AppConstants.WORLD_DATA_MAPPED["USA"]!!)
         displayCountryList()
     }
 

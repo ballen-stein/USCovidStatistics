@@ -57,8 +57,16 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/bottom_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/colorPrimary"/>
+
+        <View
+            android:id="@+id/bottom_fill"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:visibility="gone"
+            android:background="@color/colorTransParent"/>
 
 </LinearLayout>

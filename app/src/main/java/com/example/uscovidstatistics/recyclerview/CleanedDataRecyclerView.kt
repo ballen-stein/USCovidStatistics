@@ -13,6 +13,7 @@ import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.example.uscovidstatistics.views.activities.region.RegionActivity
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_country_breakdown.view.*
 
 class CleanedDataRecyclerView (private val mContext: Context, private val activity: CountryActivity) {
     private lateinit var adapterCleanedData : CleanedDataRecyclerViewAdapter
@@ -48,7 +49,11 @@ class CleanedDataRecyclerView (private val mContext: Context, private val activi
 
                  */
                 val intent = Intent(mContext, RegionActivity::class.java)
+                //val countryName = activity.root.cases_header.text.substring(0, activity.root.cases_header.text.length - 12)
+                val countryName = activity.root.cases_header.text.split(" Information")[0]
+
                 intent.putExtra(AppConstants.DISPLAY_REGION, cleanedUpData.name)
+                    .putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
                 mContext.startActivity(intent)
                 activity.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
 

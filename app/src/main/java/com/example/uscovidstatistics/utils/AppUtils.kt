@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -16,11 +17,10 @@ import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.model.LocationDataset
-import com.example.uscovidstatistics.model.apidata.ContinentDataset
-import com.example.uscovidstatistics.model.apidata.JhuProvinceDataset
-import com.example.uscovidstatistics.model.apidata.StateDataset
+import com.example.uscovidstatistics.model.apidata.*
 import java.math.BigDecimal
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -255,6 +255,29 @@ class AppUtils {
         return tempList.toTypedArray()
     }
 
+    fun formatPopulation(countryDataset: BaseCountryDataset, metric: Int): String {
+        val population = countryDataset.population!!
+
+        return when (metric) {
+            0 -> {
+                val cases = countryDataset.cases!!.toDouble()
+                "${getStringPercent((cases / population) * 100)}% of the population"
+            }
+            1 -> {
+                val recovered = countryDataset.recovered!!.toDouble()
+                "${getStringPercent((recovered / population) * 100)}% of the population"
+            }
+            2 -> {
+                val deaths = countryDataset.deaths!!.toDouble()
+                "${getStringPercent((deaths / population) * 100)}% of the population"
+            }
+            else -> {
+                val cases = countryDataset.cases!!.toDouble()
+                "${(cases / population) * 100}% of the population"
+            }
+        }
+    }
+
     fun formatNumbers(num: Int): String {
         return if (num.toString().length <= 3) {
             num.toString()
@@ -263,8 +286,16 @@ class AppUtils {
         }
     }
 
+    fun getFormattedDate(): String {
+        return SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Calendar.getInstance().time).toString()
+    }
+
     fun getPercent(num1: Int, num2: Int): Double {
         return (num1.toDouble() / num2.toDouble()) * 100
+    }
+
+    private fun getStringPercent(num: Double): String {
+        return BigDecimal(num).setScale(3, BigDecimal.ROUND_HALF_EVEN).toString()
     }
 
     fun getStringPercent(num1: Int, num2: Int): String {

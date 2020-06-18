@@ -46,7 +46,6 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
         val timer = Timer()
         timer.schedule(object: TimerTask() {
             override fun run() {
-                Log.d("CovidTesting","Running service . . .")
                 Thread(Runnable {
                     Looper.prepare()
                     loadData(3)
@@ -87,5 +86,4 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
         }
         body.close()
     }
-
 }
