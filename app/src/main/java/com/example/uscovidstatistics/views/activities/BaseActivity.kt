@@ -1,4 +1,4 @@
-package com.example.uscovidstatistics.views.navigation
+package com.example.uscovidstatistics.views.activities
 
 import android.content.Intent
 import android.os.Bundle

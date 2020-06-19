@@ -6,6 +6,7 @@ class JhuBaseDataset {
     @Json(name = "country") var country: String? = null
     @Json(name = "stats") var stats: Stats? = null
     @Json(name = "coordinates") var coordinates: Coordinates? = null
+    @Json(name = "province") var province: String? = null
 
     class Stats {
         @Json(name = "confirmed") var confirmed: Int? = null

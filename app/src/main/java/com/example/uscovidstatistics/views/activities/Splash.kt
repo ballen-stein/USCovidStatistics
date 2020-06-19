@@ -11,6 +11,8 @@ import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
+import com.example.uscovidstatistics.model.apidata.JhuBaseDataset
+import com.example.uscovidstatistics.model.apidata.JhuCountryDataset
 import com.example.uscovidstatistics.network.NetworkRequests
 import com.example.uscovidstatistics.utils.AppUtils
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -87,8 +89,36 @@ class Splash : AppCompatActivity() {
                 },
                 { // Snackbar
                     Toasty.error(this, "Could not connect to internet", Toast.LENGTH_SHORT).show()},
+                {setLocationalData()}
+            )
+    }
+
+    private fun setLocationalData() {
+        Observable.defer {
+            try {
+                val networkRequests = NetworkRequests(6, null, null).getLocationData()
+                Observable.just(networkRequests)
+            } catch (e: Exception) {
+                Observable.error<Exception>(e)
+            }
+        }.observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                {onNext -> onNext as Response
+                    setLocationalData(onNext)
+                },
+                { // Snackbar
+                    Toasty.error(this, "Could not connect to internet for regional", Toast.LENGTH_SHORT).show()},
                 {continueToLaunch()}
             )
+    }
+
+    private fun setLocationalData(response: Response) {
+        val body = response.body!!
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val type: ParameterizedType = Types.newParameterizedType(List::class.java, JhuBaseDataset::class.java)
+        val jsonAdapter: JsonAdapter<List<JhuBaseDataset>> = moshi.adapter(type)
+        AppConstants.REGIONAL_DATA = jsonAdapter.fromJson(body.string())!!
     }
 
     private fun setWorldData(response: Response) {

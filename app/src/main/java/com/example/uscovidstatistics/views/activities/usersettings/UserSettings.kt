@@ -5,7 +5,7 @@ import android.view.View
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.databinding.ActivitySettingsBinding
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
-import com.example.uscovidstatistics.views.navigation.BaseActivity
+import com.example.uscovidstatistics.views.activities.BaseActivity
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 
 class UserSettings : BaseActivity(), ViewBinding {

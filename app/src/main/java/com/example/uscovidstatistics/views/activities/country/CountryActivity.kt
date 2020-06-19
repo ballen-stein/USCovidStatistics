@@ -19,7 +19,8 @@ import com.example.uscovidstatistics.recyclerview.CleanedDataRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
-import com.example.uscovidstatistics.views.navigation.BaseActivity
+import com.example.uscovidstatistics.views.activities.BaseActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import kotlinx.android.synthetic.main.loading_screen.view.*
 import java.lang.Exception
@@ -38,18 +39,20 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
     private lateinit var recyclerViewData: CleanedDataRecyclerView
 
-    private var usaCheck: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCountryBreakdownBinding.inflate(layoutInflater)
         setContentView(root)
 
-        countryDisplay = intent.getStringExtra(AppConstants.DISPLAY_COUNTRY)!!
-        usaCheck = (countryDisplay == "USA")
+        // Testing
+        AppConstants.COUNTRY_PROVINCE_LIST.clear()
+        appUtils.resetCountryTotals()
 
+        countryDisplay = intent.getStringExtra(AppConstants.DISPLAY_COUNTRY)!!
+
+        AppConstants.USA_CHECK = (countryDisplay == "USA")
         AppConstants.COUNTRY_NAME = countryDisplay
-        AppConstants.DATA_SPECIFICS = if (usaCheck) 1 else 4
+        AppConstants.DATA_SPECIFICS = if (AppConstants.USA_CHECK) 1 else 4
 
         setPresenter(CountryPresenter(this, DependencyInjectorImpl(), this))
         presenter.onViewCreated(countryDisplay)
@@ -92,7 +95,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     fun getCleanedUpData(): List<CleanedUpData> {
-        if (usaCheck) {
+        if (AppConstants.USA_CHECK) {
             val tempData = ArrayList<CleanedUpData>()
             tempData.addAll(cleanedDataList)
             cleanedDataList.clear()
@@ -141,9 +144,11 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     private fun displayGeneralData(baseCountryDataset: BaseCountryDataset) {
-
-        //val countryHeaderText = "${countryBaseData.country} ${resources.getString(R.string.base_covid_stats)}"
+        //val countryHeaderText = "${baseCountryDataset.country} ${resources.getString(R.string.base_covid_stats)}"
         //binding.countryLayoutHeader.text = countryHeaderText
+
+        val statisticsHeader = "${resources.getString(R.string.base_covid_stats)} as of ${appUtils.getFormattedDate()}"
+        binding.countryLayoutHeader.text = statisticsHeader
 
         val popFormatted = "${baseCountryDataset.population?.let { appUtils.formatNumbers(it) }} as of ${appUtils.getFormattedDate()}"
         binding.countryLayoutPopulation.text = popFormatted
@@ -156,19 +161,53 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
         val deathsFormatted = "${baseCountryDataset.deaths?.let { appUtils.formatNumbers(it) }} (${appUtils.formatPopulation(baseCountryDataset, 2)})"
         binding.countryLayoutDeaths.text = deathsFormatted
+
+        // Per One Million
+        val casesPOM = "${baseCountryDataset.perMillionCases} cases ${resources.getString(R.string.details_PerOneMil)}"
+        binding.casesPom.text = casesPOM
+
+        val testsPOM = "${baseCountryDataset.perMillionTests} tests ${resources.getString(R.string.details_PerOneMil)}"
+        binding.testsPom.text = testsPOM
+
+        val activePOM = "${baseCountryDataset.perMillionActive} active cases ${resources.getString(R.string.details_PerOneMil)}"
+        binding.activePom.text = activePOM
+
+        val recoverdPOM = "${baseCountryDataset.perMillionRecovered} recovered cases ${resources.getString(R.string.details_PerOneMil)}"
+        binding.recoveredPom.text = recoverdPOM
+
+        val criticalPOM = "${baseCountryDataset.perMillionCritical} critical cases ${resources.getString(R.string.details_PerOneMil)}"
+        binding.criticalPom.text = criticalPOM
+
+        val deathPOM = "${baseCountryDataset.perMillionDeaths} deaths ${resources.getString(R.string.details_PerOneMil)}"
+        binding.deathsPom.text = deathPOM
     }
 
     override fun displayCountryList() {
-        if (usaCheck) {
+        if (AppConstants.USA_CHECK) {
             for (state in AppConstants.US_DATA)
                 cleanedDataList.add(appUtils.createCleanUsaData(state))
         } else {
-            for (province in AppConstants.COUNTRY_PROVINCE_LIST)
-                cleanedDataList.add(appUtils.cleanCountryData(province))
+            if (countryDisplay == "UK")
+                countryDisplay = "United Kingdom"
+            for (data in AppConstants.REGIONAL_DATA) {
+                if (data.country!! == countryDisplay) {
+                    if (data.province != null) {
+                        cleanedDataList.add(appUtils.cleanRegionalData(data))
+                    } else {
+                        nullProvinceData()
+                        break
+                    }
+                }
+            }
         }
 
         recyclerViewData.displayCleanedData()
         binding.root.loading_layout.visibility = View.GONE
+    }
+
+    private fun nullProvinceData() {
+        for (province in AppConstants.COUNTRY_PROVINCE_LIST)
+            cleanedDataList.add(appUtils.cleanCountryData(province))
     }
 
     override fun displayUsList() {
@@ -202,7 +241,10 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     override fun dataError(throwable: Throwable) {
-        Log.d("CovidTesting", "Error with country list! ")
-        //TODO Add Snackbar
+        Log.d("CovidTesting", "Error with country list! $throwable")
+        Snackbar.make(root, "Could not connect to the server\nPlease try again in a few minutes", Snackbar.LENGTH_LONG)
+            .setAnchorView(root.bottom_toolbar)
+            .show()
+        // Setup a restart function to try and reattempt a network request
     }
 }

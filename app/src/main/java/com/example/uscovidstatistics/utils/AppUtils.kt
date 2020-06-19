@@ -145,6 +145,25 @@ class AppUtils {
         return cleanedUpData
     }
 
+    fun cleanRegionalData(data: JhuBaseDataset): CleanedUpData {
+        val cleanedUpData = CleanedUpData()
+
+        val cases = data.stats!!.confirmed
+        val recovered = data.stats!!.recovered
+        val deaths = data.stats!!.deaths
+
+        totalsArray[0] += cases!!
+        totalsArray[1] += recovered!!
+        totalsArray[2] += deaths!!
+
+        cleanedUpData.name = data.province!!
+        cleanedUpData.cases = formatNumbers(cases)
+        cleanedUpData.recovered = formatNumbers(recovered)
+        cleanedUpData.deaths = formatNumbers(deaths)
+
+        return cleanedUpData
+    }
+
     fun createCleanUsaData(data: StateDataset): CleanedUpData {
         val cleanedUpData = CleanedUpData()
 

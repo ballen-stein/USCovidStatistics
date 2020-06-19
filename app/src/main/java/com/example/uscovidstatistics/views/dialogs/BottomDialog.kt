@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +16,9 @@ import com.example.uscovidstatistics.databinding.BottomNavDialogFragmentBinding
 import com.example.uscovidstatistics.recyclerview.NavRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
-import com.example.uscovidstatistics.views.activities.region.RegionActivity
+import com.example.uscovidstatistics.views.activities.region.StateActivity
 import com.example.uscovidstatistics.views.activities.usersettings.UserSettings
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.app_toolbar.view.*
 
 class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(), ViewBinding{
 
@@ -71,7 +68,7 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
             if (AppConstants.LOCATION_DATA.country != null) {
                 val country = AppConstants.LOCATION_DATA.country
                 val region = AppConstants.LOCATION_DATA.region
-                val intent = Intent(mContext, RegionActivity::class.java)
+                val intent = Intent(mContext, StateActivity::class.java)
                 intent.putExtra(AppConstants.DISPLAY_COUNTRY, country)
                 intent.putExtra(AppConstants.DISPLAY_REGION, region)
                 startActivity(intent)

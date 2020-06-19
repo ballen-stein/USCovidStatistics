@@ -67,7 +67,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
             .subscribe (
                 { onNext -> onNext as Response
                     setData(onNext)},
-                { onError ->  view?.dataError()
+                { onError ->  view?.dataError(onError)
                     Log.d("CovidTesting", "Error in the subscription : $onError")},
                 { view?.displayContinentData(AppUtils().continentTotals(dataModelRepository.getContinentData())) }
             )
@@ -81,7 +81,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
             val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
             AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!
         } catch (e: Exception) {
-            view?.dataError()
+            view?.dataError(e)
             e.printStackTrace()
         }
         body.close()

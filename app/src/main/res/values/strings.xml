@@ -5,7 +5,7 @@
     <string name="bot_menu_location">Select Location</string>
     <string name="bot_menu_notifications">Notifications</string>
 
-    <string name="base_covid_stats">Base Statistics</string>
+    <string name="base_covid_stats">Statistics</string>
     <string name="base_covid_cases">Cases Open</string>
 
     <string name="cases_active">Active Cases</string>
@@ -18,14 +18,16 @@
     <string name="cases_outcome">With the outcomes of . . .</string>
     <string name="cases_recovered">Recovered/Discharged</string>
     <string name="cases_tests">Tests Conducted:</string>
+    <string name="covid_state_stats">State Statistics</string>
 
-    <string name="details_header_perOneMillion">Statistics (Per One Million)</string>
-    <string name="details_casesPerOneMil">Cases per One Million:</string>
-    <string name="details_deathsPerOneMil">Deaths per One Million:</string>
-    <string name="details_testsPerOneMil">Tests per One Million:</string>
-    <string name="details_activePerOneMil">Active per One Million:</string>
-    <string name="details_recoveredPerOneMil">Recovered per One Million:</string>
-    <string name="details_criticalPerOneMil">Critical per One Million:</string>
+    <string name="details_header_perOneMillion">Covid Metrics Per One Million</string>
+    <string name="details_casesPerOneMil">Cases:</string>
+    <string name="details_deathsPerOneMil">Deaths:</string>
+    <string name="details_testsPerOneMil">Tests:</string>
+    <string name="details_activePerOneMil">Active:</string>
+    <string name="details_recoveredPerOneMil">Recovered:</string>
+    <string name="details_criticalPerOneMil">Critical:</string>
+    <string name="details_PerOneMil">in every 1,000,000 people</string>
     <string name="details_oneCasePerPeople"></string>
     <string name="details_oneDeathPerPeople"></string>
     <string name="details_oneTestPerPeople"></string>
@@ -36,6 +38,9 @@
     <string name="header_deaths">Patient Deaths:</string>
     <string name="header_population">Current Population:</string>
     <string name="header_recovered">Patients Recovered:</string>
+    <string name="header_tests">Total Tests:</string>
+    <string name="header_today_cases">Cases from Today:</string>
+    <string name="header_today_deaths">Deaths from Today:</string>
 
     <string name="loading">Loading information . . .</string>
 
@@ -50,7 +55,7 @@
     <string name="menu_settings_eu">Europe</string>
     <string name="menu_settings_af">Africa</string>
     <string name="menu_settings_as">Asia</string>
-    <string name="menu_settings_au">Australia</string>
+    <string name="menu_settings_au">Australia/Oceania</string>
 
     <string name="no_connection">Could not get data at this time</string>
     <string name="no_location">Could not find auto-find location</string>
@@ -59,6 +64,7 @@
     <string name="rv_cases">Cases</string>
     <string name="rv_deaths">Deaths</string>
     <string name="rv_recovered">Recovered</string>
+
 
     <string-array name="territories_list">
         <item>Anguilla</item>

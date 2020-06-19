@@ -1,21 +1,18 @@
 package com.example.uscovidstatistics.views.activities.homepage
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.ActivityMainBinding
 import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
-import com.example.uscovidstatistics.service.ScheduledService
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
-import com.example.uscovidstatistics.views.navigation.BaseActivity
-import es.dmoral.toasty.Toasty
+import com.example.uscovidstatistics.views.activities.BaseActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import kotlinx.android.synthetic.main.loading_screen.view.*
 
@@ -72,7 +69,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     }
 
     override fun getRoot(): View {
-        TODO("Not yet implemented")
+        return binding.root
     }
 
     override fun setPresenter(presenter: MainContract.Presenter) {
@@ -83,6 +80,9 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         if (binding.globalCases.text == "") {
             binding.globalCases.text = appUtils.formatNumbers(continentData[0])
         } else if (binding.globalCases.text != appUtils.formatNumbers(continentData[0])) {
+            Snackbar.make(root, "Global Data Updated", Snackbar.LENGTH_LONG)
+                .setAnchorView(root.bottom_toolbar)
+                .show()
             binding.globalCases.text = appUtils.formatNumbers(continentData[0])
         }
 
@@ -119,8 +119,11 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         binding.root.loading_layout.visibility = View.GONE
     }
 
-    override fun dataError() {
-        Toasty.info(this, R.string.no_connection, Toast.LENGTH_LONG).show()
-        //TODO Add Snackbar
+    override fun dataError(throwable: Throwable) {
+        Log.d("CovidTesting", "Error with $throwable")
+        Snackbar.make(root, "${R.string.no_connection}\nPlease try again in a few minutes", Snackbar.LENGTH_LONG)
+            .setAnchorView(root.bottom_toolbar)
+            .show()
+        // Setup a restart function to try and reattempt a network request
     }
 }

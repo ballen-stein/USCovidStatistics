@@ -10,7 +10,7 @@ import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
-import com.example.uscovidstatistics.views.activities.region.RegionActivity
+import com.example.uscovidstatistics.views.activities.region.StateActivity
 import com.example.uscovidstatistics.views.activities.usersettings.UserSettings
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 
@@ -36,7 +36,34 @@ class NavRecyclerView(private val mContext: Activity, private val bottomDialog: 
             override fun onCountryClick(position: Int, countryName: String, v: View) {
                 if (AppConstants.RECYCLER_CLICKABLE) {
                     val actualCountry = AppUtils.getInstance().territoriesDirectLink(countryName, mContext)
+
+                    val intent = Intent(mContext.applicationContext, CountryActivity::class.java)
+                    if (actualCountry != "null")
+                        intent.putExtra(AppConstants.DISPLAY_COUNTRY, actualCountry)
+                    else
+                        intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
+
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    bottomDialog.dismiss()
+
+                    if (mContext is MainActivity) {
+                        mContext.startActivity(intent)
+                        mContext.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+                    } else if (mContext is UserSettings || mContext is StateActivity) {
+                        mContext.startActivity(intent)
+                        mContext.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+                        mContext.finish()
+                    } else {
+                        if (actualCountry != "null")
+                            mContext.intent.putExtra(AppConstants.DISPLAY_COUNTRY, actualCountry)
+                        else
+                            mContext.intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
+                        mContext.recreate()
+                    }
+
+                    /*
                     if (actualCountry != "null") {
+
                         // Country Name is the territory here
                         val intent = Intent(mContext.applicationContext, RegionActivity::class.java)
                         intent.putExtra(AppConstants.DISPLAY_REGION, countryName)
@@ -45,23 +72,10 @@ class NavRecyclerView(private val mContext: Activity, private val bottomDialog: 
                         mContext.startActivity(intent)
                         mContext.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
                     } else {
-                        val intent = Intent(mContext.applicationContext, CountryActivity::class.java)
-                        intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        bottomDialog.dismiss()
+                    */
 
-                        if (mContext is MainActivity) {
-                            mContext.startActivity(intent)
-                            mContext.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
-                        } else if (mContext is UserSettings || mContext is RegionActivity) {
-                            mContext.startActivity(intent)
-                            mContext.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
-                            mContext.finish()
-                        } else {
-                            mContext.intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
-                            mContext.recreate()
-                        }
-                    }
+
+                    //}
                 }
             }
         })

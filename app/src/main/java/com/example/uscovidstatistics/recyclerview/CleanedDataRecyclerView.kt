@@ -2,17 +2,14 @@ package com.example.uscovidstatistics.recyclerview
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
-import com.example.uscovidstatistics.views.activities.region.RegionActivity
-import es.dmoral.toasty.Toasty
+import com.example.uscovidstatistics.views.activities.region.StateActivity
 import kotlinx.android.synthetic.main.activity_country_breakdown.view.*
 
 class CleanedDataRecyclerView (private val mContext: Context, private val activity: CountryActivity) {
@@ -48,7 +45,7 @@ class CleanedDataRecyclerView (private val mContext: Context, private val activi
                 }
 
                  */
-                val intent = Intent(mContext, RegionActivity::class.java)
+                val intent = Intent(mContext, StateActivity::class.java)
                 //val countryName = activity.root.cases_header.text.substring(0, activity.root.cases_header.text.length - 12)
                 val countryName = activity.root.cases_header.text.split(" Information")[0]
 

@@ -31,18 +31,17 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
 
     private var view: CountryContract.View? = view
 
-    private var countryName: String? = null
 
     private val dataToIgnore = arrayOf("Territories", "Totals", "Others", "States & DC")
 
     override fun onDestroy() {
         this.view = null
         AppConstants.COUNTRY_SERVICE_ON = false
+        mContext.stopService(Intent((mContext as CountryActivity), ScheduledService::class.java))
     }
 
     override fun onViewCreated(countryName: String) {
-        this.countryName = countryName
-        if (countryName == "USA") {
+        if (AppConstants.USA_CHECK) {
             loadUsData(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME)
         } else {
             loadData(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME)
@@ -149,17 +148,13 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
         }
     }
 
-    override fun onDataUpdated() {
-        TODO("Not yet implemented")
-    }
-
     override fun onServiceStarted(context: Context) {
         val timer = Timer()
         timer.schedule(object: TimerTask() {
             override fun run() {
                 Thread(Runnable {
                     Looper.prepare()
-                    if (countryName == "USA") {
+                    if (AppConstants.USA_CHECK) {
                         loadUsData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)
                     } else {
                         loadData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)

@@ -17,10 +17,11 @@ class AppConstants {
         var APP_OPEN = false
         var COUNTRY_NAME: String? = null
         var DATA_SPECIFICS = 3
+        val NON_CLICK_IDS = arrayOf("Other", "Territories", "Totals", "States & DC")
         var REGION_NAME: String? = null
         var RECYCLER_CLICKABLE = true
         var TIMER_DELAY = 0L
-        val NON_CLICK_IDS = arrayOf("Other", "Territories", "Totals", "States & DC")
+        var USA_CHECK = false
 
         // Service Data
         var GLOBAL_SERVICE_ON = false
@@ -30,13 +31,12 @@ class AppConstants {
         // API Urls
         const val API_DATA_URL_GLOBAL = "https://corona.lmao.ninja/v2/countries"
         const val API_DATA_URL_USA = "https://corona.lmao.ninja/v2/states"
-        const val API_DATA_ENDPOINT = "?yesterday=falsecountries&sort"
+        const val API_DATA_ENDPOINT = "?yesterday=true"
         const val API_DATA_CONTINENT = "https://corona.lmao.ninja/v2/continents/?yesterday=falsecountries&sort"
-
-        // John Hopkins University, used for non-US countries and breakdowns for Provinces/Counties/etc
         const val API_DATA_JHU = "https://corona.lmao.ninja/v2/jhucsse"
         const val API_DATA_JHU_COUNTRY = "https://corona.lmao.ninja/v2/historical"
-        const val API_DATA_JHU_ENDPOINT = "?lastdays=all"
+        const val API_DATA_JHU_ENDPOINT_7 = "?lastdays=7"
+        const val API_DATA_JHU_ENDPOINT_ALL = "?lastdays=all"
 
         const val CURRENT_GPS_LOCATION = "current_location"
 
@@ -46,6 +46,8 @@ class AppConstants {
 
         lateinit var WORLD_DATA: List<BaseCountryDataset>
         var WORLD_DATA_MAPPED: HashMap<String, BaseCountryDataset> = HashMap()
+
+        lateinit var REGIONAL_DATA: List<JhuBaseDataset>
 
         lateinit var US_DATA: ArrayList<StateDataset>
         lateinit var US_STATE_DATA: StateDataset

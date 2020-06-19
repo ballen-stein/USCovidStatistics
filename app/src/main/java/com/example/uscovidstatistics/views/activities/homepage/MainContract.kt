@@ -15,6 +15,6 @@ interface MainContract {
 
     interface View : BaseView<Presenter> {
         fun displayContinentData(continentData: IntArray)
-        fun dataError()
+        fun dataError(throwable: Throwable)
     }
 }

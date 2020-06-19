@@ -15,10 +15,6 @@ class DataModelRepository {
         return DataModelRepository()
     }
 
-    fun getWorldData(): List<BaseCountryDataset> {
-        return AppConstants.WORLD_DATA
-    }
-
     fun getUsData(): List<StateDataset> {
         return AppConstants.US_DATA
     }
