@@ -5,14 +5,12 @@ import android.content.Intent
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.model.apidata.JhuBaseDataset
-import com.example.uscovidstatistics.model.apidata.JhuCountryDataset
 import com.example.uscovidstatistics.network.NetworkRequests
 import com.example.uscovidstatistics.utils.AppUtils
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -24,13 +22,10 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import es.dmoral.toasty.Toasty
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.internal.operators.observable.ObservableError
 import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.Response
 import java.lang.Exception
 import java.lang.reflect.ParameterizedType
-import java.util.*
 import kotlin.collections.HashMap
 
 class Splash : AppCompatActivity() {

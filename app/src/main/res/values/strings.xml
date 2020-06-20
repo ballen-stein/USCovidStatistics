@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">USCovidStatistics</string>
+    <string name="app_revised_name">Covid Statistics</string>
 
     <string name="bot_menu_my_location">My Location Data</string>
     <string name="bot_menu_location">Select Location</string>
@@ -66,8 +67,10 @@
     <string name="rv_deaths">Deaths</string>
     <string name="rv_recovered">Recovered</string>
 
-    <string name="snackbar_rety">RETRY</string>
+    <string name="snackbar_retry">RETRY</string>
+    <string name="snackbar_null">Could not display case information</string>
     <string name="snackbar_timeout">Could not connect to the server</string>
+    <string name="snackbar_update">Cases Updated</string>
 
     <string-array name="territories_list">
         <item>Anguilla</item>

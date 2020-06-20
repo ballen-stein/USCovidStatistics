@@ -1,9 +1,11 @@
 package com.example.uscovidstatistics.views.activities.homepage
 
+import android.Manifest
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.R
@@ -14,6 +16,7 @@ import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.google.android.material.snackbar.Snackbar
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import kotlinx.android.synthetic.main.loading_screen.view.*
 
@@ -144,7 +147,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
             .setAnchorView(root.bottom_toolbar)
-            .setAction(R.string.snackbar_rety){
+            .setAction(R.string.snackbar_retry){
                 presenter.onViewCreated()
             }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
             .show()

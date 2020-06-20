@@ -1,7 +1,5 @@
 package com.example.uscovidstatistics.views.activities.region
 
-import android.content.Context
-import android.util.Log
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
 import com.example.uscovidstatistics.model.DataModelRepository

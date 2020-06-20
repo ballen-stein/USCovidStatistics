@@ -11,6 +11,7 @@ import com.example.uscovidstatistics.databinding.CountryListDialogFragmentBindin
 import com.example.uscovidstatistics.recyclerview.NavRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.android.synthetic.main.country_list_dialog_fragment.*
 
 class CountryListDialog(private val mContext: Context, private val dialogFragment: SearchDialog, private val continentName: String): BottomSheetDialogFragment(), ViewBinding {
 
@@ -24,6 +25,8 @@ class CountryListDialog(private val mContext: Context, private val dialogFragmen
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = CountryListDialogFragmentBinding.inflate(inflater)
+        val countryHeaderText = "Countries in ${continentName}"
+        binding.countryListHeader.text = countryHeaderText
         recyclerViewData = NavRecyclerView(mContext as Activity, this, binding.navigationRecycler)
         recyclerViewData.displayChoices(continentName)
         setBackListener()

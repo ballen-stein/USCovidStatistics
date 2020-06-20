@@ -114,7 +114,7 @@ class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
         Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
             .setAnchorView(root.bottom_toolbar)
-            .setAction(R.string.snackbar_rety){
+            .setAction(R.string.snackbar_retry){
                 presenter.onViewCreated()
             }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
             .show()

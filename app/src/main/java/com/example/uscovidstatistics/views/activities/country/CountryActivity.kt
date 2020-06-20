@@ -23,12 +23,10 @@ import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.example.uscovidstatistics.views.activities.region.StateActivity
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_country_breakdown.view.*
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import kotlinx.android.synthetic.main.loading_screen.view.*
 import java.lang.Exception
 import java.lang.RuntimeException
-import java.util.concurrent.TimeoutException
 import kotlin.collections.ArrayList
 
 class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
@@ -67,15 +65,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         setSupportActionBar(binding.root.bottom_toolbar)
         setHeader()
         setNavOptions()
-
-        if (intent.getBooleanExtra(AppConstants.LOAD_STATE, false)) {
-            val intent = Intent(this, StateActivity::class.java)
-            intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
-                .putExtra(AppConstants.DISPLAY_REGION, this.intent.getStringExtra(AppConstants.DISPLAY_REGION))
-
-            startActivity(intent)
-            overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
-        }
     }
 
     private fun setHeader() {
@@ -234,6 +223,16 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
         recyclerViewData.displayCleanedData()
         binding.root.loading_layout.visibility = View.GONE
+
+
+        if (intent.getBooleanExtra(AppConstants.LOAD_STATE, false)) {
+            val intent = Intent(this, StateActivity::class.java)
+            intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
+                .putExtra(AppConstants.DISPLAY_REGION, this.intent.getStringExtra(AppConstants.DISPLAY_REGION))
+
+            startActivity(intent)
+            overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+        }
     }
 
     private fun nullProvinceData() {
@@ -274,7 +273,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
             .setAnchorView(root.bottom_toolbar)
-            .setAction(R.string.snackbar_rety){
+            .setAction(R.string.snackbar_retry){
                 presenter.onViewCreated(countryDisplay)
             }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
             .show()
