@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Looper
 import android.util.Log
-import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.manualdependency.DependencyInjector
 import com.example.uscovidstatistics.model.DataModelRepository
@@ -149,11 +148,13 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
     }
 
     override fun onServiceStarted(context: Context) {
+        Log.d("CovidTesting", "Service for the country is currently running")
         val timer = Timer()
         timer.schedule(object: TimerTask() {
             override fun run() {
                 Thread(Runnable {
                     Looper.prepare()
+                    Log.d("CovidTesting", "Service getting data now . . .")
                     if (AppConstants.USA_CHECK) {
                         loadUsData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)
                     } else {

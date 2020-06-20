@@ -3,6 +3,7 @@ package com.example.uscovidstatistics.views.activities.region
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
@@ -12,6 +13,7 @@ import com.example.uscovidstatistics.model.apidata.StateDataset
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import kotlinx.android.synthetic.main.loading_screen.view.*
 
@@ -99,6 +101,23 @@ class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
 
     override fun dataError(throwable: Throwable) {
         Log.d("CovidTesting", throwable.toString())
+
+        if (throwable == Exception()) {
+            Log.d("CovidTesting", "$throwable inside State is an Exception")
+        } else if (throwable == Error()) {
+            Log.d("CovidTesting", "$throwable inside State is an Error")
+        }
+        if (throwable == RuntimeException()) {
+            Log.d("CovidTesting", "$throwable inside State is a Runtime Exception")
+        }
+
+        Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+            .setAnchorView(root.bottom_toolbar)
+            .setAction(R.string.snackbar_rety){
+                presenter.onViewCreated()
+            }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+            .show()
     }
 
     override fun getRoot(): View {

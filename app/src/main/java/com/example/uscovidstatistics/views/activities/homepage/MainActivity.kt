@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
@@ -47,11 +48,13 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     override fun onStop() {
         super.onStop()
+        this.activityPaused()
         AppConstants.APP_OPEN = false
     }
 
     override fun onResume() {
         super.onResume()
+        this.activityResumed()
         AppConstants.APP_OPEN = true
     }
 
@@ -121,9 +124,29 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     override fun dataError(throwable: Throwable) {
         Log.d("CovidTesting", "Error with $throwable")
+        /*
+
         Snackbar.make(root, "${R.string.no_connection}\nPlease try again in a few minutes", Snackbar.LENGTH_LONG)
             .setAnchorView(root.bottom_toolbar)
             .show()
+
+         */
         // Setup a restart function to try and reattempt a network request
+        if (throwable == Exception()) {
+            Log.d("CovidTesting", "$throwable inside Main is an Exception")
+        } else if (throwable == Error()) {
+            Log.d("CovidTesting", "$throwable inside Main is an Error")
+        }
+        if (throwable == RuntimeException()) {
+            Log.d("CovidTesting", "$throwable inside Main is a Runtime Exception")
+        }
+
+        Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+            .setAnchorView(root.bottom_toolbar)
+            .setAction(R.string.snackbar_rety){
+                presenter.onViewCreated()
+            }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+            .show()
     }
 }

@@ -32,21 +32,7 @@ class CleanedDataRecyclerView (private val mContext: Context, private val activi
     private fun setListener(){
         adapterCleanedData.setOnClickListener(object : CleanedDataRecyclerViewAdapter.OnClickListener {
             override fun onRegionClick(position: Int, cleanedUpData: CleanedUpData, v: View) {
-                /*if (cleanedUpData.name == "Territories"
-                    || cleanedUpData.name == "Other"
-                    || cleanedUpData.name == "Totals") {
-
-                }
-                else {
-                    val intent = Intent(mContext, RegionActivity::class.java)
-                    intent.putExtra(AppConstants.DISPLAY_REGION, cleanedUpData.name)
-                    mContext.startActivity(intent)
-                    activity.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
-                }
-
-                 */
                 val intent = Intent(mContext, StateActivity::class.java)
-                //val countryName = activity.root.cases_header.text.substring(0, activity.root.cases_header.text.length - 12)
                 val countryName = activity.root.cases_header.text.split(" Information")[0]
 
                 intent.putExtra(AppConstants.DISPLAY_REGION, cleanedUpData.name)

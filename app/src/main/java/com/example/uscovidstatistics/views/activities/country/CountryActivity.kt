@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -20,10 +21,14 @@ import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
+import com.example.uscovidstatistics.views.activities.region.StateActivity
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_country_breakdown.view.*
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import kotlinx.android.synthetic.main.loading_screen.view.*
 import java.lang.Exception
+import java.lang.RuntimeException
+import java.util.concurrent.TimeoutException
 import kotlin.collections.ArrayList
 
 class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
@@ -62,6 +67,15 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         setSupportActionBar(binding.root.bottom_toolbar)
         setHeader()
         setNavOptions()
+
+        if (intent.getBooleanExtra(AppConstants.LOAD_STATE, false)) {
+            val intent = Intent(this, StateActivity::class.java)
+            intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
+                .putExtra(AppConstants.DISPLAY_REGION, this.intent.getStringExtra(AppConstants.DISPLAY_REGION))
+
+            startActivity(intent)
+            overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+        }
     }
 
     private fun setHeader() {
@@ -118,6 +132,23 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         } else {
             Log.d("CovidTesting", "Country Service is already running")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        this.activityResumed()
+    }
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+        overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        this.activityPaused()
+        AppConstants.COUNTRY_PROVINCE_LIST.clear()
+        appUtils.resetCountryTotals()
     }
 
     override fun setPresenter(presenter: CountryContract.Presenter) {
@@ -229,22 +260,23 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         displayCountryList()
     }
 
-    override fun onBackPressed() {
-        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-        overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        AppConstants.COUNTRY_PROVINCE_LIST.clear()
-        appUtils.resetCountryTotals()
-    }
-
     override fun dataError(throwable: Throwable) {
         Log.d("CovidTesting", "Error with country list! $throwable")
-        Snackbar.make(root, "Could not connect to the server\nPlease try again in a few minutes", Snackbar.LENGTH_LONG)
+        if (throwable == Exception()) {
+            Log.d("CovidTesting", "$throwable inside Country is an Exception")
+        } else if (throwable == Error()) {
+            Log.d("CovidTesting", "$throwable inside Country is an Error")
+        }
+        if (throwable == RuntimeException()) {
+            Log.d("CovidTesting", "$throwable inside Country is a Runtime Exception")
+        }
+
+        Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
+            .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
             .setAnchorView(root.bottom_toolbar)
+            .setAction(R.string.snackbar_rety){
+                presenter.onViewCreated(countryDisplay)
+            }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
             .show()
-        // Setup a restart function to try and reattempt a network request
     }
 }

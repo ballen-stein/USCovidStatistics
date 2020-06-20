@@ -11,6 +11,7 @@ class AppConstants {
         const val DISPLAY_COUNTRY = "display_country_location"
         const val DISPLAY_REGION = "display_region_location"
         const val DISPLAY_STATE = "display_state_location"
+        const val LOAD_STATE = "load_us_state"
         const val REQUEST_GPS_LOCATION = 101
 
         // Basic Data

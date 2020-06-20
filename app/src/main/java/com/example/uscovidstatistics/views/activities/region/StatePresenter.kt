@@ -28,7 +28,6 @@ class StatePresenter(view: StateContract.View, dependencyInjectorImpl: Dependenc
     }
 
     override fun onViewCreated() {
-        Log.d("CovidTesting", "${AppConstants.DATA_SPECIFICS}, ${AppConstants.REGION_NAME}, ${AppConstants.COUNTRY_NAME}")
         loadData()
     }
 
@@ -44,14 +43,14 @@ class StatePresenter(view: StateContract.View, dependencyInjectorImpl: Dependenc
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
                 { onNext -> onNext as Response
-                    setData(onNext, AppConstants.DATA_SPECIFICS)
+                    setData(onNext)
                 },
             { onError -> view?.dataError(onError)},
             { view?.displayStateData(dataModelRepository.getUsState()) }
             )
     }
 
-    private fun setData(response: Response, dataSpecifics: Int) {
+    private fun setData(response: Response) {
         val body = response.body!!
         try {
             val jsonAdapter = moshi.adapter(StateDataset::class.java)

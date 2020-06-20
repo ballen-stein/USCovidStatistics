@@ -1,6 +1,5 @@
 package com.example.uscovidstatistics.views.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,17 +8,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.uscovidstatistics.R
-import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
+import com.example.uscovidstatistics.views.dialogs.SearchDialog
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_country_breakdown.*
-import kotlinx.android.synthetic.main.app_toolbar.*
-import kotlinx.android.synthetic.main.app_toolbar.view.*
-import kotlinx.android.synthetic.main.app_toolbar.view.bottom_toolbar
 
 open class BaseActivity : AppCompatActivity() {
 
     private lateinit var navigationBar: Toolbar
+
+    private var activityVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,14 +37,15 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.app_bar_search -> {
+                SearchDialog(this).newInstance().show(supportFragmentManager, "SearchDialog")
+            }
             R.id.app_bar_settings -> {
                 Toasty.info(this, "Settings", Toast.LENGTH_SHORT).show()
-                //val intent = Intent(this, MainActivity::class.java)
-                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                //startActivity(intent)
-                //overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
             }
-            R.id.app_bar_contact -> Toasty.info(this, "Contact Us", Toast.LENGTH_SHORT).show()
+            R.id.app_bar_contact -> {
+                Toasty.info(this, "Contact Us", Toast.LENGTH_SHORT).show()
+            }
         }
         return true
     }
@@ -55,11 +53,24 @@ open class BaseActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
+        finish()
     }
 
     private fun setNavigationListeners() {
         navigationBar.setNavigationOnClickListener {
             BottomDialog(this).newInstance().show(supportFragmentManager, "NavigationDialog")
         }
+    }
+
+    fun isActivityVisible(): Boolean {
+        return activityVisible
+    }
+
+    open fun activityResumed() {
+        activityVisible = true
+    }
+
+    open fun activityPaused() {
+        activityVisible = false
     }
 }

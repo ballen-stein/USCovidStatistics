@@ -48,6 +48,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_gps">Location</string>
     <string name="menu_saved_locations">Saved Locations</string>
+    <string name="menu_search">Search</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_settings_header">Select a Continent to View</string>
     <string name="menu_settings_na">North America</string>
@@ -65,6 +66,8 @@
     <string name="rv_deaths">Deaths</string>
     <string name="rv_recovered">Recovered</string>
 
+    <string name="snackbar_rety">RETRY</string>
+    <string name="snackbar_timeout">Could not connect to the server</string>
 
     <string-array name="territories_list">
         <item>Anguilla</item>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_na"
+        android:title="@string/menu_settings_na"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_sa"
+        android:title="@string/menu_settings_sa"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_eu"
+        android:title="@string/menu_settings_eu"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_af"
+        android:title="@string/menu_settings_af"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_as"
+        android:title="@string/menu_settings_as"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_au"
+        android:title="@string/menu_settings_au"
+        app:showAsAction="ifRoom"/>
+
+</menu>
