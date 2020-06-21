@@ -1,22 +1,21 @@
 package com.example.uscovidstatistics.views.activities.homepage
 
-import android.Manifest
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.ActivityMainBinding
 import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
+import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
+import com.example.uscovidstatistics.recyclerview.LocationsRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.google.android.material.snackbar.Snackbar
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import kotlinx.android.synthetic.main.loading_screen.view.*
 
@@ -24,6 +23,8 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var presenter: MainContract.Presenter
+
+    private lateinit var recyclerView: LocationsRecyclerView
 
     private val appUtils = AppUtils.getInstance()
 
@@ -38,6 +39,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
         setPresenter(MainPresenter(this, DependencyInjectorImpl()))
         presenter.onViewCreated()
+        recyclerView = LocationsRecyclerView(this, this)
 
         setSupportActionBar(binding.root.bottom_toolbar)
         setNavListener()
@@ -123,6 +125,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
             continent.countriesOnContinent = appUtils.cleanHashMap(appUtils.continentCountryList()[continentName]!!, temp)
         }
         binding.root.loading_layout.visibility = View.GONE
+        recyclerView.displaySavedLocations()
     }
 
     override fun dataError(throwable: Throwable) {
@@ -147,9 +150,13 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
             .setAnchorView(root.bottom_toolbar)
-            .setAction(R.string.snackbar_retry){
+            .setAction(R.string.snackbar_clk_retry){
                 presenter.onViewCreated()
             }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
             .show()
+    }
+
+    fun getSavedLocations(): List<BaseCountryDataset> {
+        //TODO Add functionality to access saved countries
     }
 }

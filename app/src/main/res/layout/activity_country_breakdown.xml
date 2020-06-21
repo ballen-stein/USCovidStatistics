@@ -81,7 +81,7 @@
                         android:gravity="center"
                         android:padding="10dp"
                         android:text="@string/base_covid_stats"
-                        android:textSize="18sp"/>
+                        android:textSize="16sp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -194,7 +194,7 @@
                         android:gravity="center"
                         android:padding="10dp"
                         android:text="@string/details_header_perOneMillion"
-                        android:textSize="18sp"/>
+                        android:textSize="16sp"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/cases_pom"

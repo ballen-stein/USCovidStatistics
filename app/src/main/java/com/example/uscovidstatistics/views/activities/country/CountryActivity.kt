@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
@@ -63,6 +64,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         recyclerViewData = CleanedDataRecyclerView(this, this)
 
         setSupportActionBar(binding.root.bottom_toolbar)
+        binding.root.bottom_toolbar.inflateMenu(R.menu.bottom_appbar_country_menu)
         setHeader()
         setNavOptions()
     }
@@ -83,7 +85,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             e.printStackTrace()
         }
 
-        val headerText = "$countryDisplay Information"
+        val headerText = "${if (countryDisplay == "USA") "United States" else if (countryDisplay == "UK") "United Kingdom" else countryDisplay} Information"
         binding.casesHeader.text = headerText
     }
 
@@ -110,6 +112,9 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         return cleanedDataList
     }
 
+    //////////////////////////////// Override Methods ////////////////////////////////
+
+    //////////////// Base Methods ////////////////
     override fun onStart() {
         super.onStart()
         AppConstants.TIMER_DELAY = AppUtils().setTimerDelay()
@@ -139,6 +144,13 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         AppConstants.COUNTRY_PROVINCE_LIST.clear()
         appUtils.resetCountryTotals()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.bottom_appbar_country_menu, menu)
+        return true
+    }
+
+    //////////////// MVP methods ////////////////
 
     override fun setPresenter(presenter: CountryContract.Presenter) {
         this.presenter = presenter
@@ -230,6 +242,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
                 .putExtra(AppConstants.DISPLAY_REGION, this.intent.getStringExtra(AppConstants.DISPLAY_REGION))
 
+            this.intent.putExtra(AppConstants.LOAD_STATE, false)
             startActivity(intent)
             overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
         }
@@ -273,7 +286,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
             .setAnchorView(root.bottom_toolbar)
-            .setAction(R.string.snackbar_retry){
+            .setAction(R.string.snackbar_clk_retry){
                 presenter.onViewCreated(countryDisplay)
             }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
             .show()

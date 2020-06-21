@@ -126,7 +126,6 @@ class ScheduledService : Service() {
     }
 
     override fun stopService(name: Intent?): Boolean {
-        Log.d("CovidTesting","Stopping service . . . $name")
         return super.stopService(name)
     }
 }

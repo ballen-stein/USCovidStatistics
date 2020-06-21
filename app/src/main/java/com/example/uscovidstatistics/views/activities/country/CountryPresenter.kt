@@ -30,6 +30,7 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
 
     private var view: CountryContract.View? = view
 
+    private val timer = Timer()
 
     private val dataToIgnore = arrayOf("Territories", "Totals", "Others", "States & DC")
 
@@ -149,7 +150,6 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
 
     override fun onServiceStarted(context: Context) {
         Log.d("CovidTesting", "Service for the country is currently running")
-        val timer = Timer()
         timer.schedule(object: TimerTask() {
             override fun run() {
                 Thread(Runnable {

@@ -13,9 +13,11 @@ import com.example.uscovidstatistics.views.activities.region.StateActivity
 import kotlinx.android.synthetic.main.activity_country_breakdown.view.*
 
 class CleanedDataRecyclerView (private val mContext: Context, private val activity: CountryActivity) {
-    private lateinit var adapterCleanedData : CleanedDataRecyclerViewAdapter
-    private lateinit var recyclerView : RecyclerView
-    private lateinit var recyclerData : List<CleanedUpData>
+    private lateinit var adapterCleanedData: CleanedDataRecyclerViewAdapter
+
+    private lateinit var recyclerView: RecyclerView
+
+    private lateinit var recyclerData: List<CleanedUpData>
 
     fun displayCleanedData(){
         recyclerView = activity.findViewById(R.id.recycler_view)

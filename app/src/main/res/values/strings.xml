@@ -67,9 +67,12 @@
     <string name="rv_deaths">Deaths</string>
     <string name="rv_recovered">Recovered</string>
 
-    <string name="snackbar_retry">RETRY</string>
+    <string name="saved_locations">Saved Locations Below</string>
+    <string name="snackbar_clk_retry">RETRY</string>
+    <string name="snackbar_clk_undo">UNDO</string>
     <string name="snackbar_null">Could not display case information</string>
     <string name="snackbar_timeout">Could not connect to the server</string>
+    <string name="snackbar_region">Added country to Homepage</string>
     <string name="snackbar_update">Cases Updated</string>
 
     <string-array name="territories_list">

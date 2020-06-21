@@ -310,7 +310,10 @@ class AppUtils {
     }
 
     fun getPercent(num1: Int, num2: Int): Double {
-        return (num1.toDouble() / num2.toDouble()) * 100
+        return if (num1 == 0)
+            0.0
+        else
+            (num1.toDouble() / num2.toDouble()) * 100
     }
 
     private fun getStringPercent(num: Double): String {

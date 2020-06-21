@@ -43,7 +43,7 @@
                 android:id="@+id/country_overall_stats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="10dp"
                 app:cardElevation="2dp"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -59,7 +59,7 @@
                         android:gravity="center"
                         android:padding="10dp"
                         android:text="@string/global_stats"
-                        android:textSize="18sp"/>
+                        android:textSize="16sp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -144,10 +144,10 @@
                 android:id="@+id/country_active_stats"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
                 app:cardElevation="2dp"
                 app:layout_constraintTop_toBottomOf="@id/country_overall_stats"
                 app:layout_constraintEnd_toStartOf="@id/country_closed_stats"
@@ -213,10 +213,10 @@
                 android:id="@+id/country_closed_stats"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="5dp"
                 app:cardElevation="2dp"
                 app:layout_constraintTop_toBottomOf="@id/country_overall_stats"
                 app:layout_constraintStart_toEndOf="@id/country_active_stats"
@@ -277,6 +277,37 @@
                         android:textColor="@color/colorRed"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/saved_location_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:cardElevation="1dp"
+                app:layout_constraintTop_toBottomOf="@id/country_closed_stats">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/saved_locations"
+                    android:textSize="17sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:elevation="0dp"
+                app:layout_constraintTop_toBottomOf="@id/saved_location_header">
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                app:layout_constraintTop_toBottomOf="@+id/recycler_view"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

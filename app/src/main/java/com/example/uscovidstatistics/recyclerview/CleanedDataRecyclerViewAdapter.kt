@@ -84,7 +84,6 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
         TODO("Not yet implemented")
     }
 
-
     private fun bold(holder: ViewHolder) {
         holder.itemView.rv_region.typeface =  Typeface.defaultFromStyle(Typeface.BOLD)
         holder.itemView.rv_cases.typeface =  Typeface.defaultFromStyle(Typeface.BOLD);
