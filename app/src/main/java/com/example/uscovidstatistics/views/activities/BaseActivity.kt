@@ -11,9 +11,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.utils.PreferenceUtils
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.dialogs.SearchDialog
@@ -57,7 +59,12 @@ open class BaseActivity : AppCompatActivity() {
                 Toasty.info(this, "Contact Us", Toast.LENGTH_SHORT).show()
             }
             R.id.app_bar_favorite -> {
-                Toasty.info(this, "Favorited Country", Toast.LENGTH_SHORT).show()
+                PreferenceUtils.getInstance(this).addToSavedList(AppConstants.COUNTRY_NAME!!)
+                if (!PreferenceUtils(this).checkPref(AppConstants.COUNTRY_NAME!!)) {
+                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_24px)
+                } else {
+                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24px)
+                }
             }
         }
         return true
@@ -93,7 +100,6 @@ open class BaseActivity : AppCompatActivity() {
                 AppConstants.GPS_DATA[1] = location.latitude
                 AppConstants.LOCATION_DATA = AppUtils().getLocationData(this)
                 goToGpsLocation()
-
             }
         }
     }

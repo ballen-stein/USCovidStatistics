@@ -62,6 +62,9 @@
     <string name="no_connection">Could not get data at this time</string>
     <string name="no_location">Could not find auto-find location</string>
 
+    <string name="preference_file_key">covid_statistics_user_preferences</string>
+    <string name="preference_saved_location">preference_saved_location</string>
+
     <string name="rv_country">Region</string>
     <string name="rv_cases">Cases</string>
     <string name="rv_deaths">Deaths</string>

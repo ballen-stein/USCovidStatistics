@@ -1,5 +1,6 @@
 package com.example.uscovidstatistics.appconstants
 
+import android.content.SharedPreferences
 import com.example.uscovidstatistics.model.*
 import com.example.uscovidstatistics.model.apidata.*
 
@@ -20,8 +21,12 @@ class AppConstants {
         val NON_CLICK_IDS = arrayOf("Other", "Territories", "Totals", "States & DC")
         var REGION_NAME: String? = null
         var RECYCLER_CLICKABLE = true
+        var SAVED_LOCATIONS: ArrayList<String> = ArrayList()
         var TIMER_DELAY = 0L
         var USA_CHECK = false
+
+        // User Preferences
+        lateinit var USER_PREFS: SharedPreferences
 
         // Service Data
         var GLOBAL_SERVICE_ON = false

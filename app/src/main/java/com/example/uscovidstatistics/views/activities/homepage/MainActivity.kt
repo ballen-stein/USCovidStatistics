@@ -1,5 +1,6 @@
 package com.example.uscovidstatistics.views.activities.homepage
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -13,6 +14,7 @@ import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
 import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.recyclerview.LocationsRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.utils.PreferenceUtils
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.google.android.material.snackbar.Snackbar
@@ -28,11 +30,15 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     private val appUtils = AppUtils.getInstance()
 
+    private lateinit var appPrefs: PreferenceUtils
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        appPrefs = PreferenceUtils.getInstance(this)
 
         AppConstants.APP_OPEN = true
         AppConstants.DATA_SPECIFICS = 3
@@ -61,6 +67,15 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         super.onResume()
         this.activityResumed()
         AppConstants.APP_OPEN = true
+
+        appPrefs.userPreferences()
+        if (AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "") != null) {
+            val savedLocations = AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "")!!.split("/")
+            AppConstants.SAVED_LOCATIONS.clear()
+            AppConstants.SAVED_LOCATIONS.addAll(savedLocations)
+
+            recyclerView.displaySavedLocations()
+        }
     }
 
     override fun onStart() {
@@ -157,6 +172,10 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     }
 
     fun getSavedLocations(): List<BaseCountryDataset> {
-        //TODO Add functionality to access saved countries
+        val list = ArrayList<BaseCountryDataset>()
+        for (countryName in  AppConstants.SAVED_LOCATIONS) {
+            list.add(AppConstants.WORLD_DATA_MAPPED[countryName]!!)
+        }
+        return list
     }
 }

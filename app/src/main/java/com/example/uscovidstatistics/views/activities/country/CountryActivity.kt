@@ -19,6 +19,7 @@ import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.model.apidata.JhuCountryDataset
 import com.example.uscovidstatistics.recyclerview.CleanedDataRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.utils.PreferenceUtils
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
@@ -39,6 +40,8 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
     private lateinit var countryDisplay: String
 
+    private lateinit var appPref: PreferenceUtils
+
     private val cleanedDataList = ArrayList<CleanedUpData>()
 
     private lateinit var recyclerViewData: CleanedDataRecyclerView
@@ -51,6 +54,8 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         // Testing
         AppConstants.COUNTRY_PROVINCE_LIST.clear()
         appUtils.resetCountryTotals()
+
+        appPref = PreferenceUtils.getInstance(this)
 
         countryDisplay = intent.getStringExtra(AppConstants.DISPLAY_COUNTRY)!!
 
@@ -147,6 +152,10 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.bottom_appbar_country_menu, menu)
+        if (appPref.checkPref(countryDisplay)) {
+            Log.d("CovidTesting", "Changing fav icon")
+            menu.getItem(0).icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24px)
+        }
         return true
     }
 
