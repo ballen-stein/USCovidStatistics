@@ -6,6 +6,7 @@ import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.databinding.ActivitySettingsBinding
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
+import com.example.uscovidstatistics.views.activities.SettingsFragment
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 
 class UserSettings : BaseActivity(), ViewBinding {
@@ -17,17 +18,17 @@ class UserSettings : BaseActivity(), ViewBinding {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(root)
 
-        setSupportActionBar(root.bottom_toolbar)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(binding.settingsFragment.id, SettingsFragment())
+            .commit()
+
         setNavOptions()
     }
 
     private fun setNavOptions() {
         binding.regionBackBtn.setOnClickListener {
             onBackPressed()
-        }
-
-        root.bottom_toolbar.setNavigationOnClickListener {
-            BottomDialog(this).newInstance().show(supportFragmentManager, "BottomDialog")
         }
     }
 

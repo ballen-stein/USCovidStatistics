@@ -71,10 +71,13 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         appPrefs.userPreferences()
         if (AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "") != null) {
             val savedLocations = AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "")!!.split("/")
+
             AppConstants.SAVED_LOCATIONS.clear()
             AppConstants.SAVED_LOCATIONS.addAll(savedLocations)
 
-            recyclerView.displaySavedLocations()
+            if (AppConstants.SAVED_LOCATIONS.isNotEmpty() && AppConstants.PREFERENCE_CHECK) {
+                recyclerView.displaySavedLocations()
+            }
         }
     }
 
@@ -86,8 +89,6 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
                 {presenter.onServiceStarted(this)}, AppConstants.TIMER_DELAY
             )
             AppConstants.GLOBAL_SERVICE_ON = true
-        } else {
-            Log.d("CovidTesting", "Service is already running")
         }
     }
 
@@ -99,8 +100,10 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         this.presenter = presenter
     }
 
-    override fun displayContinentData(continentData: IntArray) {
-        if (binding.globalCases.text == "") {
+    private var globalData: BaseCountryDataset? = null
+
+    override fun displayContinentData(continentData: BaseCountryDataset) {
+        /*if (binding.globalCases.text == "") {
             binding.globalCases.text = appUtils.formatNumbers(continentData[0])
         } else if (binding.globalCases.text != appUtils.formatNumbers(continentData[0])) {
             Snackbar.make(root, "Global Data Updated", Snackbar.LENGTH_LONG)
@@ -128,8 +131,17 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         binding.currentDischarged.text = recoveredText
 
         val deathText = "${appUtils.formatNumbers(continentData[2])} (${appUtils.getStringPercent(continentData[2], continentData[6])}%)"
-        binding.currentDead.text = deathText
+        binding.currentDead.text = deathText*/
 
+        if (AppConstants.UPDATING_DATA) {
+            Snackbar.make(root, "Global Data Updated", Snackbar.LENGTH_LONG)
+                .setAnchorView(root.bottom_toolbar)
+                .show()
+        } else {
+            AppConstants.UPDATING_DATA = true
+        }
+
+        globalData = continentData
         cleanDataForCountries()
     }
 
@@ -171,10 +183,14 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
             .show()
     }
 
+
     fun getSavedLocations(): List<BaseCountryDataset> {
         val list = ArrayList<BaseCountryDataset>()
         for (countryName in  AppConstants.SAVED_LOCATIONS) {
-            list.add(AppConstants.WORLD_DATA_MAPPED[countryName]!!)
+            if (countryName == "Global")
+                list.add(globalData!!)
+            else
+                list.add(AppConstants.WORLD_DATA_MAPPED[countryName]!!)
         }
         return list
     }

@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
+<androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreferenceCompat
-        app:key="preference_gps"
+        app:key="@string/preferences_gps"
         app:title="Open to Location"
+        app:defaultValue="false"
         app:summary="Display your location's Covid data when you open the app"/>
 
-    <DropDownPreference
-        android:key="preference_frequency"
+    <ListPreference
+        android:key="@string/preference_frequency"
+        android:entries="@array/frequency_entries"
+        android:entryValues="@array/frequency_values"
+        android:summary="Change how often the app gets updated information"
+        android:defaultValue="5"
         android:title="Update Frequency"
-        android:summary="How often do you want the app to check for updated data when opened?" />
+        android:negativeButtonText="Cancel" />
 
     <SwitchPreferenceCompat
-        app:key="preference_notifications"
-        app:title="Enable update notifications"
-        app:icon="@drawable/ic_notifications_24px"/>
+        app:key="@string/preference_notifications"
+        app:title="Enable update notifications" />
 
-
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

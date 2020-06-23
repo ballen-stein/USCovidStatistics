@@ -16,7 +16,9 @@ import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.PreferenceUtils
+import com.example.uscovidstatistics.utils.SnackbarUtil
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
+import com.example.uscovidstatistics.views.activities.usersettings.UserSettings
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.dialogs.SearchDialog
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -53,7 +55,10 @@ open class BaseActivity : AppCompatActivity() {
                 SearchDialog(this).newInstance().show(supportFragmentManager, "SearchDialog")
             }
             R.id.app_bar_settings -> {
-                Toasty.info(this, "Settings", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, UserSettings::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+                //Toasty.info(this, "Settings", Toast.LENGTH_SHORT).show()
             }
             R.id.app_bar_contact -> {
                 Toasty.info(this, "Contact Us", Toast.LENGTH_SHORT).show()
@@ -61,9 +66,13 @@ open class BaseActivity : AppCompatActivity() {
             R.id.app_bar_favorite -> {
                 PreferenceUtils.getInstance(this).addToSavedList(AppConstants.COUNTRY_NAME!!)
                 if (!PreferenceUtils(this).checkPref(AppConstants.COUNTRY_NAME!!)) {
-                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_24px)
-                } else {
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24px)
+                    SnackbarUtil(this).info(navigationBar.rootView, getString(R.string.snackbar_favorite_removed))
+                    Toasty.info(this, "Removed", Toast.LENGTH_SHORT).show()
+                } else {
+                    item.icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_24px)
+                    SnackbarUtil(this).info(navigationBar.rootView, getString(R.string.snackbar_favorite_added))
+                    Toasty.info(this, "Added", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -73,6 +82,7 @@ open class BaseActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
+        AppConstants.PREFERENCE_CHECK = true
         finish()
     }
 

@@ -19,11 +19,13 @@ class AppConstants {
         var COUNTRY_NAME: String? = null
         var DATA_SPECIFICS = 3
         val NON_CLICK_IDS = arrayOf("Other", "Territories", "Totals", "States & DC")
+        var PREFERENCE_CHECK = false
         var REGION_NAME: String? = null
         var RECYCLER_CLICKABLE = true
         var SAVED_LOCATIONS: ArrayList<String> = ArrayList()
         var TIMER_DELAY = 0L
         var USA_CHECK = false
+        var UPDATING_DATA = false
 
         // User Preferences
         lateinit var USER_PREFS: SharedPreferences

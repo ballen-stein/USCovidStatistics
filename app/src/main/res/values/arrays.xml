@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="frequency_entries">
+        <item>One minute</item>
+        <item>Two minutes</item>
+        <item>Five minutes</item>
+        <item>Ten minutes</item>
+        <item>Fifteen minute</item>
+        <item>Thirty minutes</item>
+    </string-array>
+
+    <string-array name="frequency_values">
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+    </string-array>
+</resources>

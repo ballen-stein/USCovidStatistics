@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">USCovidStatistics</string>
+    <string name="app_package">com.example.uscovidstatistics</string>
     <string name="app_revised_name">Covid Statistics</string>
 
     <string name="bot_menu_my_location">My Location Data</string>
@@ -64,6 +65,9 @@
 
     <string name="preference_file_key">covid_statistics_user_preferences</string>
     <string name="preference_saved_location">preference_saved_location</string>
+    <string name="preferences_gps">user_preference_gps</string>
+    <string name="preference_frequency">user_preference_frequency</string>
+    <string name="preference_notifications">user_preference_notifications</string>
 
     <string name="rv_country">Region</string>
     <string name="rv_cases">Cases</string>
@@ -73,6 +77,8 @@
     <string name="saved_locations">Saved Locations Below</string>
     <string name="snackbar_clk_retry">RETRY</string>
     <string name="snackbar_clk_undo">UNDO</string>
+    <string name="snackbar_favorite_added">Added location to homepage</string>
+    <string name="snackbar_favorite_removed">Removed location from homepage</string>
     <string name="snackbar_null">Could not display case information</string>
     <string name="snackbar_timeout">Could not connect to the server</string>
     <string name="snackbar_region">Added country to Homepage</string>
@@ -87,6 +93,7 @@
         <item>Cayman Islands</item>
         <item>Channel Islands</item>
         <item>Curaçao</item>
+        <item>Falkland Islands (Malvinas)</item>
         <item>Faroe Islands</item>
         <item>French Guiana</item>
         <item>French Polynesia</item>
@@ -131,6 +138,7 @@
         <item>Cayman Islands</item>
         <item>Channel Islands</item>
         <item>Gibraltar</item>
+        <item>Falkland Islands (Malvinas)</item>
         <item>Isle of Man</item>
         <item>Montserrat</item>
         <item>Turks and Caicos Islands</item>

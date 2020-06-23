@@ -59,7 +59,7 @@ class LocationsRecyclerViewAdapter internal constructor(private val savedCountri
     }
 
     private fun setSavedLocationData(currentData: BaseCountryDataset) {
-        savedLocationCountry = if (currentData.country!! == "USA") "United States" else if (currentData.country!! == "UK") "United Kingdom" else currentData.country!!
+        savedLocationCountry = if (currentData.country!! == "USA") "United States Information" else if (currentData.country!! == "UK") "United Kingdom Information" else "${currentData.country!!} Information"
         savedLocationCases = appUtils.formatNumbers(currentData.cases!!)
         savedLocationRecovered = appUtils.formatNumbers(currentData.recovered!!)
         savedLocationDeaths = appUtils.formatNumbers(currentData.deaths!!)

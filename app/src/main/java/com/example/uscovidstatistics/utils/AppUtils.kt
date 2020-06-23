@@ -234,7 +234,7 @@ class AppUtils {
         totalsArray = intArrayOf(0,0,0)
     }
 
-    fun continentTotals(continentData: List<ContinentDataset>): IntArray {
+    fun continentTotals(continentData: List<ContinentDataset>): BaseCountryDataset {
         var cases = 0
         var recovered = 0
         var deaths = 0
@@ -251,7 +251,16 @@ class AppUtils {
         val mild = activeCases - critical
         val closedCases = cases - activeCases
 
-        return intArrayOf(cases, recovered, deaths, activeCases, mild, critical, closedCases)
+        val worldData = BaseCountryDataset()
+        worldData.country = "Global"
+        worldData.cases = cases
+        worldData.recovered = recovered
+        worldData.deaths = deaths
+        worldData.activeCases = activeCases
+        worldData.criticalCases = critical
+
+        return worldData
+        //return intArrayOf(cases, recovered, deaths, activeCases, mild, critical, closedCases)
     }
 
     fun continentCountryList(): HashMap<String, Array<String>> {

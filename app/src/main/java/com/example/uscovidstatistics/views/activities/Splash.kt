@@ -13,6 +13,7 @@ import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.model.apidata.JhuBaseDataset
 import com.example.uscovidstatistics.network.NetworkRequests
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.utils.PreferenceUtils
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.squareup.moshi.JsonAdapter
@@ -38,6 +39,8 @@ class Splash : AppCompatActivity() {
 
         loadGpsIntent = Intent(this, MainActivity::class.java)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        PreferenceUtils.getInstance(this).baseInit()
 
         if (AppUtils().checkLaunchPermissions(this)) {
             setGpsCoords()

@@ -140,7 +140,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
     override fun onBackPressed() {
         startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-        overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
+        super.onBackPressed()
     }
 
     override fun onStop() {

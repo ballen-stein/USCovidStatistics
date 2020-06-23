@@ -9,7 +9,7 @@ import com.example.uscovidstatistics.appconstants.AppConstants
 class PreferenceUtils(private val mActivity: Activity) {
 
     fun addToSavedList(countryName: String) {
-        val sharedPref = mActivity.getSharedPreferences("com.example.uscovidstatistics", Context.MODE_PRIVATE)
+        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
             val savedLocations = getUserLocations()
             if (savedLocations != null) {
@@ -20,7 +20,17 @@ class PreferenceUtils(private val mActivity: Activity) {
             }
             commit()
         }
+    }
 
+    fun baseInit() {
+        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        with (sharedPref.edit()) {
+            val savedLocations = getUserLocations()
+            if (savedLocations!!.isEmpty()) {
+                putString(mActivity.getString(R.string.preference_saved_location), "Global")
+                commit()
+            }
+        }
     }
 
     fun checkPref(countryName: String): Boolean {
@@ -40,11 +50,11 @@ class PreferenceUtils(private val mActivity: Activity) {
     }
 
     private fun getUserLocations(): String? {
-        return mActivity.getSharedPreferences("com.example.uscovidstatistics", Context.MODE_PRIVATE).getString(mActivity.resources.getString(R.string.preference_saved_location), "")
+        return mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE).getString(mActivity.resources.getString(R.string.preference_saved_location), "")
     }
 
     fun userPreferences() {
-        AppConstants.USER_PREFS = mActivity.getSharedPreferences("com.example.uscovidstatistics", Context.MODE_PRIVATE) ?: return
+        AppConstants.USER_PREFS = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE) ?: return
     }
 
     companion object {
