@@ -26,7 +26,7 @@ class AppConstants {
         var TIMER_DELAY = 0L
         var USA_CHECK = false
         var UPDATING_DATA = false
-        var UPDATE_FREQUENCY = 5
+        var UPDATE_FREQUENCY = 5L
 
         // User Preferences
         lateinit var USER_PREFS: SharedPreferences

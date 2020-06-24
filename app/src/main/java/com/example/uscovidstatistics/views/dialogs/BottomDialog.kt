@@ -69,6 +69,12 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
                     }
                     dismiss()
                 }
+                R.id.app_bar_settings -> {
+                    val intent = Intent(mContext, UserSettings::class.java)
+                    startActivity(intent)
+                    (mContext as Activity).overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
+                    dismiss()
+                }
             }
             true
         }

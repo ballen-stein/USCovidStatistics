@@ -30,7 +30,7 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
         }
 
         findPreference<ListPreference>(getString(R.string.preference_frequency))!!.setOnPreferenceChangeListener { preference, newValue ->
-            prefUtils.prefSaveFrequency((newValue as String).toInt())
+            prefUtils.prefSaveFrequency((newValue as String).toLong())
             true
         }
 

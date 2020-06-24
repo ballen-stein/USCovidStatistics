@@ -54,12 +54,6 @@ open class BaseActivity : AppCompatActivity() {
             R.id.app_bar_search -> {
                 SearchDialog(this).newInstance().show(supportFragmentManager, "SearchDialog")
             }
-            R.id.app_bar_settings -> {
-                val intent = Intent(this, UserSettings::class.java)
-                startActivity(intent)
-                overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
-                //Toasty.info(this, "Settings", Toast.LENGTH_SHORT).show()
-            }
             R.id.app_bar_contact -> {
                 Toasty.info(this, "Contact Us", Toast.LENGTH_SHORT).show()
             }

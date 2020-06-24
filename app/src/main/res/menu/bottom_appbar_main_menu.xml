@@ -10,12 +10,6 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/app_bar_settings"
-        android:icon="@drawable/ic_settings_24px"
-        android:title="@string/menu_settings"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/app_bar_contact"
         android:title="@string/menu_contact_us"
         app:showAsAction="never"/>

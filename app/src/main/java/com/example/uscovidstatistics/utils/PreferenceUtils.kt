@@ -29,10 +29,10 @@ class PreferenceUtils(private val mActivity: Activity) {
         }
     }
 
-    fun prefSaveFrequency(frequency: Int) {
+    fun prefSaveFrequency(frequency: Long) {
         val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
-            putInt(mActivity.getString(R.string.preference_frequency), frequency)
+            putLong(mActivity.getString(R.string.preference_frequency), frequency)
             commit()
         }
     }

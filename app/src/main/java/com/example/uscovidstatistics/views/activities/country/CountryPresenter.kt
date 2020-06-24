@@ -61,8 +61,7 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
             .subscribe (
                 { onNext -> onNext as Response
                     setData(onNext, getSpecifics, false) },
-                { onError ->  view?.dataError(onError)
-                    Log.d("CovidTesting", "Error in the subscription  for country : $onError")},
+                { onError ->  view?.dataError(onError)},
                 { view?.displayUsList() }
             )
     }
@@ -80,8 +79,7 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
             .subscribe (
                 { onNext -> onNext as Response
                     setData(onNext, getSpecifics, false)},
-                { onError ->  view?.dataError(onError)
-                    Log.d("CovidTesting", "Error in the subscription  for country : $onError")},
+                { onError ->  view?.dataError(onError)},
                 { view?.displayCountryData(dataModelRepository.getCountryData()) }
             )
     }
@@ -138,8 +136,7 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
                     .subscribe (
                         { onNext -> onNext as Response
                             setData(onNext, getSpecifics, true)},
-                        { onError ->  view?.dataError(onError)
-                            Log.d("CovidTesting", "Error in the subscription  for country : $onError")},
+                        { onError ->  view?.dataError(onError)},
                         { if (AppConstants.COUNTRY_PROVINCE_LIST.size == regionList.size)
                             view?.displayCountryList()
                         }
@@ -149,12 +146,10 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
     }
 
     override fun onServiceStarted(context: Context) {
-        Log.d("CovidTesting", "Service for the country is currently running")
         timer.schedule(object: TimerTask() {
             override fun run() {
                 Thread(Runnable {
                     Looper.prepare()
-                    Log.d("CovidTesting", "Service getting data now . . .")
                     if (AppConstants.USA_CHECK) {
                         loadUsData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)
                     } else {
@@ -162,6 +157,6 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
                     }
                 }).start()
             }
-        },0, 2*60*1000)
+        },0, (AppConstants.UPDATE_FREQUENCY)*60*1000)
     }
 }

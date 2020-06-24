@@ -74,8 +74,8 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         AppConstants.APP_OPEN = true
 
         appPrefs.userPreferences()
-        if (AppConstants.USER_PREFS.getInt(getString(R.string.preference_frequency), 0) != 0) {
-            AppConstants.UPDATE_FREQUENCY = AppConstants.USER_PREFS.getInt(getString(R.string.preference_frequency), 5)
+        if (AppConstants.USER_PREFS.getLong(getString(R.string.preference_frequency), 0L) != 0L) {
+            AppConstants.UPDATE_FREQUENCY = AppConstants.USER_PREFS.getLong(getString(R.string.preference_frequency), 5L)
             Log.d("CovidTesting", "${AppConstants.UPDATE_FREQUENCY} has a set value!")
         } else {
             Log.d("CovidTesting", "No setting set!")

@@ -128,8 +128,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
                 {presenter.onServiceStarted(this)}, AppConstants.TIMER_DELAY
             )
             AppConstants.COUNTRY_SERVICE_ON = true
-        } else {
-            Log.d("CovidTesting", "Country Service is already running")
         }
     }
 
