@@ -3,6 +3,7 @@ package com.example.uscovidstatistics.appconstants
 import android.content.SharedPreferences
 import com.example.uscovidstatistics.model.*
 import com.example.uscovidstatistics.model.apidata.*
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class AppConstants {
     companion object {
@@ -22,11 +23,13 @@ class AppConstants {
         var PREFERENCE_CHECK = false
         var REGION_NAME: String? = null
         var RECYCLER_CLICKABLE = true
-        var SAVED_LOCATIONS: ArrayList<String> = ArrayList()
-        var TIMER_DELAY = 0L
-        var USA_CHECK = false
-        var UPDATING_DATA = false
-        var UPDATE_FREQUENCY = 5L
+        var Saved_Locations: ArrayList<String> = ArrayList()
+        var Settings_Updated = false
+        var Timer_Delay = 0L
+        var Update_Frequency = 5L
+        var Updating_Global = false
+        var Updating_Country = false
+        var Usa_Check = false
 
         // User Preferences
         lateinit var USER_PREFS: SharedPreferences

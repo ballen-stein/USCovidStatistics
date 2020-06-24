@@ -14,6 +14,7 @@ import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.recyclerview.LocationsRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.PreferenceUtils
+import com.example.uscovidstatistics.utils.SnackbarUtil
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.google.android.material.snackbar.Snackbar
@@ -75,8 +76,8 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
         appPrefs.userPreferences()
         if (AppConstants.USER_PREFS.getLong(getString(R.string.preference_frequency), 0L) != 0L) {
-            AppConstants.UPDATE_FREQUENCY = AppConstants.USER_PREFS.getLong(getString(R.string.preference_frequency), 5L)
-            Log.d("CovidTesting", "${AppConstants.UPDATE_FREQUENCY} has a set value!")
+            AppConstants.Update_Frequency = AppConstants.USER_PREFS.getLong(getString(R.string.preference_frequency), 5L)
+            Log.d("CovidTesting", "${AppConstants.Update_Frequency} has a set value!")
         } else {
             Log.d("CovidTesting", "No setting set!")
         }
@@ -84,10 +85,10 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         if (AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "") != null) {
             val savedLocations = AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "")!!.split("/")
 
-            AppConstants.SAVED_LOCATIONS.clear()
-            AppConstants.SAVED_LOCATIONS.addAll(savedLocations)
+            AppConstants.Saved_Locations.clear()
+            AppConstants.Saved_Locations.addAll(savedLocations)
 
-            if (AppConstants.SAVED_LOCATIONS.isNotEmpty() && AppConstants.PREFERENCE_CHECK) {
+            if (AppConstants.Saved_Locations.isNotEmpty() && AppConstants.PREFERENCE_CHECK) {
                 recyclerView.displaySavedLocations()
             }
         }
@@ -96,10 +97,10 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     override fun onStart() {
         super.onStart()
-        AppConstants.TIMER_DELAY = AppUtils().setTimerDelay()
+        AppConstants.Timer_Delay = AppUtils().setTimerDelay()
         if (!AppConstants.GLOBAL_SERVICE_ON) {
             Handler().postDelayed(
-                {presenter.onServiceStarted()}, AppConstants.TIMER_DELAY
+                {presenter.onServiceStarted()}, AppConstants.Timer_Delay
             )
             AppConstants.GLOBAL_SERVICE_ON = true
         }
@@ -116,49 +117,19 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     private var globalData: BaseCountryDataset? = null
 
     override fun displayContinentData(continentData: BaseCountryDataset) {
-        /*if (binding.globalCases.text == "") {
-            binding.globalCases.text = appUtils.formatNumbers(continentData[0])
-        } else if (binding.globalCases.text != appUtils.formatNumbers(continentData[0])) {
-            Snackbar.make(root, "Global Data Updated", Snackbar.LENGTH_LONG)
-                .setAnchorView(root.bottom_toolbar)
-                .show()
-            binding.globalCases.text = appUtils.formatNumbers(continentData[0])
-        }
-
-        binding.globalRecovered.text = appUtils.formatNumbers(continentData[1])
-        binding.globalDeaths.text = appUtils.formatNumbers(continentData[2])
-
-        val activeText = "${appUtils.formatNumbers(continentData[3])} (${appUtils.getStringPercent(continentData[3], continentData[0])}%)"
-        binding.currentInfected.text = activeText
-
-        val mildText = appUtils.formatNumbers(continentData[4]) + " (${appUtils.getStringPercent(continentData[4], continentData[3])}%)"
-        binding.currentMild.text = mildText
-
-        val criticalText = appUtils.formatNumbers(continentData[5]) + " (${appUtils.getStringPercent(continentData[5], continentData[3])}%)"
-        binding.currentCritical.text = criticalText
-
-        val closedText = "${appUtils.formatNumbers(continentData[6])} (${appUtils.getStringPercent(continentData[6], continentData[0])}%)"
-        binding.currentClosed.text = closedText
-
-        val recoveredText = "${appUtils.formatNumbers(continentData[1])} (${appUtils.getStringPercent(continentData[1], continentData[6])}%)"
-        binding.currentDischarged.text = recoveredText
-
-        val deathText = "${appUtils.formatNumbers(continentData[2])} (${appUtils.getStringPercent(continentData[2], continentData[6])}%)"
-        binding.currentDead.text = deathText*/
-
-
         binding.dataProgress.visibility = View.VISIBLE
 
-        if (AppConstants.UPDATING_DATA) {
-            Snackbar.make(root, "Global Data Updated", Snackbar.LENGTH_LONG)
-                .setAnchorView(root.bottom_toolbar)
-                .show()
+        if (AppConstants.Updating_Global && this.isActivityVisible()) {
+            val dataUpdated = "Global ${getString(R.string.data_updated)}"
+            SnackbarUtil(this).info(root.bottom_toolbar, dataUpdated)
         } else {
-            AppConstants.UPDATING_DATA = true
+            AppConstants.Updating_Global = true
         }
 
         globalData = continentData
         cleanDataForCountries()
+
+        //TODO Add updates for all saved data in the getSavedLocations List
     }
 
     private fun cleanDataForCountries() {
@@ -179,13 +150,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     override fun dataError(throwable: Throwable) {
         Log.d("CovidTesting", "Error with $throwable")
-        /*
 
-        Snackbar.make(root, "${R.string.no_connection}\nPlease try again in a few minutes", Snackbar.LENGTH_LONG)
-            .setAnchorView(root.bottom_toolbar)
-            .show()
-
-         */
         // Setup a restart function to try and reattempt a network request
         if (throwable == Exception()) {
             Log.d("CovidTesting", "$throwable inside Main is an Exception")
@@ -208,13 +173,8 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     fun getSavedLocations(): List<BaseCountryDataset> {
         val list = ArrayList<BaseCountryDataset>()
-        for (countryName in  AppConstants.SAVED_LOCATIONS) {
-            if (countryName == "Global")
-                list.add(globalData!!)
-            else {
-                Log.d("CovidTesting", "Country in base : $countryName")
-                list.add(AppConstants.WORLD_DATA_MAPPED[countryName]!!)
-            }
+        for (countryName in  AppConstants.Saved_Locations) {
+            if (countryName == "Global") list.add(globalData!!) else list.add(AppConstants.WORLD_DATA_MAPPED[countryName]!!)
         }
         return list
     }

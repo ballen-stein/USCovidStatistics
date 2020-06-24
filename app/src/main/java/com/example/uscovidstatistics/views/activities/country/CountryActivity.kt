@@ -20,13 +20,13 @@ import com.example.uscovidstatistics.model.apidata.JhuCountryDataset
 import com.example.uscovidstatistics.recyclerview.CleanedDataRecyclerView
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.PreferenceUtils
+import com.example.uscovidstatistics.utils.SnackbarUtil
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.example.uscovidstatistics.views.activities.region.StateActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
-import kotlinx.android.synthetic.main.loading_screen.view.*
 import java.lang.Exception
 import java.lang.RuntimeException
 import kotlin.collections.ArrayList
@@ -59,9 +59,9 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
         countryDisplay = intent.getStringExtra(AppConstants.DISPLAY_COUNTRY)!!
 
-        AppConstants.USA_CHECK = (countryDisplay == "USA")
+        AppConstants.Usa_Check = (countryDisplay == "USA")
         AppConstants.COUNTRY_NAME = countryDisplay
-        AppConstants.DATA_SPECIFICS = if (AppConstants.USA_CHECK) 1 else 4
+        AppConstants.DATA_SPECIFICS = if (AppConstants.Usa_Check) 1 else 4
 
         setPresenter(CountryPresenter(this, DependencyInjectorImpl(), this))
         presenter.onViewCreated(countryDisplay)
@@ -105,7 +105,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     fun getCleanedUpData(): List<CleanedUpData> {
-        if (AppConstants.USA_CHECK) {
+        if (AppConstants.Usa_Check) {
             val tempData = ArrayList<CleanedUpData>()
             tempData.addAll(cleanedDataList)
             cleanedDataList.clear()
@@ -117,15 +117,14 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         return cleanedDataList
     }
 
-    //////////////////////////////// Override Methods ////////////////////////////////
-
     //////////////// Base Methods ////////////////
+
     override fun onStart() {
         super.onStart()
-        AppConstants.TIMER_DELAY = AppUtils().setTimerDelay()
+        AppConstants.Timer_Delay = AppUtils().setTimerDelay()
         if (!AppConstants.COUNTRY_SERVICE_ON) {
             Handler().postDelayed(
-                {presenter.onServiceStarted(this)}, AppConstants.TIMER_DELAY
+                {presenter.onServiceStarted(this)}, AppConstants.Timer_Delay
             )
             AppConstants.COUNTRY_SERVICE_ON = true
         }
@@ -150,10 +149,8 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.bottom_appbar_country_menu, menu)
-        if (appPref.checkPref(countryDisplay)) {
-            Log.d("CovidTesting", "Changing fav icon")
-            menu.getItem(1).icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_24px)
-        }
+        if (appPref.checkPref(countryDisplay)) menu.getItem(0).icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_24px)
+
         return true
     }
 
@@ -176,6 +173,8 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             countryData.province!!
         }
 
+        binding.dataProgress.visibility = View.VISIBLE
+        binding.informationView.visibility = View.VISIBLE
         displayGeneralData(AppConstants.WORLD_DATA_MAPPED[countryData.country!!]!!)
 
         AppConstants.DATA_SPECIFICS = 5
@@ -211,8 +210,8 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         val activePOM = "${baseCountryDataset.perMillionActive} active cases ${resources.getString(R.string.details_PerOneMil)}"
         binding.activePom.text = activePOM
 
-        val recoverdPOM = "${baseCountryDataset.perMillionRecovered} recovered cases ${resources.getString(R.string.details_PerOneMil)}"
-        binding.recoveredPom.text = recoverdPOM
+        val recoveredPOM = "${baseCountryDataset.perMillionRecovered} recovered cases ${resources.getString(R.string.details_PerOneMil)}"
+        binding.recoveredPom.text = recoveredPOM
 
         val criticalPOM = "${baseCountryDataset.perMillionCritical} critical cases ${resources.getString(R.string.details_PerOneMil)}"
         binding.criticalPom.text = criticalPOM
@@ -222,7 +221,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     override fun displayCountryList() {
-        if (AppConstants.USA_CHECK) {
+        if (AppConstants.Usa_Check) {
             for (state in AppConstants.US_DATA)
                 cleanedDataList.add(appUtils.createCleanUsaData(state))
         } else {
@@ -241,9 +240,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         }
 
         recyclerViewData.displayCleanedData()
-        binding.root.loading_layout.visibility = View.GONE
-
-        Log.d("CovidTesting", "Current country is ${AppConstants.COUNTRY_NAME}")
+        binding.dataProgress.visibility = View.GONE
 
         if (intent.getBooleanExtra(AppConstants.LOAD_STATE, false)) {
             val intent = Intent(this, StateActivity::class.java)
@@ -254,6 +251,17 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             startActivity(intent)
             overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
         }
+
+        //////////// Testing here ////////////
+
+        if (AppConstants.Updating_Country && this.isActivityVisible()) {
+            val dataUpdated = "$countryDisplay ${getString(R.string.data_updated)}"
+            SnackbarUtil(this).info(root.bottom_toolbar, dataUpdated)
+        } else {
+            AppConstants.Updating_Country = true
+        }
+
+        //////////////////////////////////////
     }
 
     private fun nullProvinceData() {
@@ -281,7 +289,8 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     override fun dataError(throwable: Throwable) {
-        Log.d("CovidTesting", "Error with country list! $throwable")
+        Log.d("CovidTesting", "Error with $throwable")
+
         if (throwable == Exception()) {
             Log.d("CovidTesting", "$throwable inside Country is an Exception")
         } else if (throwable == Error()) {

@@ -65,7 +65,8 @@ class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
     }
 
     override fun displayStateData(stateDataset: StateDataset) {
-        root.loading_layout.visibility = View.GONE
+        binding.informationView.visibility = View.VISIBLE
+        binding.dataProgress.visibility = View.GONE
         setStateData(AppConstants.US_STATE_DATA)
     }
 

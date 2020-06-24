@@ -57,7 +57,7 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
 
         init {
             super.itemView
-            if (AppConstants.USA_CHECK)
+            if (AppConstants.Usa_Check)
                 itemView.setOnClickListener(this)
         }
 

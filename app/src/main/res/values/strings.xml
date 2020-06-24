@@ -22,6 +22,7 @@
     <string name="cases_tests">Tests Conducted:</string>
     <string name="covid_state_stats">State Statistics</string>
 
+    <string name="data_updated">Data Updated</string>
     <string name="details_header_perOneMillion">Covid Metrics Per One Million</string>
     <string name="details_casesPerOneMil">Cases:</string>
     <string name="details_deathsPerOneMil">Deaths:</string>
@@ -48,6 +49,7 @@
 
     <string name="menu_contact_us">Contact Us</string>
     <string name="menu_home">Home</string>
+    <string name="menu_favorite">Favorite</string>
     <string name="menu_gps">Location</string>
     <string name="menu_saved_locations">Saved Locations</string>
     <string name="menu_search">Search</string>
@@ -66,8 +68,14 @@
     <string name="preference_file_key">covid_statistics_user_preferences</string>
     <string name="preference_saved_location">preference_saved_location</string>
     <string name="preference_gps">user_preference_gps</string>
+    <string name="preference_gps_desc">Display your location\'s Covid data when you open the app/\n\nRequires GPS Permission</string>
+    <string name="preference_gps_title">Open App to Your Location</string>
     <string name="preference_frequency">user_preference_frequency</string>
+    <string name="preference_freq_desc">How often do you want the app to check for updated information?\n\nSelecting a higher value may help increase performance.</string>
+    <string name="preference_freq_title">Update Frequency</string>
     <string name="preference_notifications">user_preference_notifications</string>
+    <string name="preference_notif_desc"></string>
+    <string name="preference_notif_title">Enable Push Notifications</string>
 
     <string name="rv_country">Region</string>
     <string name="rv_cases">Cases</string>

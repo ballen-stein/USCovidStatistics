@@ -65,6 +65,7 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
                     if (appUtils.gpsPermissionGranted(mContext)) {
                         goToLocation()
                     } else {
+                        // Will be heard with BaseActivity
                         appUtils.checkLaunchPermissions(mContext)
                     }
                     dismiss()

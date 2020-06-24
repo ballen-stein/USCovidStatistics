@@ -18,7 +18,7 @@ class NetworkRequests(getSpecifics: Int, regionName: String?, countryName: Strin
         else ->  AppConstants.API_DATA_URL_GLOBAL
     }
 
-    private val client = OkHttpClient()
+    private val client = OkHttpClient().newBuilder().build()
 
     fun getLocationData(): Response {
         val request = Request.Builder()

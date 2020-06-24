@@ -8,19 +8,19 @@ import com.google.android.material.snackbar.Snackbar
 
 class SnackbarUtil (private val mContext: Context) {
 
-    fun error() {
-
+    fun error(view: View, text: String) {
+        return Snackbar.make(view.rootView, text, Snackbar.LENGTH_INDEFINITE)
+            .setBackgroundTint(ContextCompat.getColor(mContext, R.color.colorRed))
+            .setAnchorView(view)
+            .setActionTextColor(ContextCompat.getColor(mContext, R.color.colorWhite))
+            .show()
     }
 
     fun info(view: View, text: String) {
-        return Snackbar.make(view,
-            text,
-            Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(mContext, R.color.colorTertiary))
-            .setTextColor(ContextCompat.getColor(mContext, R.color.colorInfoText)).show()
-    }
-
-    fun retry() {
-
+        return Snackbar.make(view.rootView, text, Snackbar.LENGTH_INDEFINITE)
+            .setBackgroundTint(ContextCompat.getColor(mContext, R.color.colorPrimaryDark))
+            .setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite))
+            .setAnchorView(view)
+            .show()
     }
 }

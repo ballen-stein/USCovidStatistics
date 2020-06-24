@@ -3,7 +3,6 @@ package com.example.uscovidstatistics.views.activities.country
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import android.util.Log
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.manualdependency.DependencyInjector
 import com.example.uscovidstatistics.model.DataModelRepository
@@ -41,7 +40,7 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
     }
 
     override fun onViewCreated(countryName: String) {
-        if (AppConstants.USA_CHECK) {
+        if (AppConstants.Usa_Check) {
             loadUsData(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME)
         } else {
             loadData(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME)
@@ -150,13 +149,13 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
             override fun run() {
                 Thread(Runnable {
                     Looper.prepare()
-                    if (AppConstants.USA_CHECK) {
+                    if (AppConstants.Usa_Check) {
                         loadUsData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)
                     } else {
                         loadData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)
                     }
                 }).start()
             }
-        },0, (AppConstants.UPDATE_FREQUENCY)*60*1000)
+        },0, (AppConstants.Update_Frequency)*60*1000)
     }
 }

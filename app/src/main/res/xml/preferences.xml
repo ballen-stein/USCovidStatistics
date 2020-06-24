@@ -5,21 +5,21 @@
 
     <SwitchPreferenceCompat
         app:key="@string/preference_gps"
-        app:title="Open to Location"
+        app:title="@string/preference_gps_title"
         app:defaultValue="false"
-        app:summary="Display your location's Covid data when you open the app"/>
+        app:summary="@string/preference_gps_desc"/>
 
     <ListPreference
         android:key="@string/preference_frequency"
         android:entries="@array/frequency_entries"
         android:entryValues="@array/frequency_values"
-        android:summary="Change how often the app gets updated information"
+        android:summary="@string/preference_freq_desc"
         android:defaultValue="5"
-        android:title="Update Frequency"
+        android:title="@string/preference_freq_title"
         android:negativeButtonText="Cancel" />
 
     <SwitchPreferenceCompat
         app:key="@string/preference_notifications"
-        app:title="Enable update notifications" />
+        app:title="@string/preference_notif_title" />
 
 </androidx.preference.PreferenceScreen>

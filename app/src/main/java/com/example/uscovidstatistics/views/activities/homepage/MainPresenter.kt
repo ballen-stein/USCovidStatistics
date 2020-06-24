@@ -73,7 +73,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
                     loadData(3)
                 }).start()
             }
-        },0, (AppConstants.UPDATE_FREQUENCY)*60*1000)
+        },0, (AppConstants.Update_Frequency)*60*1000)
     }
 
     private fun loadData(getSpecifics: Int) {

@@ -42,10 +42,12 @@
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/information_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/main_header"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -260,7 +262,14 @@
 
     <include layout="@layout/app_toolbar" />
 
-    <include layout="@layout/loading_screen"
-        tools:visibility="gone"/>
+    <ProgressBar
+        android:id="@+id/data_progress"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_centerInParent="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

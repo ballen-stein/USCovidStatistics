@@ -10,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
@@ -23,12 +22,13 @@ import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.dialogs.SearchDialog
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomappbar.BottomAppBar
 import es.dmoral.toasty.Toasty
 import java.lang.Exception
 
 open class BaseActivity : AppCompatActivity() {
 
-    private lateinit var navigationBar: Toolbar
+    private lateinit var navigationBar: BottomAppBar
 
     private var activityVisible = false
 
@@ -58,15 +58,15 @@ open class BaseActivity : AppCompatActivity() {
                 Toasty.info(this, "Contact Us", Toast.LENGTH_SHORT).show()
             }
             R.id.app_bar_favorite -> {
+                val activityView = findViewById<BottomAppBar>(R.id.bottom_toolbar)
                 PreferenceUtils.getInstance(this).addToSavedList(AppConstants.COUNTRY_NAME!!)
+
                 if (!PreferenceUtils(this).checkPref(AppConstants.COUNTRY_NAME!!)) {
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24px)
-                    SnackbarUtil(this).info(navigationBar.rootView, getString(R.string.snackbar_favorite_removed))
-                    Toasty.info(this, "Removed", Toast.LENGTH_SHORT).show()
+                    SnackbarUtil(this).info(activityView, getString(R.string.snackbar_favorite_removed))
                 } else {
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_24px)
-                    SnackbarUtil(this).info(navigationBar.rootView, getString(R.string.snackbar_favorite_added))
-                    Toasty.info(this, "Added", Toast.LENGTH_SHORT).show()
+                    SnackbarUtil(this).info(activityView, getString(R.string.snackbar_favorite_added))
                 }
             }
         }
@@ -85,7 +85,6 @@ open class BaseActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         val permissionMap = HashMap<String, Int>()
-        Toasty.info(this, "GPS Permission granted", Toast.LENGTH_SHORT).show()
         for ((i, perm) in permissions.withIndex())
             permissionMap[perm] = grantResults[i]
 
@@ -99,11 +98,16 @@ open class BaseActivity : AppCompatActivity() {
         val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-                Log.d("CovidTesting", "Setting GPS data")
                 AppConstants.GPS_DATA[0] = location.longitude
                 AppConstants.GPS_DATA[1] = location.latitude
                 AppConstants.LOCATION_DATA = AppUtils().getLocationData(this)
-                goToGpsLocation()
+
+                if (this !is UserSettings)
+                    goToGpsLocation()
+                else {
+                    PreferenceUtils.getInstance(this).prefSaveGps(true)
+                    AppConstants.Settings_Updated = true
+                }
             }
         }
     }
