@@ -10,8 +10,8 @@ import dagger.Component
 interface MainContract {
     interface Presenter : BasePresenter {
         fun onViewCreated()
-        fun onDataUpdated()
-        fun onServiceStarted(context: Context)
+        fun openLocationOnLaunch(mContext: Context)
+        fun onServiceStarted()
     }
 
     interface View : BaseView<Presenter> {

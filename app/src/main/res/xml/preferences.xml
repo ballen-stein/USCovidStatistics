@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreferenceCompat
-        app:key="@string/preferences_gps"
+        app:key="@string/preference_gps"
         app:title="Open to Location"
         app:defaultValue="false"
         app:summary="Display your location's Covid data when you open the app"/>

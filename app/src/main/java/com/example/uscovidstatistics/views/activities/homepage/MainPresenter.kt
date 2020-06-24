@@ -1,14 +1,17 @@
 package com.example.uscovidstatistics.views.activities.homepage
 
 import android.content.Context
+import android.content.Intent
 import android.os.Looper
 import android.util.Log
+import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.manualdependency.DependencyInjector
 import com.example.uscovidstatistics.model.DataModelRepository
 import com.example.uscovidstatistics.model.apidata.*
 import com.example.uscovidstatistics.network.NetworkRequests
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -38,11 +41,30 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
         loadData(AppConstants.DATA_SPECIFICS)
     }
 
-    override fun onDataUpdated() {
+    /*override fun onDataUpdated() {
         Log.d("CovidTesting", "Data was updated . . .")
+    }*/
+
+    override fun openLocationOnLaunch(mContext: Context) {
+        if (AppConstants.USER_PREFS.getBoolean(mContext.getString(R.string.preference_gps), false)) {
+            if (AppConstants.LOCATION_DATA.country != null) {
+                val country = AppConstants.LOCATION_DATA.country
+                val region = AppConstants.LOCATION_DATA.region
+                val intent = Intent(mContext, CountryActivity::class.java)
+                    .putExtra(AppConstants.DISPLAY_REGION, region)
+
+                if (country == "United States") {
+                    intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
+                        .putExtra(AppConstants.LOAD_STATE, true)
+                } else
+                    intent.putExtra(AppConstants.DISPLAY_COUNTRY, country)
+
+                mContext.startActivity(intent)
+            }
+        }
     }
 
-    override fun onServiceStarted(context: Context) {
+    override fun onServiceStarted() {
         val timer = Timer()
         timer.schedule(object: TimerTask() {
             override fun run() {

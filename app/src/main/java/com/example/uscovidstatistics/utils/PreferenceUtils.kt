@@ -2,7 +2,6 @@ package com.example.uscovidstatistics.utils
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 
@@ -18,6 +17,22 @@ class PreferenceUtils(private val mActivity: Activity) {
             } else {
                 putString(mActivity.getString(R.string.preference_saved_location), countryName)
             }
+            commit()
+        }
+    }
+
+    fun prefSaveGps(showOnLaunch: Boolean) {
+        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        with (sharedPref.edit()) {
+            putBoolean(mActivity.getString(R.string.preference_gps), showOnLaunch)
+            commit()
+        }
+    }
+
+    fun prefSaveFrequency(frequency: Int) {
+        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        with (sharedPref.edit()) {
+            putInt(mActivity.getString(R.string.preference_frequency), frequency)
             commit()
         }
     }

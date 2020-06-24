@@ -2,9 +2,11 @@ package com.example.uscovidstatistics.views.activities
 
 import android.Manifest
 import android.content.Intent
+import android.content.SharedPreferences
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.R
@@ -14,6 +16,7 @@ import com.example.uscovidstatistics.model.apidata.JhuBaseDataset
 import com.example.uscovidstatistics.network.NetworkRequests
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.PreferenceUtils
+import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.squareup.moshi.JsonAdapter
@@ -30,8 +33,12 @@ import java.lang.reflect.ParameterizedType
 import kotlin.collections.HashMap
 
 class Splash : AppCompatActivity() {
+
     private lateinit var loadGpsIntent: Intent
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private lateinit var prefUtil: PreferenceUtils
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +47,8 @@ class Splash : AppCompatActivity() {
         loadGpsIntent = Intent(this, MainActivity::class.java)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        PreferenceUtils.getInstance(this).baseInit()
+        prefUtil = PreferenceUtils.getInstance(this)
+        prefUtil.baseInit()
 
         if (AppUtils().checkLaunchPermissions(this)) {
             setGpsCoords()

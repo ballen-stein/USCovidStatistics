@@ -154,7 +154,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         menuInflater.inflate(R.menu.bottom_appbar_country_menu, menu)
         if (appPref.checkPref(countryDisplay)) {
             Log.d("CovidTesting", "Changing fav icon")
-            menu.getItem(0).icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24px)
+            menu.getItem(1).icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_24px)
         }
         return true
     }
@@ -245,6 +245,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         recyclerViewData.displayCleanedData()
         binding.root.loading_layout.visibility = View.GONE
 
+        Log.d("CovidTesting", "Current country is ${AppConstants.COUNTRY_NAME}")
 
         if (intent.getBooleanExtra(AppConstants.LOAD_STATE, false)) {
             val intent = Intent(this, StateActivity::class.java)

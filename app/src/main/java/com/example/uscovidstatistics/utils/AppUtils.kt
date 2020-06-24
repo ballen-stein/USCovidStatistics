@@ -248,8 +248,8 @@ class AppUtils {
             activeCases += data.activeCases!!
             critical += data.criticalCases!!
         }
-        val mild = activeCases - critical
-        val closedCases = cases - activeCases
+        //val mild = activeCases - critical
+        //val closedCases = cases - activeCases
 
         val worldData = BaseCountryDataset()
         worldData.country = "Global"

@@ -65,7 +65,7 @@
 
     <string name="preference_file_key">covid_statistics_user_preferences</string>
     <string name="preference_saved_location">preference_saved_location</string>
-    <string name="preferences_gps">user_preference_gps</string>
+    <string name="preference_gps">user_preference_gps</string>
     <string name="preference_frequency">user_preference_frequency</string>
     <string name="preference_notifications">user_preference_notifications</string>
 

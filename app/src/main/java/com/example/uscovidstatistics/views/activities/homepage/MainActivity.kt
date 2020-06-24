@@ -1,6 +1,5 @@
 package com.example.uscovidstatistics.views.activities.homepage
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -19,7 +18,6 @@ import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
-import kotlinx.android.synthetic.main.loading_screen.view.*
 
 class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     private lateinit var binding: ActivityMainBinding
@@ -32,6 +30,8 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     private lateinit var appPrefs: PreferenceUtils
 
+    private var openOnLaunch = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -39,6 +39,11 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         setContentView(view)
 
         appPrefs = PreferenceUtils.getInstance(this)
+        appPrefs.userPreferences()
+
+
+        if (AppConstants.USER_PREFS.getBoolean(getString(R.string.preference_gps), false))
+            openOnLaunch = true
 
         AppConstants.APP_OPEN = true
         AppConstants.DATA_SPECIFICS = 3
@@ -69,6 +74,13 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         AppConstants.APP_OPEN = true
 
         appPrefs.userPreferences()
+        if (AppConstants.USER_PREFS.getInt(getString(R.string.preference_frequency), 0) != 0) {
+            AppConstants.UPDATE_FREQUENCY = AppConstants.USER_PREFS.getInt(getString(R.string.preference_frequency), 5)
+            Log.d("CovidTesting", "${AppConstants.UPDATE_FREQUENCY} has a set value!")
+        } else {
+            Log.d("CovidTesting", "No setting set!")
+        }
+
         if (AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "") != null) {
             val savedLocations = AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "")!!.split("/")
 
@@ -79,6 +91,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
                 recyclerView.displaySavedLocations()
             }
         }
+
     }
 
     override fun onStart() {
@@ -86,7 +99,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         AppConstants.TIMER_DELAY = AppUtils().setTimerDelay()
         if (!AppConstants.GLOBAL_SERVICE_ON) {
             Handler().postDelayed(
-                {presenter.onServiceStarted(this)}, AppConstants.TIMER_DELAY
+                {presenter.onServiceStarted()}, AppConstants.TIMER_DELAY
             )
             AppConstants.GLOBAL_SERVICE_ON = true
         }
@@ -133,6 +146,9 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         val deathText = "${appUtils.formatNumbers(continentData[2])} (${appUtils.getStringPercent(continentData[2], continentData[6])}%)"
         binding.currentDead.text = deathText*/
 
+
+        binding.dataProgress.visibility = View.VISIBLE
+
         if (AppConstants.UPDATING_DATA) {
             Snackbar.make(root, "Global Data Updated", Snackbar.LENGTH_LONG)
                 .setAnchorView(root.bottom_toolbar)
@@ -151,7 +167,13 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
             val temp = appUtils.removeTerritories(continentName!!, binding.root.context)
             continent.countriesOnContinent = appUtils.cleanHashMap(appUtils.continentCountryList()[continentName]!!, temp)
         }
-        binding.root.loading_layout.visibility = View.GONE
+
+        if (openOnLaunch) {
+            openOnLaunch = false
+            presenter.openLocationOnLaunch(this)
+        }
+
+        binding.dataProgress.visibility = View.GONE
         recyclerView.displaySavedLocations()
     }
 
@@ -189,8 +211,10 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         for (countryName in  AppConstants.SAVED_LOCATIONS) {
             if (countryName == "Global")
                 list.add(globalData!!)
-            else
+            else {
+                Log.d("CovidTesting", "Country in base : $countryName")
                 list.add(AppConstants.WORLD_DATA_MAPPED[countryName]!!)
+            }
         }
         return list
     }

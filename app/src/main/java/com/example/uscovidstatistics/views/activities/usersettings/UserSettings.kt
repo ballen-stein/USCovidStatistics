@@ -20,7 +20,7 @@ class UserSettings : BaseActivity(), ViewBinding {
 
         supportFragmentManager
             .beginTransaction()
-            .replace(binding.settingsFragment.id, SettingsFragment())
+            .replace(binding.settingsFragment.id, SettingsFragment(this))
             .commit()
 
         setNavOptions()

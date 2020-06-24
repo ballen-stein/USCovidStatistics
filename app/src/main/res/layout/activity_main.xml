@@ -298,7 +298,17 @@
     <include layout="@layout/app_toolbar"
         android:id="@+id/bottom_bar"/>
 
-    <include layout="@layout/loading_screen"
-        tools:visibility="gone"/>
+    <ProgressBar
+        android:id="@+id/data_progress"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_centerInParent="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <!--<include layout="@layout/loading_screen"
+        tools:visibility="gone"/>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
