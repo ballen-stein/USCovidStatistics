@@ -13,9 +13,7 @@ import kotlinx.android.synthetic.main.country_layout.view.*
 
 class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpData: List<CleanedUpData>) : RecyclerView.Adapter<CleanedDataRecyclerViewAdapter.ViewHolder>(), ViewBinding {
 
-    companion object{
-        private var clickListener : OnClickListener? = null
-    }
+    private lateinit var binding: CountryLayoutBinding
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentData = cleanedUpData[position]
@@ -44,7 +42,7 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = CountryLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding = CountryLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -62,7 +60,7 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
         }
 
         override fun onClick(view : View) {
-            if (!AppConstants.NON_CLICK_IDS.contains(currentData.name)) {
+            if (!AppConstants.Non_Click_Ids.contains(currentData.name)) {
                 clickListener!!.onRegionClick(adapterPosition, currentData, view)
             }
         }
@@ -76,12 +74,12 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
         clickListener = cListener
     }
 
-    interface OnClickListener{
+    interface OnClickListener {
         fun onRegionClick(position : Int, cleanedUpData: CleanedUpData, v : View)
     }
 
     override fun getRoot(): View {
-        TODO("Not yet implemented")
+        return binding.root
     }
 
     private fun bold(holder: ViewHolder) {
@@ -90,4 +88,9 @@ class CleanedDataRecyclerViewAdapter internal constructor(private val cleanedUpD
         holder.itemView.rv_recovered.typeface =  Typeface.defaultFromStyle(Typeface.BOLD);
         holder.itemView.rv_deaths.typeface =  Typeface.defaultFromStyle(Typeface.BOLD);
     }
+
+    companion object{
+        private var clickListener : OnClickListener? = null
+    }
+
 }

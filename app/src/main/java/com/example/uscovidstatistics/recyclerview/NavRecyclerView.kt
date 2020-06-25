@@ -2,7 +2,6 @@ package com.example.uscovidstatistics.recyclerview
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,14 +34,14 @@ class NavRecyclerView(private val mContext: Activity, private val countryListDia
     private fun setListener(){
         adapterNavView.setOnClickListener(object : NavRecyclerViewAdapter.OnClickListener {
             override fun onCountryClick(position: Int, countryName: String, v: View) {
-                if (AppConstants.RECYCLER_CLICKABLE) {
+                if (AppConstants.Recycler_Clickable) {
                     val actualCountry = AppUtils.getInstance().territoriesDirectLink(countryName, mContext)
 
                     val intent = Intent(mContext.applicationContext, CountryActivity::class.java)
                     if (actualCountry != "null")
-                        intent.putExtra(AppConstants.DISPLAY_COUNTRY, actualCountry)
+                        intent.putExtra(AppConstants.Display_Country, actualCountry)
                     else
-                        intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
+                        intent.putExtra(AppConstants.Display_Country, countryName)
 
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     countryListDialog.dismiss()
@@ -56,9 +55,9 @@ class NavRecyclerView(private val mContext: Activity, private val countryListDia
                         mContext.finish()
                     } else {
                         if (actualCountry != "null")
-                            mContext.intent.putExtra(AppConstants.DISPLAY_COUNTRY, actualCountry)
+                            mContext.intent.putExtra(AppConstants.Display_Country, actualCountry)
                         else
-                            mContext.intent.putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
+                            mContext.intent.putExtra(AppConstants.Display_Country, countryName)
                         mContext.recreate()
                     }
                 }

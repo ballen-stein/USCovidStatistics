@@ -32,7 +32,7 @@ class StatePresenter(view: StateContract.View, dependencyInjectorImpl: Dependenc
     private fun loadData() {
         Observable.defer {
             try {
-                val networkRequests = NetworkRequests(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME).getLocationData()
+                val networkRequests = NetworkRequests(AppConstants.Data_Specifics, AppConstants.Region_Name, AppConstants.Country_Name).getLocationData()
                 Observable.just(networkRequests)
             } catch (e: Exception) {
                 Observable.error<Exception>(e)
@@ -52,7 +52,7 @@ class StatePresenter(view: StateContract.View, dependencyInjectorImpl: Dependenc
         val body = response.body!!
         try {
             val jsonAdapter = moshi.adapter(StateDataset::class.java)
-            AppConstants.US_STATE_DATA = jsonAdapter.fromJson(body.string())!!
+            AppConstants.Us_State_Data = jsonAdapter.fromJson(body.string())!!
         } catch (e: Exception) {
             view?.dataError(e)
         }

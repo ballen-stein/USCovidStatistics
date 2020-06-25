@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -32,7 +31,7 @@ class AppUtils {
             ActivityCompat.requestPermissions(
                 context as Activity,
                 arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
-                AppConstants.REQUEST_GPS_LOCATION
+                AppConstants.Request_Gps_Location
             )
             false
         } else {
@@ -50,7 +49,7 @@ class AppUtils {
     fun getLocationData(context: Context): LocationDataset {
         val geocoder = Geocoder(context, Locale.getDefault())
         val address: List<Address> =
-            geocoder.getFromLocation(AppConstants.GPS_DATA[1], AppConstants.GPS_DATA[0], 1)
+            geocoder.getFromLocation(AppConstants.Gps_Data[1], AppConstants.Gps_Data[0], 1)
 
         return setLocationData(address)
     }
@@ -69,7 +68,7 @@ class AppUtils {
     fun newNotification(context: Context): NotificationCompat.Builder? {
         createNotificationChannel(context)
 
-        return NotificationCompat.Builder(context, AppConstants.CHANNEL_ID)
+        return NotificationCompat.Builder(context, AppConstants.Channel_Id)
             .setSmallIcon(R.drawable.ic_virus)
             .setContentTitle("Covid-19 Update")
             .setContentText("Current cases : ${AppUtils().totalGlobalCases()[0]}")
@@ -82,7 +81,7 @@ class AppUtils {
             val name = "Channel_name_001"
             val descriptionText = "Channel_text_001"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(AppConstants.CHANNEL_ID, name, importance).apply {
+            val channel = NotificationChannel(AppConstants.Channel_Id, name, importance).apply {
                 description = descriptionText
             }
 
@@ -107,7 +106,7 @@ class AppUtils {
         var activeCases = 0
         var critical = 0
 
-        for (data in AppConstants.CONTINENT_DATA) {
+        for (data in AppConstants.Continent_Data) {
             cases += data.cases!!
             recovered += data.recovered!!.toInt()
             deaths += data.deaths!!
@@ -265,7 +264,7 @@ class AppUtils {
 
     fun continentCountryList(): HashMap<String, Array<String>> {
         val hashMap = HashMap<String, Array<String>>()
-        for (data in AppConstants.CONTINENT_DATA) {
+        for (data in AppConstants.Continent_Data) {
             hashMap[data.continent!!] = data.countriesOnContinent!!
         }
 

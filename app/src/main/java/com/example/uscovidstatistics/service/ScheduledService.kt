@@ -42,7 +42,7 @@ class ScheduledService : Service() {
 
                     Observable.defer {
                         try {
-                            val networkRequests = NetworkRequests(AppConstants.DATA_SPECIFICS, null, null).getLocationData()
+                            val networkRequests = NetworkRequests(AppConstants.Data_Specifics, null, null).getLocationData()
                             Observable.just(networkRequests)
                         } catch (e: Exception) {
                             Observable.error<Exception>(e)
@@ -65,11 +65,11 @@ class ScheduledService : Service() {
     private fun setData(response: Response) {
         val body = response.body!!
         val type: ParameterizedType = Types.newParameterizedType(
-            when (AppConstants.DATA_SPECIFICS) {
+            when (AppConstants.Data_Specifics) {
                 0,1,3 -> List::class.java
                 else -> List::class.java
             },
-            when (AppConstants.DATA_SPECIFICS) {
+            when (AppConstants.Data_Specifics) {
                 0 -> BaseCountryDataset::class.java
                 1,2 -> StateDataset::class.java
                 3 -> ContinentDataset::class.java
@@ -77,36 +77,36 @@ class ScheduledService : Service() {
             })
 
         try {
-            when (AppConstants.DATA_SPECIFICS) {
+            when (AppConstants.Data_Specifics) {
                 0 -> {
                     val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
-                    AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
+                    AppConstants.World_Data = jsonAdapter.fromJson(body.string())!!
                 }
                 1 -> {
                     val jsonAdapter: JsonAdapter<ArrayList<StateDataset>> = moshi.adapter(type)
-                    AppConstants.US_DATA = jsonAdapter.fromJson(body.string())!!
-                    for (data in AppConstants.US_DATA) {
-                        AppConstants.US_STATE_DATA_MAPPED[data.state!!] = data
+                    AppConstants.Us_Data = jsonAdapter.fromJson(body.string())!!
+                    for (data in AppConstants.Us_Data) {
+                        AppConstants.Us_State_Data_Mapped[data.state!!] = data
                     }
                 }
                 2 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(StateDataset::class.java)
-                    AppConstants.US_STATE_DATA = jsonAdapter.fromJson(body.string())!!
+                    AppConstants.Us_State_Data = jsonAdapter.fromJson(body.string())!!
                 }
                 3 -> {
                     val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
-                    AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!                }
+                    AppConstants.Continent_Data = jsonAdapter.fromJson(body.string())!!                }
                 4 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuCountryDataset::class.java)
-                    AppConstants.COUNTRY_DATA = jsonAdapter.fromJson(body.string())!!
+                    AppConstants.Country_Data = jsonAdapter.fromJson(body.string())!!
                 }
                 5 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuProvinceDataset::class.java)
-                    AppConstants.COUNTRY_PROVINCE_DATA = jsonAdapter.fromJson(body.string())!!
+                    AppConstants.Country_Province_Data = jsonAdapter.fromJson(body.string())!!
                 }
                 else -> {
                     val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
-                    AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
+                    AppConstants.World_Data = jsonAdapter.fromJson(body.string())!!
                 }
             }
         } catch (e: Exception) {
@@ -116,8 +116,8 @@ class ScheduledService : Service() {
     }
 
     private fun notifications() {
-        println("Updated time  : ${AppConstants.CONTINENT_DATA[0].timeUpdated}")
-        println("Current cases : ${AppConstants.CONTINENT_DATA[0].cases}")
+        println("Updated time  : ${AppConstants.Continent_Data[0].timeUpdated}")
+        println("Current cases : ${AppConstants.Continent_Data[0].cases}")
 
         with(NotificationManagerCompat.from(applicationContext)) {
             // notificationId is a unique int for each notification that you must define

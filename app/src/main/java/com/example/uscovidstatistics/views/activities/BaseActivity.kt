@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -59,9 +58,9 @@ open class BaseActivity : AppCompatActivity() {
             }
             R.id.app_bar_favorite -> {
                 val activityView = findViewById<BottomAppBar>(R.id.bottom_toolbar)
-                PreferenceUtils.getInstance(this).addToSavedList(AppConstants.COUNTRY_NAME!!)
+                PreferenceUtils.getInstance(this).addToSavedList(AppConstants.Country_Name!!)
 
-                if (!PreferenceUtils(this).checkPref(AppConstants.COUNTRY_NAME!!)) {
+                if (!PreferenceUtils(this).checkPref(AppConstants.Country_Name!!)) {
                     item.icon = ContextCompat.getDrawable(this, R.drawable.ic_favorite_border_24px)
                     SnackbarUtil(this).info(activityView, getString(R.string.snackbar_favorite_removed))
                 } else {
@@ -76,7 +75,7 @@ open class BaseActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.enter_left, R.anim.exit_right)
-        AppConstants.PREFERENCE_CHECK = true
+        AppConstants.Preference_Check = true
         finish()
     }
 
@@ -88,7 +87,7 @@ open class BaseActivity : AppCompatActivity() {
         for ((i, perm) in permissions.withIndex())
             permissionMap[perm] = grantResults[i]
 
-        if (requestCode == AppConstants.REQUEST_GPS_LOCATION && permissionMap[Manifest.permission.ACCESS_COARSE_LOCATION] == 0) {
+        if (requestCode == AppConstants.Request_Gps_Location && permissionMap[Manifest.permission.ACCESS_COARSE_LOCATION] == 0) {
             setGpsCoords()
         }
     }
@@ -98,9 +97,9 @@ open class BaseActivity : AppCompatActivity() {
         val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-                AppConstants.GPS_DATA[0] = location.longitude
-                AppConstants.GPS_DATA[1] = location.latitude
-                AppConstants.LOCATION_DATA = AppUtils().getLocationData(this)
+                AppConstants.Gps_Data[0] = location.longitude
+                AppConstants.Gps_Data[1] = location.latitude
+                AppConstants.Location_Data = AppUtils().getLocationData(this)
 
                 if (this !is UserSettings)
                     goToGpsLocation()
@@ -114,17 +113,17 @@ open class BaseActivity : AppCompatActivity() {
 
     private fun goToGpsLocation() {
         try {
-            if (AppConstants.LOCATION_DATA.country != null) {
-                val country = AppConstants.LOCATION_DATA.country
-                val region = AppConstants.LOCATION_DATA.region
+            if (AppConstants.Location_Data.country != null) {
+                val country = AppConstants.Location_Data.country
+                val region = AppConstants.Location_Data.region
                 val intent = Intent(this, CountryActivity::class.java)
-                    .putExtra(AppConstants.DISPLAY_REGION, region)
+                    .putExtra(AppConstants.Display_Region, region)
 
                 if (country == "United States") {
-                    intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
-                        .putExtra(AppConstants.LOAD_STATE, true)
+                    intent.putExtra(AppConstants.Display_Country, "USA")
+                        .putExtra(AppConstants.Load_State, true)
                 } else
-                    intent.putExtra(AppConstants.DISPLAY_COUNTRY, country)
+                    intent.putExtra(AppConstants.Display_Country, country)
 
                 startActivity(intent)
                 overridePendingTransition(R.anim.enter_right, R.anim.exit_left)

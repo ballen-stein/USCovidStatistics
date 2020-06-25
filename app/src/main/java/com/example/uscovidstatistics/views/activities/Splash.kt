@@ -2,11 +2,9 @@ package com.example.uscovidstatistics.views.activities
 
 import android.Manifest
 import android.content.Intent
-import android.content.SharedPreferences
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.R
@@ -16,7 +14,6 @@ import com.example.uscovidstatistics.model.apidata.JhuBaseDataset
 import com.example.uscovidstatistics.network.NetworkRequests
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.PreferenceUtils
-import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.squareup.moshi.JsonAdapter
@@ -59,11 +56,11 @@ class Splash : AppCompatActivity() {
         fusedLocationClient.lastLocation.addOnSuccessListener {
                 location: Location? -> if (location != null) {
             loadGpsIntent.putExtra(
-                AppConstants.CURRENT_GPS_LOCATION,
+                AppConstants.Current_Gps_Location,
                 doubleArrayOf(location.longitude, location.latitude)
             )
-            AppConstants.GPS_DATA[0] = location.longitude
-            AppConstants.GPS_DATA[1] = location.latitude
+            AppConstants.Gps_Data[0] = location.longitude
+            AppConstants.Gps_Data[1] = location.latitude
         }
             setLocation()
         }
@@ -71,7 +68,7 @@ class Splash : AppCompatActivity() {
 
     private fun setLocation() {
         try {
-            AppConstants.LOCATION_DATA = AppUtils().getLocationData(this)
+            AppConstants.Location_Data = AppUtils().getLocationData(this)
         } catch (e: Exception) {
             Toasty.error(this, R.string.no_location, Toast.LENGTH_SHORT).show()
             e.printStackTrace()
@@ -124,7 +121,7 @@ class Splash : AppCompatActivity() {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val type: ParameterizedType = Types.newParameterizedType(List::class.java, JhuBaseDataset::class.java)
         val jsonAdapter: JsonAdapter<List<JhuBaseDataset>> = moshi.adapter(type)
-        AppConstants.REGIONAL_DATA = jsonAdapter.fromJson(body.string())!!
+        AppConstants.Regional_Data = jsonAdapter.fromJson(body.string())!!
     }
 
     private fun setWorldData(response: Response) {
@@ -132,10 +129,10 @@ class Splash : AppCompatActivity() {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val type: ParameterizedType = Types.newParameterizedType(List::class.java, BaseCountryDataset::class.java)
         val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
-        AppConstants.WORLD_DATA = jsonAdapter.fromJson(body.string())!!
+        AppConstants.World_Data = jsonAdapter.fromJson(body.string())!!
 
-        for (data in AppConstants.WORLD_DATA) {
-            AppConstants.WORLD_DATA_MAPPED[data.country!!] = data
+        for (data in AppConstants.World_Data) {
+            AppConstants.World_Data_Mapped[data.country!!] = data
         }
     }
 
@@ -151,7 +148,7 @@ class Splash : AppCompatActivity() {
         for ((i, perm) in permissions.withIndex())
             permissionMap[perm] = grantResults[i]
 
-        if (requestCode == AppConstants.REQUEST_GPS_LOCATION && permissionMap[Manifest.permission.ACCESS_COARSE_LOCATION] != 0) {
+        if (requestCode == AppConstants.Request_Gps_Location && permissionMap[Manifest.permission.ACCESS_COARSE_LOCATION] != 0) {
             Toasty.error(this, "GPS Permission not granted", Toast.LENGTH_SHORT).show()
             setCountryFlags()
         } else {

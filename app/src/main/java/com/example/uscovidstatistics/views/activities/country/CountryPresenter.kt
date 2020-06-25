@@ -35,15 +35,15 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
 
     override fun onDestroy() {
         this.view = null
-        AppConstants.COUNTRY_SERVICE_ON = false
+        AppConstants.Country_Service_On = false
         mContext.stopService(Intent((mContext as CountryActivity), ScheduledService::class.java))
     }
 
     override fun onViewCreated(countryName: String) {
         if (AppConstants.Usa_Check) {
-            loadUsData(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME)
+            loadUsData(AppConstants.Data_Specifics, AppConstants.Region_Name, AppConstants.Country_Name)
         } else {
-            loadData(AppConstants.DATA_SPECIFICS, AppConstants.REGION_NAME, AppConstants.COUNTRY_NAME)
+            loadData(AppConstants.Data_Specifics, AppConstants.Region_Name, AppConstants.Country_Name)
         }
     }
 
@@ -77,8 +77,8 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
                 { onNext -> onNext as Response
-                    setData(onNext, getSpecifics, false)},
-                { onError ->  view?.dataError(onError)},
+                    setData(onNext, getSpecifics, false) },
+                { onError ->  view?.dataError(onError) },
                 { view?.displayCountryData(dataModelRepository.getCountryData()) }
             )
     }
@@ -95,20 +95,20 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
             when (getSpecifics) {
                 1 -> {
                     val jsonAdapter: JsonAdapter<ArrayList<StateDataset>> = moshi.adapter(type)
-                    AppConstants.US_DATA = jsonAdapter.fromJson(body.string())!!
-                    for (data in AppConstants.US_DATA) {
-                        AppConstants.US_STATE_DATA_MAPPED[data.state!!] = data
+                    AppConstants.Us_Data = jsonAdapter.fromJson(body.string())!!
+                    for (data in AppConstants.Us_Data) {
+                        AppConstants.Us_State_Data_Mapped[data.state!!] = data
                     }
                 }
                 4 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuCountryDataset::class.java)
-                    AppConstants.COUNTRY_DATA = jsonAdapter.fromJson(body.string())!!
+                    AppConstants.Country_Data = jsonAdapter.fromJson(body.string())!!
                 }
                 5 -> { // Type isn't used since JSON data is not a list
                     val jsonAdapter = moshi.adapter(JhuProvinceDataset::class.java)
-                    AppConstants.COUNTRY_PROVINCE_DATA = jsonAdapter.fromJson(body.string())!!
+                    AppConstants.Country_Province_Data = jsonAdapter.fromJson(body.string())!!
                     if (addToList)
-                        AppConstants.COUNTRY_PROVINCE_LIST.add(AppConstants.COUNTRY_PROVINCE_DATA)
+                        AppConstants.Country_Province_List.add(AppConstants.Country_Province_Data)
                 }
             }
         } catch (e: Exception) {
@@ -125,7 +125,7 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
             } else {
                 Observable.defer {
                     try {
-                        val networkRequests = NetworkRequests(getSpecifics, data, AppConstants.COUNTRY_NAME).getLocationData()
+                        val networkRequests = NetworkRequests(getSpecifics, data, AppConstants.Country_Name).getLocationData()
                         Observable.just(networkRequests)
                     } catch (e: Exception) {
                         Observable.error<Exception>(e)
@@ -134,9 +134,9 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe (
                         { onNext -> onNext as Response
-                            setData(onNext, getSpecifics, true)},
-                        { onError ->  view?.dataError(onError)},
-                        { if (AppConstants.COUNTRY_PROVINCE_LIST.size == regionList.size)
+                            setData(onNext, getSpecifics, true) },
+                        { onError ->  view?.dataError(onError) },
+                        { if (AppConstants.Country_Province_List.size == regionList.size)
                             view?.displayCountryList()
                         }
                     )
@@ -150,9 +150,9 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
                 Thread(Runnable {
                     Looper.prepare()
                     if (AppConstants.Usa_Check) {
-                        loadUsData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)
+                        loadUsData(AppConstants.Data_Specifics, null, AppConstants.Country_Name)
                     } else {
-                        loadData(AppConstants.DATA_SPECIFICS, null, AppConstants.COUNTRY_NAME)
+                        loadData(AppConstants.Data_Specifics, null, AppConstants.Country_Name)
                     }
                 }).start()
             }

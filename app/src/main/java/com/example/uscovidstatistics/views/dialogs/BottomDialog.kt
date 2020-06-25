@@ -1,29 +1,19 @@
 package com.example.uscovidstatistics.views.dialogs
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.location.Location
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.databinding.BottomNavDialogFragmentBinding
 import com.example.uscovidstatistics.utils.AppUtils
-import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
-import com.example.uscovidstatistics.views.activities.region.StateActivity
 import com.example.uscovidstatistics.views.activities.usersettings.UserSettings
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.bottom_nav_dialog_fragment.*
 
 class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(), ViewBinding{
@@ -82,17 +72,17 @@ class BottomDialog(private val mContext: Context) : BottomSheetDialogFragment(),
     }
 
     private fun goToLocation() {
-        if (AppConstants.LOCATION_DATA.country != null) {
-            val country = AppConstants.LOCATION_DATA.country
-            val region = AppConstants.LOCATION_DATA.region
+        if (AppConstants.Location_Data.country != null) {
+            val country = AppConstants.Location_Data.country
+            val region = AppConstants.Location_Data.region
             val intent = Intent(mContext, CountryActivity::class.java)
-                .putExtra(AppConstants.DISPLAY_REGION, region)
+                .putExtra(AppConstants.Display_Region, region)
 
             if (country == "United States") {
-                intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
-                    .putExtra(AppConstants.LOAD_STATE, true)
+                intent.putExtra(AppConstants.Display_Country, "USA")
+                    .putExtra(AppConstants.Load_State, true)
             } else
-                intent.putExtra(AppConstants.DISPLAY_COUNTRY, country)
+                intent.putExtra(AppConstants.Display_Country, country)
 
             startActivity(intent)
             (mContext as Activity).overridePendingTransition(R.anim.enter_right, R.anim.exit_left)

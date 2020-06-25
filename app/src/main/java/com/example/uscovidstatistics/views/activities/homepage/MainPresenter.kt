@@ -38,22 +38,22 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
     }
 
     override fun onViewCreated() {
-        loadData(AppConstants.DATA_SPECIFICS)
+        loadData(AppConstants.Data_Specifics)
     }
 
     override fun openLocationOnLaunch(mContext: Context) {
         if (AppConstants.USER_PREFS.getBoolean(mContext.getString(R.string.preference_gps), false)) {
-            if (AppConstants.LOCATION_DATA.country != null) {
-                val country = AppConstants.LOCATION_DATA.country
-                val region = AppConstants.LOCATION_DATA.region
+            if (AppConstants.Location_Data.country != null) {
+                val country = AppConstants.Location_Data.country
+                val region = AppConstants.Location_Data.region
                 val intent = Intent(mContext, CountryActivity::class.java)
-                    .putExtra(AppConstants.DISPLAY_REGION, region)
+                    .putExtra(AppConstants.Display_Region, region)
 
                 if (country == "United States") {
-                    intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
-                        .putExtra(AppConstants.LOAD_STATE, true)
+                    intent.putExtra(AppConstants.Display_Country, "USA")
+                        .putExtra(AppConstants.Load_State, true)
                 } else
-                    intent.putExtra(AppConstants.DISPLAY_COUNTRY, country)
+                    intent.putExtra(AppConstants.Display_Country, country)
 
                 mContext.startActivity(intent)
             }
@@ -92,7 +92,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
 
         try {
             val updatedBaseData = jsonAdapter.fromJson(body.string())
-            AppConstants.WORLD_DATA_MAPPED[updatedBaseData!!.country!!] = updatedBaseData
+            AppConstants.World_Data_Mapped[updatedBaseData!!.country!!] = updatedBaseData
         } catch (e: Exception) {
             view?.dataError(e)
             e.printStackTrace()
@@ -125,9 +125,8 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
                 { onNext -> onNext as Response
-                    setData(onNext)},
-                { onError ->  view?.dataError(onError)
-                    Log.d("CovidTesting", "Error in the subscription : $onError")},
+                    setData(onNext) },
+                { onError ->  view?.dataError(onError) },
                 { view?.displayContinentData(AppUtils().continentTotals(dataModelRepository.getContinentData())) }
             )
     }
@@ -138,7 +137,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
 
         try {
             val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
-            AppConstants.CONTINENT_DATA = jsonAdapter.fromJson(body.string())!!
+            AppConstants.Continent_Data = jsonAdapter.fromJson(body.string())!!
         } catch (e: Exception) {
             view?.dataError(e)
             e.printStackTrace()

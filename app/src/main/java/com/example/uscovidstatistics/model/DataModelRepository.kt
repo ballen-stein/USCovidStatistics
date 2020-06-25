@@ -2,10 +2,8 @@ package com.example.uscovidstatistics.model
 
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.apidata.*
-import dagger.Component
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class DataModelRepository {
@@ -16,26 +14,26 @@ class DataModelRepository {
     }
 
     fun getUsData(): List<StateDataset> {
-        return AppConstants.US_DATA
+        return AppConstants.Us_Data
     }
 
     fun getUsState(): StateDataset {
-        return AppConstants.US_STATE_DATA
+        return AppConstants.Us_State_Data
     }
 
     fun getUsMapped(): HashMap<String, StateDataset> {
-        return AppConstants.US_STATE_DATA_MAPPED
+        return AppConstants.Us_State_Data_Mapped
     }
 
     fun getContinentData(): List<ContinentDataset> {
-        return AppConstants.CONTINENT_DATA
+        return AppConstants.Continent_Data
     }
 
     fun getCountryData(): JhuCountryDataset {
-        return AppConstants.COUNTRY_DATA
+        return AppConstants.Country_Data
     }
 
     fun getProvinceData(): JhuProvinceDataset {
-        return AppConstants.COUNTRY_PROVINCE_DATA
+        return AppConstants.Country_Province_Data
     }
 }

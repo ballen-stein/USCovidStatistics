@@ -48,8 +48,8 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         if (AppConstants.USER_PREFS.getBoolean(getString(R.string.preference_gps), false))
             openOnLaunch = true
 
-        AppConstants.APP_OPEN = true
-        AppConstants.DATA_SPECIFICS = 3
+        AppConstants.App_Open = true
+        AppConstants.Data_Specifics = 3
 
         setPresenter(MainPresenter(this, DependencyInjectorImpl()))
         presenter.onViewCreated()
@@ -68,20 +68,17 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     override fun onStop() {
         super.onStop()
         this.activityPaused()
-        AppConstants.APP_OPEN = false
+        AppConstants.App_Open = false
     }
 
     override fun onResume() {
         super.onResume()
         this.activityResumed()
-        AppConstants.APP_OPEN = true
+        AppConstants.App_Open = true
 
         appPrefs.userPreferences()
         if (AppConstants.USER_PREFS.getLong(getString(R.string.preference_frequency), 0L) != 0L) {
             AppConstants.Update_Frequency = AppConstants.USER_PREFS.getLong(getString(R.string.preference_frequency), 5L)
-            Log.d("CovidTesting", "${AppConstants.Update_Frequency} has a set value!")
-        } else {
-            Log.d("CovidTesting", "No setting set!")
         }
 
         if (AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "") != null) {
@@ -90,7 +87,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
             AppConstants.Saved_Locations.clear()
             AppConstants.Saved_Locations.addAll(savedLocations)
 
-            if (AppConstants.Saved_Locations.isNotEmpty() && AppConstants.PREFERENCE_CHECK) {
+            if (AppConstants.Saved_Locations.isNotEmpty() && AppConstants.Preference_Check) {
                 recyclerView.displaySavedLocations()
             }
         }
@@ -100,11 +97,11 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     override fun onStart() {
         super.onStart()
         AppConstants.Timer_Delay = AppUtils().setTimerDelay()
-        if (!AppConstants.GLOBAL_SERVICE_ON) {
+        if (!AppConstants.Global_Service_On) {
             Handler().postDelayed(
                 {presenter.onServiceStarted()}, AppConstants.Timer_Delay
             )
-            AppConstants.GLOBAL_SERVICE_ON = true
+            AppConstants.Global_Service_On = true
         }
     }
 
@@ -134,7 +131,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     }
 
     private fun cleanDataForCountries() {
-        for (continent in AppConstants.CONTINENT_DATA) {
+        for (continent in AppConstants.Continent_Data) {
             val continentName = continent.continent
             val temp = appUtils.removeTerritories(continentName!!, binding.root.context)
             continent.countriesOnContinent = appUtils.cleanHashMap(appUtils.continentCountryList()[continentName]!!, temp)
@@ -175,7 +172,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     fun getSavedLocations(): List<BaseCountryDataset> {
         val list = ArrayList<BaseCountryDataset>()
         for (countryName in  AppConstants.Saved_Locations) {
-            if (countryName == "Global") list.add(globalData!!) else list.add(AppConstants.WORLD_DATA_MAPPED[countryName]!!)
+            if (countryName == "Global") list.add(globalData!!) else list.add(AppConstants.World_Data_Mapped[countryName]!!)
         }
         return list
     }

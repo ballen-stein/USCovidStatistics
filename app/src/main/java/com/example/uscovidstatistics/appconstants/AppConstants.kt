@@ -8,21 +8,21 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 class AppConstants {
     companion object {
         // Intents
-        const val CHANNEL_ID = "channel_id_01"
-        const val DISPLAY_GPS = "display_gps_location"
-        const val DISPLAY_COUNTRY = "display_country_location"
-        const val DISPLAY_REGION = "display_region_location"
-        const val LOAD_STATE = "load_us_state"
-        const val REQUEST_GPS_LOCATION = 101
+        const val Channel_Id = "channel_id_01"
+        const val Display_Gps = "display_gps_location"
+        const val Display_Country = "display_country_location"
+        const val Display_Region = "display_region_location"
+        const val Load_State = "load_us_state"
+        const val Request_Gps_Location = 101
 
         // Basic Data
-        var APP_OPEN = false
-        var COUNTRY_NAME: String? = null
-        var DATA_SPECIFICS = 3
-        val NON_CLICK_IDS = arrayOf("Other", "Territories", "Totals", "States & DC")
-        var PREFERENCE_CHECK = false
-        var REGION_NAME: String? = null
-        var RECYCLER_CLICKABLE = true
+        var App_Open = false
+        var Country_Name: String? = null
+        var Data_Specifics = 3
+        val Non_Click_Ids = arrayOf("Other", "Territories", "Totals", "States & DC")
+        var Preference_Check = false
+        var Region_Name: String? = null
+        var Recycler_Clickable = true
         var Saved_Locations: ArrayList<String> = ArrayList()
         var Settings_Updated = false
         var Timer_Delay = 0L
@@ -35,39 +35,39 @@ class AppConstants {
         lateinit var USER_PREFS: SharedPreferences
 
         // Service Data
-        var GLOBAL_SERVICE_ON = false
-        var COUNTRY_SERVICE_ON = false
-        var REGIONAL_SERVICE_ON = false
+        var Global_Service_On = false
+        var Country_Service_On = false
+        var Regional_Service_On = false
 
         // API Urls
-        const val API_DATA_URL_GLOBAL = "https://corona.lmao.ninja/v2/countries"
-        const val API_DATA_URL_USA = "https://corona.lmao.ninja/v2/states"
-        const val API_DATA_ENDPOINT = "?yesterday=true"
-        const val API_DATA_CONTINENT = "https://corona.lmao.ninja/v2/continents/?yesterday=falsecountries&sort"
-        const val API_DATA_JHU = "https://corona.lmao.ninja/v2/jhucsse"
-        const val API_DATA_JHU_COUNTRY = "https://corona.lmao.ninja/v2/historical"
-        const val API_DATA_JHU_ENDPOINT_7 = "?lastdays=7"
-        const val API_DATA_JHU_ENDPOINT_ALL = "?lastdays=all"
+        const val Api_Data_Url_Global = "https://corona.lmao.ninja/v2/countries"
+        const val Api_Data_Url_Usa = "https://corona.lmao.ninja/v2/states"
+        const val Api_Data_Endpoint = "?yesterday=true"
+        const val Api_Data_Continent = "https://corona.lmao.ninja/v2/continents/?yesterday=falsecountries&sort"
+        const val Api_Data_Jhu = "https://corona.lmao.ninja/v2/jhucsse"
+        const val Api_Data_Jhu_Country = "https://corona.lmao.ninja/v2/historical"
+        const val Api_Data_Jhu_Endpoint_7 = "?lastdays=7"
+        const val Api_Data_Jhu_Endpoint_All = "?lastdays=all"
 
-        const val CURRENT_GPS_LOCATION = "current_location"
+        const val Current_Gps_Location = "current_location"
 
         // App-Global Covid Data Models
-        val GPS_DATA = DoubleArray(2)
-        lateinit var LOCATION_DATA: LocationDataset
+        val Gps_Data = DoubleArray(2)
+        lateinit var Location_Data: LocationDataset
 
-        lateinit var WORLD_DATA: List<BaseCountryDataset>
-        var WORLD_DATA_MAPPED: HashMap<String, BaseCountryDataset> = HashMap()
+        lateinit var World_Data: List<BaseCountryDataset>
+        var World_Data_Mapped: HashMap<String, BaseCountryDataset> = HashMap()
 
-        lateinit var REGIONAL_DATA: List<JhuBaseDataset>
+        lateinit var Regional_Data: List<JhuBaseDataset>
 
-        lateinit var US_DATA: ArrayList<StateDataset>
-        lateinit var US_STATE_DATA: StateDataset
-        var US_STATE_DATA_MAPPED: HashMap<String, StateDataset> = HashMap()
+        lateinit var Us_Data: ArrayList<StateDataset>
+        lateinit var Us_State_Data: StateDataset
+        var Us_State_Data_Mapped: HashMap<String, StateDataset> = HashMap()
 
-        lateinit var CONTINENT_DATA: List<ContinentDataset>
+        lateinit var Continent_Data: List<ContinentDataset>
 
-        lateinit var COUNTRY_DATA: JhuCountryDataset
-        lateinit var COUNTRY_PROVINCE_DATA: JhuProvinceDataset
-        var COUNTRY_PROVINCE_LIST: ArrayList<JhuProvinceDataset> = ArrayList()
+        lateinit var Country_Data: JhuCountryDataset
+        lateinit var Country_Province_Data: JhuProvinceDataset
+        var Country_Province_List: ArrayList<JhuProvinceDataset> = ArrayList()
     }
 }

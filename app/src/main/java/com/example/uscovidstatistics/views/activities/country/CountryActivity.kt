@@ -52,16 +52,16 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         setContentView(root)
 
         // Testing
-        AppConstants.COUNTRY_PROVINCE_LIST.clear()
+        AppConstants.Country_Province_List.clear()
         appUtils.resetCountryTotals()
 
         appPref = PreferenceUtils.getInstance(this)
 
-        countryDisplay = intent.getStringExtra(AppConstants.DISPLAY_COUNTRY)!!
+        countryDisplay = intent.getStringExtra(AppConstants.Display_Country)!!
 
         AppConstants.Usa_Check = (countryDisplay == "USA")
-        AppConstants.COUNTRY_NAME = countryDisplay
-        AppConstants.DATA_SPECIFICS = if (AppConstants.Usa_Check) 1 else 4
+        AppConstants.Country_Name = countryDisplay
+        AppConstants.Data_Specifics = if (AppConstants.Usa_Check) 1 else 4
 
         setPresenter(CountryPresenter(this, DependencyInjectorImpl(), this))
         presenter.onViewCreated(countryDisplay)
@@ -80,7 +80,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
                 "Myanmar"
             else
                 countryDisplay
-            val url = AppConstants.WORLD_DATA_MAPPED[mappedName]!!.countryInfo!!.countryFlag
+            val url = AppConstants.World_Data_Mapped[mappedName]!!.countryInfo!!.countryFlag
 
             Glide.with(this)
                 .load(url)
@@ -122,11 +122,11 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     override fun onStart() {
         super.onStart()
         AppConstants.Timer_Delay = AppUtils().setTimerDelay()
-        if (!AppConstants.COUNTRY_SERVICE_ON) {
+        if (!AppConstants.Country_Service_On) {
             Handler().postDelayed(
                 {presenter.onServiceStarted(this)}, AppConstants.Timer_Delay
             )
-            AppConstants.COUNTRY_SERVICE_ON = true
+            AppConstants.Country_Service_On = true
         }
     }
 
@@ -143,7 +143,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     override fun onStop() {
         super.onStop()
         this.activityPaused()
-        AppConstants.COUNTRY_PROVINCE_LIST.clear()
+        AppConstants.Country_Province_List.clear()
         appUtils.resetCountryTotals()
     }
 
@@ -176,10 +176,10 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         binding.dataProgress.visibility = View.VISIBLE
         binding.informationView.visibility = View.VISIBLE
 
-        displayGeneralData(AppConstants.WORLD_DATA_MAPPED[countryData.country!!]!!)
+        displayGeneralData(AppConstants.World_Data_Mapped[countryData.country!!]!!)
 
-        AppConstants.DATA_SPECIFICS = 5
-        presenter.getRegionalData(AppConstants.DATA_SPECIFICS, regionList)
+        AppConstants.Data_Specifics = 5
+        presenter.getRegionalData(AppConstants.Data_Specifics, regionList)
     }
 
     private fun displayGeneralData(baseCountryDataset: BaseCountryDataset) {
@@ -220,12 +220,12 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
     override fun displayCountryList() {
         if (AppConstants.Usa_Check) {
-            for (state in AppConstants.US_DATA)
+            for (state in AppConstants.Us_Data)
                 cleanedDataList.add(appUtils.createCleanUsaData(state))
         } else {
             if (countryDisplay == "UK")
                 countryDisplay = "United Kingdom"
-            for (data in AppConstants.REGIONAL_DATA) {
+            for (data in AppConstants.Regional_Data) {
                 if (data.country!! == countryDisplay) {
                     if (data.province != null) {
                         cleanedDataList.add(appUtils.cleanRegionalData(data))
@@ -237,12 +237,12 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             }
         }
 
-        if (intent.getBooleanExtra(AppConstants.LOAD_STATE, false)) {
+        if (intent.getBooleanExtra(AppConstants.Load_State, false)) {
             val intent = Intent(this, StateActivity::class.java)
-            intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
-                .putExtra(AppConstants.DISPLAY_REGION, this.intent.getStringExtra(AppConstants.DISPLAY_REGION))
+            intent.putExtra(AppConstants.Display_Country, "USA")
+                .putExtra(AppConstants.Display_Region, this.intent.getStringExtra(AppConstants.Display_Region))
 
-            this.intent.putExtra(AppConstants.LOAD_STATE, false)
+            this.intent.putExtra(AppConstants.Load_State, false)
             startActivity(intent)
             overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
         }
@@ -259,7 +259,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     private fun nullProvinceData() {
-        for (province in AppConstants.COUNTRY_PROVINCE_LIST)
+        for (province in AppConstants.Country_Province_List)
             cleanedDataList.add(appUtils.cleanCountryData(province))
     }
 
@@ -267,7 +267,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         binding.dataProgress.visibility = View.VISIBLE
         binding.informationView.visibility = View.VISIBLE
 
-        for (data in AppConstants.US_DATA) {
+        for (data in AppConstants.Us_Data) {
             when {
                 resources.getStringArray(R.array.us_territories).contains(data.state) -> {
                     data.state = "YYYY${data.state}"
@@ -281,7 +281,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             }
         }
 
-        displayGeneralData(AppConstants.WORLD_DATA_MAPPED["USA"]!!)
+        displayGeneralData(AppConstants.World_Data_Mapped["USA"]!!)
         displayCountryList()
     }
 

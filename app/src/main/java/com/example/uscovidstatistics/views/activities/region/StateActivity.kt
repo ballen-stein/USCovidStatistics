@@ -15,7 +15,6 @@ import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
-import kotlinx.android.synthetic.main.loading_screen.view.*
 
 class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
 
@@ -34,13 +33,13 @@ class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
         binding = ActivityRegionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val namePreFormat = intent.getStringExtra(AppConstants.DISPLAY_REGION)!!
+        val namePreFormat = intent.getStringExtra(AppConstants.Display_Region)!!
         regionName = appUtils.formatName(namePreFormat)
         binding.regionHeader.text = regionName
 
-        AppConstants.COUNTRY_NAME = intent.getStringExtra(AppConstants.DISPLAY_COUNTRY)!!
-        AppConstants.REGION_NAME = regionName
-        AppConstants.DATA_SPECIFICS = 2
+        AppConstants.Country_Name = intent.getStringExtra(AppConstants.Display_Country)!!
+        AppConstants.Region_Name = regionName
+        AppConstants.Data_Specifics = 2
 
         setPresenter(StatePresenter(this, DependencyInjectorImpl()))
         presenter.onViewCreated()
@@ -67,7 +66,7 @@ class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
     override fun displayStateData(stateDataset: StateDataset) {
         binding.informationView.visibility = View.VISIBLE
         binding.dataProgress.visibility = View.GONE
-        setStateData(AppConstants.US_STATE_DATA)
+        setStateData(AppConstants.Us_State_Data)
     }
 
     private fun setStateData(stateDataset: StateDataset) {

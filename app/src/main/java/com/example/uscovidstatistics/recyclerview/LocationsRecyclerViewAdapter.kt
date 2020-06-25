@@ -1,6 +1,5 @@
 package com.example.uscovidstatistics.recyclerview
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +35,6 @@ class LocationsRecyclerViewAdapter internal constructor(private val savedCountri
     private lateinit var savedLocationDischarged: String
 
     private lateinit var savedLocationDead: String
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentData = savedCountriesList[position]
@@ -86,16 +84,38 @@ class LocationsRecyclerViewAdapter internal constructor(private val savedCountri
         return savedCountriesList.size
     }
 
-    class ViewHolder(binding: SavedLocationsLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(binding: SavedLocationsLayoutBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         private lateinit var currentData: BaseCountryDataset
+
+        init {
+            super.itemView
+            itemView.setOnClickListener(this)
+        }
 
         fun bind(baseDataset: BaseCountryDataset) {
             currentData = baseDataset
         }
 
+        override fun onClick(view: View?) {
+            if (currentData.country != "Global")
+                clickListener!!.openToLocation(currentData, view)
+        }
+
+    }
+
+    fun setOnClickListener(cListener : OnClickListener){
+        clickListener = cListener
+    }
+
+    interface OnClickListener {
+        fun openToLocation(currentData: BaseCountryDataset, view: View?)
     }
 
     override fun getRoot(): View {
         return binding.root
+    }
+
+    companion object{
+        private var clickListener : OnClickListener? = null
     }
 }

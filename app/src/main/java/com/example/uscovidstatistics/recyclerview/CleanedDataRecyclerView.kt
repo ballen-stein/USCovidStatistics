@@ -19,7 +19,7 @@ class CleanedDataRecyclerView (private val mContext: Context, private val activi
 
     private lateinit var recyclerData: List<CleanedUpData>
 
-    fun displayCleanedData(){
+    fun displayCleanedData() {
         recyclerView = activity.findViewById(R.id.recycler_view)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(mContext)
@@ -31,14 +31,14 @@ class CleanedDataRecyclerView (private val mContext: Context, private val activi
         setListener()
     }
 
-    private fun setListener(){
+    private fun setListener() {
         adapterCleanedData.setOnClickListener(object : CleanedDataRecyclerViewAdapter.OnClickListener {
             override fun onRegionClick(position: Int, cleanedUpData: CleanedUpData, v: View) {
                 val intent = Intent(mContext, StateActivity::class.java)
                 val countryName = activity.root.cases_header.text.split(" Information")[0]
 
-                intent.putExtra(AppConstants.DISPLAY_REGION, cleanedUpData.name)
-                    .putExtra(AppConstants.DISPLAY_COUNTRY, countryName)
+                intent.putExtra(AppConstants.Display_Region, cleanedUpData.name)
+                    .putExtra(AppConstants.Display_Country, countryName)
                 mContext.startActivity(intent)
                 activity.overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
 
