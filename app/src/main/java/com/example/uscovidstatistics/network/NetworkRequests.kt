@@ -1,5 +1,6 @@
 package com.example.uscovidstatistics.network
 
+import android.util.Log
 import com.example.uscovidstatistics.appconstants.AppConstants
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -15,6 +16,7 @@ class NetworkRequests(getSpecifics: Int, regionName: String?, countryName: Strin
         4 -> AppConstants.API_DATA_JHU_COUNTRY + "/$countryName${AppConstants.API_DATA_JHU_ENDPOINT_7}"
         5 -> AppConstants.API_DATA_JHU_COUNTRY + "/$countryName/$regionName${AppConstants.API_DATA_JHU_ENDPOINT_ALL}"
         6 -> AppConstants.API_DATA_JHU
+        7 -> "${AppConstants.API_DATA_URL_GLOBAL}/$countryName"
         else ->  AppConstants.API_DATA_URL_GLOBAL
     }
 

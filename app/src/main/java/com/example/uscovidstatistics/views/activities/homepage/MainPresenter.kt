@@ -41,10 +41,6 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
         loadData(AppConstants.DATA_SPECIFICS)
     }
 
-    /*override fun onDataUpdated() {
-        Log.d("CovidTesting", "Data was updated . . .")
-    }*/
-
     override fun openLocationOnLaunch(mContext: Context) {
         if (AppConstants.USER_PREFS.getBoolean(mContext.getString(R.string.preference_gps), false)) {
             if (AppConstants.LOCATION_DATA.country != null) {
@@ -64,6 +60,46 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
         }
     }
 
+    override fun updateData() {
+        for ((i,country) in AppConstants.Saved_Locations.withIndex()) {
+            if (country == "Global") continue
+            Observable.defer {
+                try {
+                    val networkRequest = NetworkRequests(7, null, country).getLocationData()
+                    Observable.just(networkRequest)
+                } catch (e: Exception) {
+                    Observable.error<Exception>(e)
+                }
+            }.observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {onNext -> onNext as Response
+                        updateListData(onNext)},
+                    {onError -> view?.dataError(onError)},
+                    {
+                        if (i == AppConstants.Saved_Locations.size-1) {
+                            view?.displayContinentData(AppUtils().continentTotals(dataModelRepository.getContinentData()))
+                        }
+                    }
+                )
+        }
+    }
+
+    private fun updateListData(response: Response) {
+        val body = response.body!!
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val jsonAdapter: JsonAdapter<BaseCountryDataset> = moshi.adapter(BaseCountryDataset::class.java)
+
+        try {
+            val updatedBaseData = jsonAdapter.fromJson(body.string())
+            AppConstants.WORLD_DATA_MAPPED[updatedBaseData!!.country!!] = updatedBaseData
+        } catch (e: Exception) {
+            view?.dataError(e)
+            e.printStackTrace()
+        }
+        body.close()
+    }
+
     override fun onServiceStarted() {
         val timer = Timer()
         timer.schedule(object: TimerTask() {
@@ -71,6 +107,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
                 Thread(Runnable {
                     Looper.prepare()
                     loadData(3)
+                    if (AppConstants.Saved_Locations.size >= 2) updateData()
                 }).start()
             }
         },0, (AppConstants.Update_Frequency)*60*1000)

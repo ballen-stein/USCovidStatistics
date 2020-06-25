@@ -17,7 +17,7 @@ class SnackbarUtil (private val mContext: Context) {
     }
 
     fun info(view: View, text: String) {
-        return Snackbar.make(view.rootView, text, Snackbar.LENGTH_INDEFINITE)
+        return Snackbar.make(view.rootView, text, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(mContext, R.color.colorPrimaryDark))
             .setTextColor(ContextCompat.getColor(mContext, R.color.colorWhite))
             .setAnchorView(view)

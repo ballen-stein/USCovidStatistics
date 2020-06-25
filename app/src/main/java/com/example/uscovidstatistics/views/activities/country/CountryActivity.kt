@@ -175,6 +175,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
 
         binding.dataProgress.visibility = View.VISIBLE
         binding.informationView.visibility = View.VISIBLE
+
         displayGeneralData(AppConstants.WORLD_DATA_MAPPED[countryData.country!!]!!)
 
         AppConstants.DATA_SPECIFICS = 5
@@ -182,9 +183,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     private fun displayGeneralData(baseCountryDataset: BaseCountryDataset) {
-        //val countryHeaderText = "${baseCountryDataset.country} ${resources.getString(R.string.base_covid_stats)}"
-        //binding.countryLayoutHeader.text = countryHeaderText
-
         val statisticsHeader = "${resources.getString(R.string.base_covid_stats)} as of ${appUtils.getFormattedDate()}"
         binding.countryLayoutHeader.text = statisticsHeader
 
@@ -239,9 +237,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             }
         }
 
-        recyclerViewData.displayCleanedData()
-        binding.dataProgress.visibility = View.GONE
-
         if (intent.getBooleanExtra(AppConstants.LOAD_STATE, false)) {
             val intent = Intent(this, StateActivity::class.java)
             intent.putExtra(AppConstants.DISPLAY_COUNTRY, "USA")
@@ -252,7 +247,8 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
             overridePendingTransition(R.anim.enter_right, R.anim.exit_left)
         }
 
-        //////////// Testing here ////////////
+        recyclerViewData.displayCleanedData()
+        binding.dataProgress.visibility = View.GONE
 
         if (AppConstants.Updating_Country && this.isActivityVisible()) {
             val dataUpdated = "$countryDisplay ${getString(R.string.data_updated)}"
@@ -260,8 +256,6 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
         } else {
             AppConstants.Updating_Country = true
         }
-
-        //////////////////////////////////////
     }
 
     private fun nullProvinceData() {
@@ -270,6 +264,9 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     override fun displayUsList() {
+        binding.dataProgress.visibility = View.VISIBLE
+        binding.informationView.visibility = View.VISIBLE
+
         for (data in AppConstants.US_DATA) {
             when {
                 resources.getStringArray(R.array.us_territories).contains(data.state) -> {

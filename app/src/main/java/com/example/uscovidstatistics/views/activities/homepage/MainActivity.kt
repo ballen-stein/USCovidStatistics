@@ -33,6 +33,8 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     private var openOnLaunch = false
 
+    private var updateList = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -124,12 +126,11 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
             SnackbarUtil(this).info(root.bottom_toolbar, dataUpdated)
         } else {
             AppConstants.Updating_Global = true
+            updateList = true
         }
 
         globalData = continentData
         cleanDataForCountries()
-
-        //TODO Add updates for all saved data in the getSavedLocations List
     }
 
     private fun cleanDataForCountries() {
