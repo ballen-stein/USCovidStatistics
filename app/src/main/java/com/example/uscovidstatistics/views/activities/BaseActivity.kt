@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -78,7 +79,6 @@ open class BaseActivity : AppCompatActivity() {
         AppConstants.Preference_Check = true
         finish()
     }
-
 
     @Override
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -1,14 +1,13 @@
 package com.example.uscovidstatistics.views.activities.country
 
 import android.content.Context
-import android.content.Intent
 import android.os.Looper
+import android.util.Log
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.manualdependency.DependencyInjector
 import com.example.uscovidstatistics.model.DataModelRepository
 import com.example.uscovidstatistics.model.apidata.*
 import com.example.uscovidstatistics.network.NetworkRequests
-import com.example.uscovidstatistics.service.ScheduledService
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -36,7 +35,7 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
     override fun onDestroy() {
         this.view = null
         AppConstants.Country_Service_On = false
-        mContext.stopService(Intent((mContext as CountryActivity), ScheduledService::class.java))
+        timer.cancel()
     }
 
     override fun onViewCreated(countryName: String) {
@@ -119,6 +118,7 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
     }
 
     override fun getRegionalData(getSpecifics: Int, regionList: Array<String>) {
+        AppConstants.Country_Province_List.clear()
         for (data in regionList) {
             if (dataToIgnore.contains(data)) {
                 continue

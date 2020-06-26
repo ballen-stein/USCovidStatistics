@@ -111,7 +111,8 @@ class Splash : AppCompatActivity() {
                     setLocationalData(onNext)
                 },
                 { // Snackbar
-                    Toasty.error(this, "Could not connect to internet for regional", Toast.LENGTH_SHORT).show()},
+                    Toasty.error(this, "Could not connect to internet for regional", Toast.LENGTH_SHORT).show()
+                    continueToLaunch()},
                 {continueToLaunch()}
             )
     }

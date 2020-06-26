@@ -3,6 +3,7 @@ package com.example.uscovidstatistics.views.activities.homepage
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
+import android.util.Log
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.manualdependency.DependencyInjector
@@ -100,12 +101,14 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
     }
 
     override fun onServiceStarted() {
+
         val timer = Timer()
         timer.schedule(object: TimerTask() {
             override fun run() {
                 Thread(Runnable {
                     Looper.prepare()
                     loadData(3)
+                    loadData(0)
                     if (AppConstants.Saved_Locations.size >= 2) updateData()
                 }).start()
             }
@@ -124,19 +127,33 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe (
                 { onNext -> onNext as Response
-                    setData(onNext) },
+                    setData(onNext, getSpecifics) },
                 { onError ->  view?.dataError(onError) },
                 { view?.displayContinentData(AppUtils().continentTotals(dataModelRepository.getContinentData())) }
             )
     }
 
-    private fun setData(response: Response) {
+    private fun setData(response: Response, specifics: Int) {
         val body = response.body!!
-        val type: ParameterizedType = Types.newParameterizedType(List::class.java, ContinentDataset::class.java)
-
         try {
-            val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
-            AppConstants.Continent_Data = jsonAdapter.fromJson(body.string())!!
+            when (specifics) {
+                0 -> {
+                    val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+                    val type: ParameterizedType = Types.newParameterizedType(List::class.java, BaseCountryDataset::class.java)
+                    val jsonAdapter: JsonAdapter<List<BaseCountryDataset>> = moshi.adapter(type)
+                    AppConstants.World_Data = jsonAdapter.fromJson(body.string())!!
+
+                    for (data in AppConstants.World_Data) {
+                        AppConstants.World_Data_Mapped[data.country!!] = data
+                    }
+                }
+                3 -> {
+                    val type: ParameterizedType = Types.newParameterizedType(List::class.java, ContinentDataset::class.java)
+
+                    val jsonAdapter: JsonAdapter<List<ContinentDataset>> = moshi.adapter(type)
+                    AppConstants.Continent_Data = jsonAdapter.fromJson(body.string())!!
+                }
+            }
         } catch (e: Exception) {
             view?.dataError(e)
             e.printStackTrace()

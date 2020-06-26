@@ -33,7 +33,7 @@
         <service
             android:name=".service.ScheduledService"
             android:enabled="true"
-            android:icon="@drawable/ic_virus"
+            android:icon="@drawable/ic_notification_icon"
             android:label="@string/app_name" />
     </application>
 

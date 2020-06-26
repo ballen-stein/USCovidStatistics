@@ -6,33 +6,33 @@ import android.util.Log
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 
-class PreferenceUtils(private val mActivity: Activity) {
+class PreferenceUtils(private val mContext: Context) {
 
     fun addToSavedList(countryName: String) {
-        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        val sharedPref = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
             val savedLocations = getUserLocations()
             if (savedLocations != null) {
                 val countryNames = checkIfLocationExists(countryName)
-                putString(mActivity.getString(R.string.preference_saved_location), countryNames)
+                putString(mContext.getString(R.string.preference_saved_location), countryNames)
             } else {
-                putString(mActivity.getString(R.string.preference_saved_location), countryName)
+                putString(mContext.getString(R.string.preference_saved_location), countryName)
             }
             commit()
         }
     }
 
     fun prefSaveGps(showOnLaunch: Boolean) {
-        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        val sharedPref = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
-            putBoolean(mActivity.getString(R.string.preference_gps), showOnLaunch)
+            putBoolean(mContext.getString(R.string.preference_gps), showOnLaunch)
             commit()
         }
     }
 
     // Allow/Disable Notifications and its specifics: Case/Recovered/Death
     fun prefSaveNotifications(location: String, notificationsOn: Boolean) {
-        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        val sharedPref = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
             putBoolean(location, notificationsOn)
             commit()
@@ -40,28 +40,38 @@ class PreferenceUtils(private val mActivity: Activity) {
     }
 
     // Save/Delete the Location(s) to have notifications for
-    fun prefSaveNotifications(location: String, countryNameList: Set<String>) {
-        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+    fun prefSaveNotifications(location: String, notificationSet: Set<String>) {
+        val sharedPref = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+
+        Log.d("CovidTesting", "Final HashSet: $notificationSet")
         with (sharedPref.edit()) {
-            putStringSet(location, countryNameList)
+            putStringSet(location, notificationSet)
+            commit()
+        }
+    }
+
+    fun prefSavedFromNotifications(set: HashSet<String>) {
+        val sharedPref = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        with (sharedPref.edit()) {
+            putStringSet(mContext.resources.getString(R.string.preference_notif_locations), set)
             commit()
         }
     }
 
     fun prefSaveFrequency(frequency: Long) {
-        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        val sharedPref = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
-            putLong(mActivity.getString(R.string.preference_frequency), frequency)
+            putLong(mContext.getString(R.string.preference_frequency), frequency)
             commit()
         }
     }
 
     fun baseInit() {
-        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        val sharedPref = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
             val savedLocations = getUserLocations()
             if (savedLocations!!.isEmpty()) {
-                putString(mActivity.getString(R.string.preference_saved_location), "Global")
+                putString(mContext.getString(R.string.preference_saved_location), "Global")
                 commit()
             }
         }
@@ -84,16 +94,16 @@ class PreferenceUtils(private val mActivity: Activity) {
     }
 
     private fun getUserLocations(): String? {
-        return mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE).getString(mActivity.resources.getString(R.string.preference_saved_location), "")
+        return mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE).getString(mContext.resources.getString(R.string.preference_saved_location), "")
     }
 
     fun userPreferences() {
-        AppConstants.User_Prefs = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE) ?: return
+        AppConstants.User_Prefs = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE) ?: return
     }
 
     companion object {
-        fun getInstance(mActivity: Activity): PreferenceUtils {
-            return PreferenceUtils(mActivity)
+        fun getInstance(mContext: Context): PreferenceUtils {
+            return PreferenceUtils(mContext)
         }
     }
 }

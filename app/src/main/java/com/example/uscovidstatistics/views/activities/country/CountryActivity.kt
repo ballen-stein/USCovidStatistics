@@ -233,6 +233,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
                         nullProvinceData()
                         break
                     }
+                    //break
                 }
             }
         }

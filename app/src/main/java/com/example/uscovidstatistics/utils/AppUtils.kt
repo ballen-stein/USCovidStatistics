@@ -17,8 +17,8 @@ import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.model.LocationDataset
+import com.example.uscovidstatistics.model.NotificationDataset
 import com.example.uscovidstatistics.model.apidata.*
-import java.lang.Exception
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -26,9 +26,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
-import kotlin.math.abs
 import kotlin.math.floor
-import kotlin.math.round
 
 class AppUtils {
 
@@ -71,58 +69,11 @@ class AppUtils {
         return locationDataSet
     }
 
-    fun newNotification(context: Context): NotificationCompat.Builder? {
-        createNotificationChannel(context)
-
-        return NotificationCompat.Builder(context, AppConstants.Channel_Id)
-            .setSmallIcon(R.drawable.ic_virus)
-            .setContentTitle("Covid-19 Update")
-            .setContentText("Current cases : ${AppUtils().totalGlobalCases()[0]}")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setAutoCancel(true)
-    }
-
-    private fun createNotificationChannel(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Channel_name_001"
-            val descriptionText = "Channel_text_001"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(AppConstants.Channel_Id, name, importance).apply {
-                description = descriptionText
-            }
-
-            val notificationManager: NotificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-
-        }
-    }
-
     fun setTimerDelay(): Long {
         val currentTime = Calendar.getInstance().time
         val formattedTime = currentTime.toString().split(" ")[3]
 
-        return AppUtils().findDelay(formattedTime)
-    }
-
-    fun totalGlobalCases(): IntArray {
-        var cases = 0
-        var recovered = 0
-        var deaths = 0
-        var activeCases = 0
-        var critical = 0
-
-        for (data in AppConstants.Continent_Data) {
-            cases += data.cases!!
-            recovered += data.recovered!!.toInt()
-            deaths += data.deaths!!
-            activeCases += data.activeCases!!
-            critical += data.criticalCases!!
-        }
-        val mild = activeCases - critical
-        val closedCases = cases - activeCases
-
-        return intArrayOf(cases, recovered, deaths, activeCases, mild, critical, closedCases)
+        return findDelay(formattedTime)
     }
 
     private var totalsArray = intArrayOf(0,0,0)
@@ -253,8 +204,6 @@ class AppUtils {
             activeCases += data.activeCases!!
             critical += data.criticalCases!!
         }
-        //val mild = activeCases - critical
-        //val closedCases = cases - activeCases
 
         val worldData = BaseCountryDataset()
         worldData.country = "Global"
@@ -265,7 +214,6 @@ class AppUtils {
         worldData.criticalCases = critical
 
         return worldData
-        //return intArrayOf(cases, recovered, deaths, activeCases, mild, critical, closedCases)
     }
 
     fun continentCountryList(): HashMap<String, Array<String>> {
@@ -342,8 +290,7 @@ class AppUtils {
 
     private fun findDelay(currentTime: String): Long {
         val time = currentTime.split(":")[1].toLong()
-
-        return (10L - (time % 10L)) * 60 * 1025
+        return (5L - (time % 5L)) * 60 * 1025
     }
 
     fun territoriesDirectLink(country: String, context: Context): String {
@@ -423,27 +370,33 @@ class AppUtils {
         return tempList
     }
 
-    fun startNotificationService(mContext: Context) {
-        if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notifications), false)) {
-            if (checkSpecifics(mContext)) {
-                Log.d("CovidTesting", "Can start notification service!")
-                val notificationSet = AppConstants.User_Prefs.getStringSet(mContext.getString(R.string.preference_notif_locations), HashSet<String>())!!
-                for (countryData in notificationSet) {
-                    val notificationDataset = splitNotificationData(countryData!!)
-                    notificationDataset.printData()
-                    // Commit notification check/service here
-                }
-            } else {
-                Log.d("CovidTesting", "Cannot start notification service since there's no data set")
+    fun startNotificationService(mContext: Context): ArrayList<NotificationDataset> {
+        return if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notifications), false) || checkSpecifics(mContext)) {
+            val notificationSet = AppConstants.User_Prefs.getStringSet(mContext.getString(R.string.preference_notif_locations), HashSet<String>())!!
+            val notificationDataset = ArrayList<NotificationDataset>()
+            for (countryData in notificationSet) {
+                notificationDataset.add(splitNotificationData(countryData!!))
             }
+            notificationDataset
         } else {
-            Log.d("CovidTesting", "Cannot start notification service since notification aren't enabled")
+            ArrayList()
+        }
+    }
+
+    fun checkSpecifics(mContext: Context): Boolean {
+        return if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notif_cases), false)
+            || AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notif_recovered), false)
+            || AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notif_deaths), false)) {
+            AppConstants.User_Prefs.getStringSet(mContext.getString(R.string.preference_notif_locations), HashSet<String>())!!.isNotEmpty()
+        } else {
+            false
         }
     }
 
     private fun splitNotificationData(countryData: String): NotificationDataset {
         val countryDataArray = countryData.split("/")
-        val notifDataset = NotificationDataset()
+        val notifDataset =
+            NotificationDataset()
 
         notifDataset.name = countryDataArray[0]
         notifDataset.casesValue = countryDataArray[1].toInt()
@@ -456,22 +409,60 @@ class AppUtils {
         return notifDataset
     }
 
-    private fun checkSpecifics(mContext: Context): Boolean {
-        return if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notif_cases), false)
-            || AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notif_recovered), false)
-            || AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notif_deaths), false)) {
-            AppConstants.User_Prefs.getStringSet(mContext.getString(R.string.preference_notif_locations), HashSet<String>())!!.isNotEmpty()
-        } else {
-            false
+    fun newNotification(context: Context, compiledString: String, country: String): NotificationCompat.Builder? {
+        createNotificationChannel(context)
+
+        return if (compiledString.isNotEmpty()) {
+            NotificationCompat.Builder(context, AppConstants.Channel_Id)
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setContentTitle("Covid-19 $country Update")
+                .setContentText(compiledString)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+        } else null
+    }
+
+    private fun createNotificationChannel(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Channel_name_001"
+            val descriptionText = "Channel_text_001"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(AppConstants.Channel_Id, name, importance).apply {
+                description = descriptionText
+            }
+
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
         }
     }
 
-    private fun checkNotificationParameters(country: String) {
+    fun updateNotificationNumber(mContext: Context, notificationData: ArrayList<NotificationDataset>) {
+        val notificationSet = HashSet<String>()
+        for ((i,data) in notificationData.withIndex()) {
 
+            if (data.casesMetricMet) {
+                data.casesMetricMet = false
+                data.casesValue = createHigherNotificationNumber(data.casesValue)
+            }
+            if (data.recoverMetricMet) {
+                data.recoverMetricMet = false
+                data.recoverValue = createHigherNotificationNumber(data.recoverValue)
+            }
+            if (data.deathMetricMet) {
+                data.deathMetricMet = false
+                data.deathValue = createHigherNotificationNumber(data.deathValue)
+            }
+            notificationData[i].createSetData()
+            notificationSet.add(data.setData)
+        }
+
+        PreferenceUtils.getInstance(mContext).prefSavedFromNotifications(notificationSet)
     }
 
     fun createHigherNotificationNumber(num: Int): Int {
-        return (5 * floor((num * 1.1) / 5.0).toInt())
+        return (5 * floor((num * 1.10 ) / 5.0).toInt())
     }
 
     companion object {

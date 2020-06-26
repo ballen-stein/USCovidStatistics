@@ -1,5 +1,6 @@
 package com.example.uscovidstatistics.views.activities.homepage
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -12,6 +13,7 @@ import com.example.uscovidstatistics.databinding.ActivityMainBinding
 import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
 import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.recyclerview.LocationsRecyclerView
+import com.example.uscovidstatistics.service.ScheduledService
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.PreferenceUtils
 import com.example.uscovidstatistics.utils.SnackbarUtil
@@ -48,7 +50,6 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         if (AppConstants.User_Prefs.getBoolean(getString(R.string.preference_gps), false))
             openOnLaunch = true
 
-        AppConstants.App_Open = true
         AppConstants.Data_Specifics = 3
 
         setPresenter(MainPresenter(this, DependencyInjectorImpl()))
@@ -68,18 +69,13 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     override fun onStop() {
         super.onStop()
         this.activityPaused()
-        AppConstants.App_Open = false
     }
 
     override fun onResume() {
         super.onResume()
         this.activityResumed()
-        AppConstants.App_Open = true
 
         appPrefs.userPreferences()
-        appUtils.startNotificationService(this)
-
-        Log.d("CovidTesting", AppConstants.User_Prefs.all.toString())
 
         if (AppConstants.User_Prefs.getLong(getString(R.string.preference_frequency), 0L) != 0L) {
             AppConstants.Update_Frequency = AppConstants.User_Prefs.getLong(getString(R.string.preference_frequency), 5L)
@@ -99,13 +95,22 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
 
     override fun onStart() {
         super.onStart()
-        AppConstants.Timer_Delay = AppUtils().setTimerDelay()
+        AppConstants.Timer_Delay = appUtils.setTimerDelay()
         if (!AppConstants.Global_Service_On) {
             Handler().postDelayed(
                 {presenter.onServiceStarted()}, AppConstants.Timer_Delay
             )
             AppConstants.Global_Service_On = true
         }
+    }
+
+    override fun onDestroy() {
+        Log.d("CovidTesting", "Destroying main...")
+        if (appUtils.checkSpecifics(this)) {
+            val intent = Intent(this, ScheduledService::class.java)
+            this.startService(intent)
+        }
+        super.onDestroy()
     }
 
     override fun getRoot(): View {

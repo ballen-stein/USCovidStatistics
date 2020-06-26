@@ -119,9 +119,9 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
             } else {
                 value.trim()
             }
-            listWithData.add("${tempVal}/${AppConstants.World_Data_Mapped[tempVal]!!.cases}/false" +
-                    "/${AppConstants.World_Data_Mapped[tempVal]!!.recovered}/false" +
-                    "/${AppConstants.World_Data_Mapped[tempVal]!!.deaths}/false")
+            listWithData.add("${tempVal}/${appUtils.createHigherNotificationNumber(AppConstants.World_Data_Mapped[tempVal]!!.cases!!)}/false" +
+                    "/${appUtils.createHigherNotificationNumber(AppConstants.World_Data_Mapped[tempVal]!!.recovered!!)}/false" +
+                    "/${appUtils.createHigherNotificationNumber(AppConstants.World_Data_Mapped[tempVal]!!.deaths!!)}/false")
         }
     }
 
