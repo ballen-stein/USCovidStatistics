@@ -68,14 +68,30 @@
     <string name="preference_file_key">covid_statistics_user_preferences</string>
     <string name="preference_saved_location">preference_saved_location</string>
     <string name="preference_gps">user_preference_gps</string>
-    <string name="preference_gps_desc">Display your location\'s Covid data when you open the app/\n\nRequires GPS Permission</string>
+    <string name="preference_gps_desc">Display your location\'s Covid data when you open the app.\n\nRequires GPS Permission</string>
     <string name="preference_gps_title">Open App to Your Location</string>
     <string name="preference_frequency">user_preference_frequency</string>
-    <string name="preference_freq_desc">How often do you want the app to check for updated information?\n\nSelecting a higher value may help increase performance.</string>
+    <string name="preference_freq_desc">How often do you want the app to check for updated information?\n\nChecking less often may increase performance.</string>
     <string name="preference_freq_title">Update Frequency</string>
+
+    <!-- Notification Preferences -->
     <string name="preference_notifications">user_preference_notifications</string>
-    <string name="preference_notif_desc"></string>
+    <string name="preference_notif_add_location">Add Locations</string>
+    <string name="preference_notif_advanced">Advanced Notification Settings</string>
+    <string name="preference_notif_cases">user_preference_notif_cases</string>
+    <string name="preference_notifications_cases">Receive push notifications about active cases.</string>
+    <string name="preference_notif_cases_location">user_preference_notif_cases_location</string>
+    <string name="preference_notif_deaths">user_preference_notif_deaths</string>
+    <string name="preference_notifications_deaths">Receive push notifications about deaths.</string>
+    <string name="preference_notif_locations">user_preference_notif_locations</string>
+    <string name="preference_notif_enter_locations">Enter up to 3 locations, separated by commas, to receive push notifications for.</string>
+    <string name="preference_notif_desc">Change the type of notifications you\'d like.</string>
     <string name="preference_notif_title">Enable Push Notifications</string>
+    <string name="preference_notif_recovered">user_preference_notif_recovered</string>
+    <string name="preference_notifications_recovered">Receive push notifications about recovered cases.</string>
+
+    <string name="preference_title_requests">Network &amp; Location</string>
+    <string name="preference_title_notifications">Notifications</string>
 
     <string name="rv_country">Region</string>
     <string name="rv_cases">Cases</string>

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -17,12 +18,17 @@ import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.model.LocationDataset
 import com.example.uscovidstatistics.model.apidata.*
+import java.lang.Exception
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.HashSet
+import kotlin.math.abs
+import kotlin.math.floor
+import kotlin.math.round
 
 class AppUtils {
 
@@ -405,6 +411,46 @@ class AppUtils {
             }
             return newName.trim()
         }
+    }
+
+    fun startNotificationService(mContext: Context) {
+        if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notifications), false)) {
+            if (checkSpecifics(mContext)) {
+                Log.d("CovidTesting", "Can start notification service!")
+                val notificationSet = AppConstants.User_Prefs.getStringSet(mContext.getString(R.string.preference_notif_locations), HashSet<String>())!!
+                for (country in notificationSet) {
+                    checkNotificationParameters(country)
+                }
+            } else {
+                Log.d("CovidTesting", "Cannot start notification service since there's no data set")
+            }
+        } else {
+            Log.d("CovidTesting", "Cannot start notification service since notification aren't enabled")
+        }
+    }
+
+    private fun checkSpecifics(mContext: Context): Boolean {
+        return if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notif_cases), false)
+            || AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notif_recovered), false)
+            || AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notif_deaths), false)) {
+            AppConstants.User_Prefs.getStringSet(mContext.getString(R.string.preference_notif_locations), HashSet<String>())!!.isNotEmpty()
+        } else {
+            false
+        }
+    }
+
+    private fun checkNotificationParameters(country: String) {
+        try {
+            val countryToCheck = AppConstants.World_Data_Mapped[country]
+            Log.d("CovidTesting", "${formatNumbers(countryToCheck!!.cases!!)} cases")
+            //val temp = countryToCheck.cases % 10
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun createHigherNotificationNumber(num: Int): Int {
+        return (5 * floor((num * 1.1) / 5.0).toInt())
     }
 
     companion object {

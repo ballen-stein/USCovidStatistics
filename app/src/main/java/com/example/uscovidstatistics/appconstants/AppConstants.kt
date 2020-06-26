@@ -32,7 +32,7 @@ class AppConstants {
         var Usa_Check = false
 
         // User Preferences
-        lateinit var USER_PREFS: SharedPreferences
+        lateinit var User_Prefs: SharedPreferences
 
         // Service Data
         var Global_Service_On = false

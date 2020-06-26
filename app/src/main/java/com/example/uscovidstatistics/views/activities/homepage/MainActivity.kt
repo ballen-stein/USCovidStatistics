@@ -45,7 +45,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         appPrefs.userPreferences()
 
 
-        if (AppConstants.USER_PREFS.getBoolean(getString(R.string.preference_gps), false))
+        if (AppConstants.User_Prefs.getBoolean(getString(R.string.preference_gps), false))
             openOnLaunch = true
 
         AppConstants.App_Open = true
@@ -77,12 +77,16 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         AppConstants.App_Open = true
 
         appPrefs.userPreferences()
-        if (AppConstants.USER_PREFS.getLong(getString(R.string.preference_frequency), 0L) != 0L) {
-            AppConstants.Update_Frequency = AppConstants.USER_PREFS.getLong(getString(R.string.preference_frequency), 5L)
+        appUtils.startNotificationService(this)
+
+        Log.d("CovidTesting", AppConstants.User_Prefs.all.toString())
+
+        if (AppConstants.User_Prefs.getLong(getString(R.string.preference_frequency), 0L) != 0L) {
+            AppConstants.Update_Frequency = AppConstants.User_Prefs.getLong(getString(R.string.preference_frequency), 5L)
         }
 
-        if (AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "") != null) {
-            val savedLocations = AppConstants.USER_PREFS.getString(getString(R.string.preference_saved_location), "")!!.split("/")
+        if (AppConstants.User_Prefs.getString(getString(R.string.preference_saved_location), "") != null) {
+            val savedLocations = AppConstants.User_Prefs.getString(getString(R.string.preference_saved_location), "")!!.split("/")
 
             AppConstants.Saved_Locations.clear()
             AppConstants.Saved_Locations.addAll(savedLocations)
@@ -91,7 +95,6 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
                 recyclerView.displaySavedLocations()
             }
         }
-
     }
 
     override fun onStart() {

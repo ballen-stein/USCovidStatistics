@@ -42,4 +42,10 @@ class ExampleUnitTest {
         val string = AppUtils().capitalizeWords("marina two")
         assertEquals("Marina Two", string)
     }
+    @Test
+    fun test_setHigherValueForNotifications() {
+        val num = 6050
+        val casesValue = AppUtils.getInstance().createHigherNotificationNumber(num)
+        assertEquals(num, casesValue)
+    }
 }

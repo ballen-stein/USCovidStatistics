@@ -29,6 +29,24 @@ class PreferenceUtils(private val mActivity: Activity) {
         }
     }
 
+    // Allow/Disable Notifications and its specifics: Case/Recovered/Death
+    fun prefSaveNotifications(location: String, notificationsOn: Boolean) {
+        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        with (sharedPref.edit()) {
+            putBoolean(location, notificationsOn)
+            commit()
+        }
+    }
+
+    // Save/Delete the Location(s) to have notifications for
+    fun prefSaveNotifications(location: String, countryNameList: Set<String>) {
+        val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        with (sharedPref.edit()) {
+            putStringSet(location, countryNameList)
+            commit()
+        }
+    }
+
     fun prefSaveFrequency(frequency: Long) {
         val sharedPref = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
@@ -69,7 +87,7 @@ class PreferenceUtils(private val mActivity: Activity) {
     }
 
     fun userPreferences() {
-        AppConstants.USER_PREFS = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE) ?: return
+        AppConstants.User_Prefs = mActivity.getSharedPreferences(mActivity.resources.getString(R.string.app_package), Context.MODE_PRIVATE) ?: return
     }
 
     companion object {

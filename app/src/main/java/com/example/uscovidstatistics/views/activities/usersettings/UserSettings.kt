@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.viewbinding.ViewBinding
 import com.example.uscovidstatistics.databinding.ActivitySettingsBinding
-import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
-import com.example.uscovidstatistics.views.activities.SettingsFragment
-import kotlinx.android.synthetic.main.app_toolbar.view.*
 
 class UserSettings : BaseActivity(), ViewBinding {
 
@@ -20,7 +17,11 @@ class UserSettings : BaseActivity(), ViewBinding {
 
         supportFragmentManager
             .beginTransaction()
-            .replace(binding.settingsFragment.id, SettingsFragment(this))
+            .replace(binding.settingsFragment.id,
+                SettingsFragment(
+                    this
+                )
+            )
             .commit()
 
         setNavOptions()
