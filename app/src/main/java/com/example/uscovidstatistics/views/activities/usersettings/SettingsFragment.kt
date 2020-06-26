@@ -8,29 +8,36 @@ import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.PreferenceUtils
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentCompat() {
 
     private lateinit var prefUtils: PreferenceUtils
 
+    private lateinit var appUtils: AppUtils
+
     private val settingsTimer = Timer()
 
+    private lateinit var countryList: List<String>
+
+    private var listWithData = ArrayList<String>()
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        //addPreferencesFromResource(R.xml.preferences)
         setPreferencesFromResource(R.xml.preferences, rootKey)
         prefUtils = PreferenceUtils.getInstance(mActivity)
+        appUtils = AppUtils.getInstance()
 
         setPrefListeners()
     }
 
     private fun setPrefListeners() {
         findPreference<SwitchPreferenceCompat>(getString(R.string.preference_gps))!!.setOnPreferenceChangeListener { _, newValue ->
-            if (AppUtils.getInstance().gpsPermissionGranted(mActivity)) {
+            if (appUtils.gpsPermissionGranted(mActivity)) {
                 prefUtils.prefSaveGps(newValue as Boolean)
                 true
             } else {
-                AppUtils.getInstance().checkLaunchPermissions(mActivity)
+                appUtils.checkLaunchPermissions(mActivity)
                 settingsTimer.schedule(object : TimerTask() {
                     override fun run() {
                         if (AppConstants.Settings_Updated) {
@@ -38,7 +45,7 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
                             this.cancel()
                         }
                     }
-                },0, 1000)
+                },0, 500)
                 false
             }
         }
@@ -55,32 +62,42 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
 
         findPreference<CheckBoxPreference>(getString(R.string.preference_notif_cases))!!.setOnPreferenceChangeListener { preference, newValue ->
             prefUtils.prefSaveNotifications(preference.key, newValue as Boolean)
+            countryList = appUtils.getNotificationCountries(mActivity.applicationContext)
+            if (countryList.isNotEmpty()) {
+                setCountryNotificationData()
+                val savedNotifLocations: Set<String> = HashSet<String>(listWithData)
+                prefUtils.prefSaveNotifications(getString(R.string.preference_notif_locations), savedNotifLocations)
+            }
             true
         }
 
         findPreference<CheckBoxPreference>(getString(R.string.preference_notif_recovered))!!.setOnPreferenceChangeListener { preference, newValue ->
             prefUtils.prefSaveNotifications(preference.key, newValue as Boolean)
+            countryList = appUtils.getNotificationCountries(mActivity.applicationContext)
+            if (countryList.isNotEmpty()) {
+                setCountryNotificationData()
+                val savedNotifLocations: Set<String> = HashSet<String>(listWithData)
+                prefUtils.prefSaveNotifications(getString(R.string.preference_notif_locations), savedNotifLocations)
+            }
             true
         }
 
         findPreference<CheckBoxPreference>(getString(R.string.preference_notif_deaths))!!.setOnPreferenceChangeListener { preference, newValue ->
             prefUtils.prefSaveNotifications(preference.key, newValue as Boolean)
+            countryList = appUtils.getNotificationCountries(mActivity.applicationContext)
+            if (countryList.isNotEmpty()) {
+                setCountryNotificationData()
+                val savedNotifLocations: Set<String> = HashSet<String>(listWithData)
+                prefUtils.prefSaveNotifications(getString(R.string.preference_notif_locations), savedNotifLocations)
+            }
             true
         }
 
         findPreference<EditTextPreference>(getString(R.string.preference_notif_locations))!!.setOnPreferenceChangeListener { preference, newValue ->
             if ((newValue as String).isNotBlank()) {
-                val countryList = newValue.split(",", ignoreCase = true, limit = 3).toMutableList()
-                for ((i,value) in countryList.withIndex()) {
-                    if (value.contains(",")) {
-                        val tempVal = value.split(",")[0].trim()
-                        countryList[i] = tempVal
-                    } else {
-                        val tempVal = value.trim()
-                        countryList[i] = tempVal
-                    }
-                }
-                val savedNotifLocations: Set<String> = HashSet<String>(countryList)
+                countryList = newValue.split(",", ignoreCase = true, limit = 3).toMutableList()
+                setCountryNotificationData()
+                val savedNotifLocations: Set<String> = HashSet<String>(listWithData)
                 prefUtils.prefSaveNotifications(preference.key, savedNotifLocations)
             } else {
                 prefUtils.prefSaveNotifications(preference.key, HashSet<String>())
@@ -92,6 +109,19 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
     private fun updateSettings() {
         mActivity.runOnUiThread {
             findPreference<SwitchPreferenceCompat>(getString(R.string.preference_gps))!!.isChecked = true
+        }
+    }
+
+    private fun setCountryNotificationData() {
+        for (value in countryList) {
+            val tempVal = if (value.contains(",")) {
+                value.split(",")[0].trim()
+            } else {
+                value.trim()
+            }
+            listWithData.add("${tempVal}/${AppConstants.World_Data_Mapped[tempVal]!!.cases}/false" +
+                    "/${AppConstants.World_Data_Mapped[tempVal]!!.recovered}/false" +
+                    "/${AppConstants.World_Data_Mapped[tempVal]!!.deaths}/false")
         }
     }
 

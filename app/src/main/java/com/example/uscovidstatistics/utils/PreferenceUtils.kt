@@ -2,6 +2,7 @@ package com.example.uscovidstatistics.utils
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 

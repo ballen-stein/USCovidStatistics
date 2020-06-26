@@ -413,13 +413,25 @@ class AppUtils {
         }
     }
 
+    fun getNotificationCountries(mContext: Context): ArrayList<String> {
+        val notificationSet = AppConstants.User_Prefs.getStringSet(mContext.getString(R.string.preference_notif_locations), HashSet<String>())!!
+        val tempList = ArrayList<String>()
+        for (countryData in notificationSet) {
+            val notificationDataset = splitNotificationData(countryData!!)
+            tempList.add(notificationDataset.name)
+        }
+        return tempList
+    }
+
     fun startNotificationService(mContext: Context) {
         if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_notifications), false)) {
             if (checkSpecifics(mContext)) {
                 Log.d("CovidTesting", "Can start notification service!")
                 val notificationSet = AppConstants.User_Prefs.getStringSet(mContext.getString(R.string.preference_notif_locations), HashSet<String>())!!
-                for (country in notificationSet) {
-                    checkNotificationParameters(country)
+                for (countryData in notificationSet) {
+                    val notificationDataset = splitNotificationData(countryData!!)
+                    notificationDataset.printData()
+                    // Commit notification check/service here
                 }
             } else {
                 Log.d("CovidTesting", "Cannot start notification service since there's no data set")
@@ -427,6 +439,21 @@ class AppUtils {
         } else {
             Log.d("CovidTesting", "Cannot start notification service since notification aren't enabled")
         }
+    }
+
+    private fun splitNotificationData(countryData: String): NotificationDataset {
+        val countryDataArray = countryData.split("/")
+        val notifDataset = NotificationDataset()
+
+        notifDataset.name = countryDataArray[0]
+        notifDataset.casesValue = countryDataArray[1].toInt()
+        notifDataset.casesMetricMet = countryDataArray[2].toBoolean()
+        notifDataset.recoverValue = countryDataArray[3].toInt()
+        notifDataset.recoverMetricMet = countryDataArray[4].toBoolean()
+        notifDataset.deathValue = countryDataArray[5].toInt()
+        notifDataset.deathMetricMet = countryDataArray[6].toBoolean()
+
+        return notifDataset
     }
 
     private fun checkSpecifics(mContext: Context): Boolean {
@@ -440,13 +467,7 @@ class AppUtils {
     }
 
     private fun checkNotificationParameters(country: String) {
-        try {
-            val countryToCheck = AppConstants.World_Data_Mapped[country]
-            Log.d("CovidTesting", "${formatNumbers(countryToCheck!!.cases!!)} cases")
-            //val temp = countryToCheck.cases % 10
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+
     }
 
     fun createHigherNotificationNumber(num: Int): Int {
