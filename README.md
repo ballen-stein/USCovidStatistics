@@ -2,6 +2,11 @@
 
 US Covid Statistics is more of a Global Covid Statistics app at this point by accessing repputable data from places such as John Hopkins University to gather and display daily information about Covid-19. Data is fetched using OkHttp and RxJava, ViewBinding for easier user interface changes, and is using Model-View-Presenter/MVP architecture.
 
+## Reliable Data
+All data is taken from open-source APIs that compile a majority of their data from John Hopkin's University among other reputable sources. These APIs update every 10-15 minutes with the app making a request every 5 minutes, with a setting to increase or decrease that frequency. 
+
+Every country will display it's provinces (or States for the US), territories, and Others (cruises, mainly) where applicable.
+
 ## Dynamic Homepage
 The Homepage by default displays only Global data. When viewing other countries, the favorite button can be clicked to add that country to the homepage. The hompage will dynamically change based on the saved countries, allowing new ones to immediately appear when returning to the hompage...
 
@@ -13,14 +18,11 @@ and immediately removing ones that are unfavorited.
 
 Both actions are saved to a Shared Preference setting, taking up minimal storage and allowing the app to display all the favorited countries on startup.
 
-## Reliable Data
-All data is taken from open-source APIs that compile a majority of their data from John Hopkin's University among other reputable sources. These APIs update every 10-15 minutes with the app making a request every 5 minutes, with a setting to increase or decrease that frequency. 
-
-Every country will display it's provinces (or States for the US), territories, and Others (cruises, mainly) where applicable.
-
 ## Auto-Incremental Settings
-Each setting is a Shared Preference with its own purpose, with the notifications having a slight twist. Instead of spamming notifications, a base metric is created when an option is selected, with options of Cases, Recoveries, and Deaths. 
+Each setting is saved as a Shared Preference with a few being co-dependent. The most expansive and diverse setting is the notifications option. Instead of spamming notifications or having them timed, a base metric is created when one of the three options is selected (Cases, Recoveries, or Deaths). 
 
-###
+When notifications are enabled, a service will run in the background, even when the app is closed. When that metric is met, a push notification will be sent to the phone. Normally, that'd be the end of it; instead, the app will check to see if a notification was sent and, once confirmed that a notification was indeed sent, will auto-increment the metric for that specific notification, such as Cases, and save the new value. 
 
-When that metric is met, a push notification will be sent to the phone. Normally, that'd be the end of it; instead, the app will check to see if a notification was sent and, once confirmed that a notification was indeed sent, will auto-increment the metric for that specific notification, such as Cases, and save the new value. 
+![](settings.gif)
+
+Essentially, if Cases has a trigger at 1,000 and Recoveries at 500 and a request to the API is made and Cases surpassed 1000 but Recoveries didn't, Cases will be marked as having made a notification, the metric will be incremented, and Cases will be marked eligible for another notification. Recoveries, not meeting its metric, will not receive a new metric.
