@@ -13,6 +13,10 @@ and immediately removing ones that are unfavorited.
 
 Both actions are saved to a Shared Preference setting, taking up minimal storage and allowing the app to display all the favorited countries on startup.
 
+## Reliable Data
+All data is taken from open-source APIs that compile a majority of their data from John Hopkin's University among other reputable sources. These APIs update every 10-15 minutes with the app making a request every 5 minutes, with a setting to increase or decrease that frequency. 
+
+Every country will display it's provinces (or States for the US), territories, and Others (cruises, mainly) where applicable.
 
 ## Auto-Incremental Settings
 Each setting is a Shared Preference with its own purpose, with the notifications having a slight twist. Instead of spamming notifications, a base metric is created when an option is selected, with options of Cases, Recoveries, and Deaths. 
