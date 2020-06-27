@@ -46,6 +46,8 @@ class ScheduledService : Service() {
 
     private var notificationWasShown = false
 
+    private var checkValue: Long = 30L
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -61,6 +63,8 @@ class ScheduledService : Service() {
             prefUtils = PreferenceUtils.getInstance(this)
             prefUtils.userPreferences()
             appUtils = AppUtils.getInstance()
+
+            checkValue = AppConstants.User_Prefs.getLong(getString(R.string.preference_notification_frequency), 30L)
 
             AppConstants.Data_Specifics = 0
             Observable.defer {
@@ -84,10 +88,8 @@ class ScheduledService : Service() {
     private fun startUpdateCheck() {
         AppConstants.Data_Specifics = 7
 
-        Log.d("CovidTesting", "USA CASES 1: " + AppConstants.World_Data_Mapped["USA"]!!.cases.toString())
         notificationCountriesList  = AppUtils.getInstance().startNotificationService(this)
         notificationCountriesList.toMutableList()
-        Log.d("CovidTesting", "USA CASES 2: " + AppConstants.World_Data_Mapped["USA"]!!.cases.toString())
 
         if (notificationCountriesList.isNotEmpty()) {
             for ((i,country) in notificationCountriesList.withIndex()) {
@@ -95,8 +97,7 @@ class ScheduledService : Service() {
                     override fun run() {
                         Thread(Runnable {
                             Looper.prepare()
-
-                            Log.d("CovidTesting", "Service running every 3minutes...")
+                            Log.d("CovidTesting", "Running update service . . ")
                             Observable.defer {
                                 try {
                                     val networkRequests = NetworkRequests(7, null, country.name).getLocationData()
@@ -113,12 +114,11 @@ class ScheduledService : Service() {
                                     { notificationsCheck(country.name, i)
                                         if (i == notificationCountriesList.size-1)
                                             endOfList = true
-                                        //response.body!!.close()
                                     }
                                 )
                         }).start()
                     }
-                }, 5000, 3*60*1000)
+                }, 5000, checkValue*60*1000)
             }
         }
     }

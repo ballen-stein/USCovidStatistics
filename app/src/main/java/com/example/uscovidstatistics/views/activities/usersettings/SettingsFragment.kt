@@ -104,6 +104,11 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
             }
             true
         }
+
+        findPreference<ListPreference>(getString(R.string.preference_notification_frequency))!!.setOnPreferenceChangeListener { _, newValue ->
+            prefUtils.prefSaveNotificationFreq((newValue as String).toLong())
+            true
+        }
     }
 
     private fun updateSettings() {

@@ -66,6 +66,14 @@ class PreferenceUtils(private val mContext: Context) {
         }
     }
 
+    fun prefSaveNotificationFreq(frequency: Long) {
+        val sharedPref = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
+        with (sharedPref.edit()) {
+            putLong(mContext.getString(R.string.preference_notification_frequency), frequency)
+            commit()
+        }
+    }
+
     fun baseInit() {
         val sharedPref = mContext.getSharedPreferences(mContext.resources.getString(R.string.app_package), Context.MODE_PRIVATE)
         with (sharedPref.edit()) {
