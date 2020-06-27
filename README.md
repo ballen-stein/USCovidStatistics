@@ -3,9 +3,15 @@
 US Covid Statistics is more of a Global Covid Statistics app at this point by accessing repputable data from places such as John Hopkins University to gather and display daily information about Covid-19. Data is fetched using OkHttp and RxJava, ViewBinding for easier user interface changes, and is using Model-View-Presenter/MVP architecture.
 
 ## Dynamic Homepage
-The Homepage by default displays only Global data. When viewing other countries, the favorite button can be clicked to add that country to the homepage. The hompage will dynamically change based on the saved countries, allowing new ones to immediately appear when returning to the hompage and removed ones to immediately no longer be visible.
+The Homepage by default displays only Global data. When viewing other countries, the favorite button can be clicked to add that country to the homepage. The hompage will dynamically change based on the saved countries, allowing new ones to immediately appear when returning to the hompage...
 
-![](base_use_gif.gif)
+![](save_country.gif)
+
+and immediately removing ones that are unfavorited.
+
+![](remove_country.gif)
+
+Both actions are saved to a Shared Preference setting, taking up minimal storage and allowing the app to display all the favorited countries on startup.
 
 
 ## Auto-Incremental Settings
