@@ -1,11 +1,11 @@
 # USCovidStatistics
 
-US Covid Statistics is more of a Global Covid Statistics app at this point by accessing repputable data from places such as John Hopkins University to gather and display daily information about Covid-19. Data is fetched using OkHttp and RxJava, ViewBinding for easier user interface changes, and is using Model-View-Presenter/MVP architecture.
+US Covid Statistics was a temp name that stuck; the app is entirely a Global Covid Statistics app at this point. The app utilizes OkHttp and RxJava to make network requests, ViewBinding for easier user interface changes, Dark Theme as a base, and is using Model-View-Presenter/MVP architecture. Dagger2 was going to be used but the project was too far along by the time I thought about transitioning to it that I left the app as-is.
 
 ## Reliable Data
 All data is taken from open-source APIs that compile a majority of their data from John Hopkin's University among other reputable sources. These APIs update every 10-15 minutes with the app making a request every 5 minutes, with a setting to increase or decrease that frequency. 
 
-Every country will display it's provinces (or States for the US), territories, and Others (cruises, mainly) where applicable.
+Every country will display it's provinces (or States for the US), territories, and Others (cruises, mainly) where applicable. Additionally, to add some flare, each country page will also display the country's flag when it's available, showing the United Nations flag when one is not found.
 
 ## Dynamic Homepage
 The Homepage by default displays only Global data. When viewing other countries, the favorite button can be clicked to add that country to the homepage. The hompage will dynamically change based on the saved countries, allowing new ones to immediately appear when returning to the hompage...
