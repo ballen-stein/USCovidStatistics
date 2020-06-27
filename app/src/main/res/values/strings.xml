@@ -76,6 +76,9 @@
 
     <!-- Notification Preferences -->
     <string name="preference_notifications">user_preference_notifications</string>
+    <string name="preference_notification_desc">When the app is closed, how often the it will update data and send a notification.\n\nChecking less often will increase performance.</string>
+    <string name="preference_notification_freq">Notification Frequency</string>
+    <string name="preference_notification_frequency">user_preference_notif_frequency</string>
     <string name="preference_notif_add_location">Add Locations</string>
     <string name="preference_notif_advanced">Advanced Notification Settings</string>
     <string name="preference_notif_cases">user_preference_notif_cases</string>
@@ -84,7 +87,7 @@
     <string name="preference_notif_deaths">user_preference_notif_deaths</string>
     <string name="preference_notifications_deaths">Receive push notifications about deaths.</string>
     <string name="preference_notif_locations">user_preference_notif_locations</string>
-    <string name="preference_notif_enter_locations">Enter up to 3 locations, separated by commas, to receive push notifications for.</string>
+    <string name="preference_notif_enter_locations">Enter up to 3 locations, separated by commas, to receive push notifications for.\n\nCountry names should match how they\'re displayed in the search list.</string>
     <string name="preference_notif_desc">Change the type of notifications you\'d like.</string>
     <string name="preference_notif_title">Enable Push Notifications</string>
     <string name="preference_notif_recovered">user_preference_notif_recovered</string>

@@ -462,7 +462,7 @@ class AppUtils {
     }
 
     fun createHigherNotificationNumber(num: Int): Int {
-        return (5 * floor((num * 1.10 ) / 5.0).toInt())
+        return (5 * floor((num * 1.07 ) / 5.0).toInt())
     }
 
     companion object {
