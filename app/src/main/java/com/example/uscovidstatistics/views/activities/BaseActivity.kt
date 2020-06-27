@@ -17,6 +17,7 @@ import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.PreferenceUtils
 import com.example.uscovidstatistics.utils.SnackbarUtil
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
+import com.example.uscovidstatistics.views.activities.splash.Splash
 import com.example.uscovidstatistics.views.activities.usersettings.UserSettings
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.dialogs.SearchDialog

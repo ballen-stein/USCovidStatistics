@@ -3,7 +3,6 @@ package com.example.uscovidstatistics.views.activities.homepage
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import android.util.Log
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.manualdependency.DependencyInjector
@@ -42,7 +41,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
     }
 
     override fun openLocationOnLaunch(mContext: Context) {
-        if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_gps), false)) {
+        if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_gps), false) && AppUtils.getInstance().gpsPermissionGranted(mContext)) {
             if (AppConstants.Location_Data.country != null) {
                 val country = AppConstants.Location_Data.country
                 val region = AppConstants.Location_Data.region
@@ -56,6 +55,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
                     intent.putExtra(AppConstants.Display_Country, country)
 
                 mContext.startActivity(intent)
+
             }
         }
     }
@@ -101,7 +101,6 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
     }
 
     override fun onServiceStarted() {
-
         val timer = Timer()
         timer.schedule(object: TimerTask() {
             override fun run() {

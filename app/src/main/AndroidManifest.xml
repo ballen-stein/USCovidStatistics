@@ -19,7 +19,7 @@
         <activity android:name=".views.activities.region.StateActivity"
             android:launchMode="singleTop"/>
         <activity android:name=".views.activities.country.CountryActivity"/>
-        <activity android:name=".views.activities.Splash">
+        <activity android:name=".views.activities.splash.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
