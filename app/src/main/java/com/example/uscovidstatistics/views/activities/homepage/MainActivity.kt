@@ -102,13 +102,20 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
             )
             AppConstants.Global_Service_On = true
         }
+
+        AppConstants.Notification_Service_On = false
+        //val serviceIntent = Intent(this, ScheduledService::class.java)
+        //serviceIntent.putExtra(AppConstants.Service_Start, true)
+        //ContextCompat.startForegroundService(this, serviceIntent)
     }
 
     override fun onDestroy() {
-        Log.d("CovidTesting", "Destroying main...")
         if (appUtils.checkSpecifics(this)) {
-            val intent = Intent(this, ScheduledService::class.java)
-            this.startService(intent)
+            val mContext = this
+            Thread().run {
+                val intent = Intent(mContext, ScheduledService::class.java)
+                mContext.startService(intent)
+            }
         }
         super.onDestroy()
     }

@@ -50,29 +50,35 @@ class ScheduledService : Service() {
         return null
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY
+    }
+
     override fun onCreate() {
         super.onCreate()
 
-        prefUtils = PreferenceUtils.getInstance(this)
-        prefUtils.userPreferences()
-        appUtils = AppUtils.getInstance()
+        if (AppConstants.Notification_Service_On) {
+            prefUtils = PreferenceUtils.getInstance(this)
+            prefUtils.userPreferences()
+            appUtils = AppUtils.getInstance()
 
-        AppConstants.Data_Specifics = 0
-        Observable.defer {
-            try {
-                val networkRequests = NetworkRequests(0, null, null).getLocationData()
-                Observable.just(networkRequests)
-            } catch (e: Exception) {
-                Observable.error<Exception>(e)
-            }
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe (
-                { onNext -> response = onNext as Response
-                    setData(response) },
-                { onError ->  Log.d("CovidTesting", "Error in the subscription for service : $onError")},
-                { startUpdateCheck() }
-            )
+            AppConstants.Data_Specifics = 0
+            Observable.defer {
+                try {
+                    val networkRequests = NetworkRequests(0, null, null).getLocationData()
+                    Observable.just(networkRequests)
+                } catch (e: Exception) {
+                    Observable.error<Exception>(e)
+                }
+            }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe (
+                    { onNext -> response = onNext as Response
+                        setData(response) },
+                    { onError ->  Log.d("CovidTesting", "Error in the subscription for service : $onError")},
+                    { startUpdateCheck() }
+                )
+        }
     }
 
     private fun startUpdateCheck() {
@@ -90,6 +96,7 @@ class ScheduledService : Service() {
                         Thread(Runnable {
                             Looper.prepare()
 
+                            Log.d("CovidTesting", "Service running every 3minutes...")
                             Observable.defer {
                                 try {
                                     val networkRequests = NetworkRequests(7, null, country.name).getLocationData()

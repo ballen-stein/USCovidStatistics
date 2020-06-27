@@ -37,6 +37,7 @@ class AppConstants {
         // Service Data
         var Global_Service_On = false
         var Country_Service_On = false
+        var Notification_Service_On = true
         var Regional_Service_On = false
 
         // API Urls
