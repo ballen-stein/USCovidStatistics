@@ -14,9 +14,9 @@ class AppConstants {
         const val Display_Region = "display_region_location"
         const val Load_State = "load_us_state"
         const val Request_Gps_Location = 101
+        const val Request_Wifi_Change_Perm = 102
 
         // Basic Data
-        var App_Open = false
         var Country_Name: String? = null
         var Data_Specifics = 3
         val Non_Click_Ids = arrayOf("Other", "Territories", "Totals", "States & DC")
@@ -30,6 +30,7 @@ class AppConstants {
         var Updating_Global = false
         var Updating_Country = false
         var Usa_Check = false
+        var Wifi_Check = false
 
         // User Preferences
         lateinit var User_Prefs: SharedPreferences
@@ -49,8 +50,6 @@ class AppConstants {
         const val Api_Data_Jhu_Country = "https://corona.lmao.ninja/v2/historical"
         const val Api_Data_Jhu_Endpoint_7 = "?lastdays=7"
         const val Api_Data_Jhu_Endpoint_All = "?lastdays=all"
-
-        const val Current_Gps_Location = "current_location"
 
         // App-Global Covid Data Models
         val Gps_Data = DoubleArray(2)

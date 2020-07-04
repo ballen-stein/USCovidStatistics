@@ -5,10 +5,15 @@ import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.wifi.WifiManager
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -463,6 +468,47 @@ class AppUtils {
 
     fun createHigherNotificationNumber(num: Int): Int {
         return (5 * floor((num * 1.07 ) / 5.0).toInt())
+    }
+
+    fun checkNetwork(mContext: Context): Boolean {
+        var result = false
+        val connectionManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        connectionManager.getNetworkCapabilities(connectionManager.activeNetwork)?.run {
+            result = when {
+                hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                else -> false
+            }
+        }
+
+        return result
+    }
+
+    private fun networkTimer(wifi: WifiManager) {
+        val timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                if (wifi.isWifiEnabled) {
+                    this.cancel()
+                    AppConstants.Wifi_Check = true
+                }
+            }
+        }, 0, 500)
+    }
+
+    fun restoreNetwork(mContext: Context) {
+        if (Build.VERSION.SDK_INT >= 29) {
+            val panelIntent = Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY)
+            (mContext as Activity).startActivityForResult(panelIntent, AppConstants.Request_Wifi_Change_Perm)
+            AppConstants.Wifi_Check = true
+        } else {
+            val wifi = mContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            wifi.apply {
+                isWifiEnabled = true
+                networkTimer(wifi)
+            }
+        }
     }
 
     companion object {

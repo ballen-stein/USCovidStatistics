@@ -2,7 +2,9 @@ package com.example.uscovidstatistics.views.activities.homepage
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.manualdependency.DependencyInjector
@@ -32,6 +34,10 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
 
     private var view: MainContract.View? = view
 
+    private var appUtils = AppUtils.getInstance()
+
+    private val timer = Timer()
+
     override fun onDestroy() {
         this.view = null
     }
@@ -41,7 +47,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
     }
 
     override fun openLocationOnLaunch(mContext: Context) {
-        if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_gps), false) && AppUtils.getInstance().gpsPermissionGranted(mContext)) {
+        if (AppConstants.User_Prefs.getBoolean(mContext.getString(R.string.preference_gps), false) && appUtils.gpsPermissionGranted(mContext)) {
             if (AppConstants.Location_Data.country != null) {
                 val country = AppConstants.Location_Data.country
                 val region = AppConstants.Location_Data.region
@@ -78,7 +84,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
                     {onError -> view?.dataError(onError)},
                     {
                         if (i == AppConstants.Saved_Locations.size-1) {
-                            view?.displayContinentData(AppUtils().continentTotals(dataModelRepository.getContinentData()))
+                            view?.displayContinentData(appUtils.continentTotals(dataModelRepository.getContinentData()))
                         }
                     }
                 )
@@ -128,7 +134,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
                 { onNext -> onNext as Response
                     setData(onNext, getSpecifics) },
                 { onError ->  view?.dataError(onError) },
-                { view?.displayContinentData(AppUtils().continentTotals(dataModelRepository.getContinentData())) }
+                { view?.displayContinentData(appUtils.continentTotals(dataModelRepository.getContinentData())) }
             )
     }
 
@@ -158,5 +164,22 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
             e.printStackTrace()
         }
         body.close()
+    }
+
+    override fun networkStatus(mContext: Context) {
+        appUtils.restoreNetwork(mContext)
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                if (appUtils.checkNetwork(mContext) && AppConstants.Wifi_Check) {
+                    this.cancel()
+                    onResumeCheck()
+                    AppConstants.Wifi_Check = false
+                }
+            }
+        }, 0, 500)
+    }
+
+    private fun onResumeCheck() {
+        view?.onResumeData()
     }
 }

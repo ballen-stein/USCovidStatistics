@@ -9,6 +9,7 @@ interface SplashContract {
         fun onViewCreated(mContext: Context)
         fun getCountryFlags()
         fun requestGps()
+        fun networkStatus()
     }
     interface View : BaseView<Presenter> {
         fun launchApp()

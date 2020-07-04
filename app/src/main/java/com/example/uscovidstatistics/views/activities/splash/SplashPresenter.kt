@@ -2,6 +2,8 @@ package com.example.uscovidstatistics.views.activities.splash
 
 import android.content.Context
 import android.location.Location
+import android.os.Handler
+import android.util.Log
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.apidata.BaseCountryDataset
 import com.example.uscovidstatistics.model.apidata.JhuBaseDataset
@@ -20,6 +22,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.Response
 import java.lang.Exception
 import java.lang.reflect.ParameterizedType
+import java.net.UnknownHostException
+import java.util.*
 
 class SplashPresenter (view: SplashContract.View) : SplashContract.Presenter {
 
@@ -29,7 +33,11 @@ class SplashPresenter (view: SplashContract.View) : SplashContract.Presenter {
 
     private lateinit var prefUtil: PreferenceUtils
 
+    private val appUtils = AppUtils.getInstance()
+
     private lateinit var mContext: Context
+
+    private val timer = Timer()
 
     override fun onDestroy() {
         this.view = null
@@ -42,22 +50,27 @@ class SplashPresenter (view: SplashContract.View) : SplashContract.Presenter {
     }
 
     override fun getCountryFlags() {
-        Observable.defer {
-            try {
-                val networkRequests = NetworkRequests(0, null, null).getLocationData()
-                Observable.just(networkRequests)
-            } catch (e: Exception) {
-                Observable.error<Exception>(e)
-            }
-        }.observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {onNext -> onNext as Response
-                    setWorldData(onNext)
-                },
-                { onError -> view?.onError(onError)},
-                { setLocationalData() }
-            )
+        if (appUtils.checkNetwork(mContext)) {
+            Observable.defer {
+                try {
+                    val networkRequests = NetworkRequests(0, null, null).getLocationData()
+                    Observable.just(networkRequests)
+                } catch (e: Exception) {
+                    Observable.error<Exception>(e)
+                }
+            }.observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {onNext -> onNext as Response
+                        setWorldData(onNext)
+                    },
+                    { onError -> view?.onError(onError) },
+                    { setLocationalData() }
+                )
+        } else {
+            //throw UnknownHostException("Wifi/Data is Off") {
+            view?.onError(UnknownHostException())
+        }
     }
 
     private fun setWorldData(response: Response) {
@@ -123,5 +136,18 @@ class SplashPresenter (view: SplashContract.View) : SplashContract.Presenter {
             e.printStackTrace()
         }
         view?.launchApp()
+    }
+
+    override fun networkStatus() {
+        appUtils.restoreNetwork(mContext)
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                if (AppConstants.Wifi_Check && appUtils.checkNetwork(mContext)) {
+                    this.cancel()
+                    getCountryFlags()
+                    AppConstants.Wifi_Check = false
+                }
+            }
+        }, 0, 500)
     }
 }

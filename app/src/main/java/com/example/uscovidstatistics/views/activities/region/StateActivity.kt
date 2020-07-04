@@ -111,7 +111,7 @@ class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
             Log.d("CovidTesting", "$throwable inside State is a Runtime Exception")
         }
 
-        Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(root, R.string.snackbar_error_timeout, Snackbar.LENGTH_INDEFINITE)
             .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
             .setAnchorView(root.bottom_toolbar)
             .setAction(R.string.snackbar_clk_retry){

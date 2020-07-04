@@ -16,6 +16,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import java.lang.Exception
+import java.net.UnknownHostException
 import kotlin.collections.HashMap
 
 class Splash : BaseActivity(), ViewBinding, SplashContract.View {
@@ -39,7 +40,6 @@ class Splash : BaseActivity(), ViewBinding, SplashContract.View {
         setPresenter(SplashPresenter(this))
         presenter.onViewCreated(this)
         presenter.getCountryFlags()
-
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -69,21 +69,34 @@ class Splash : BaseActivity(), ViewBinding, SplashContract.View {
         Log.d("CovidTesting", "Error with $throwable")
 
         // Setup a restart function to try and reattempt a network request
-        if (throwable == Exception()) {
+        if (throwable is Exception) {
             Log.d("CovidTesting", "$throwable inside Main is an Exception")
-        } else if (throwable == Error()) {
+        } else if (throwable is Error) {
             Log.d("CovidTesting", "$throwable inside Main is an Error")
         }
-        if (throwable == RuntimeException()) {
+        if (throwable is RuntimeException) {
             Log.d("CovidTesting", "$throwable inside Main is a Runtime Exception")
         }
 
-        Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
-            .setAction(R.string.snackbar_clk_retry){
-                presenter.getCountryFlags()
-            }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
-            .show()
+        if (throwable is UnknownHostException) {
+            // Enables wifi if there's no connection
+            Snackbar.make(root, R.string.snackbar_error_wifi, Snackbar.LENGTH_INDEFINITE)
+                .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+                .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .setAction(R.string.snackbar_clk_enable){
+                    presenter.networkStatus()
+                }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .show()
+        } else {
+            // Restarts the API due to timeout/other errors out of the user's control
+            Snackbar.make(root, R.string.snackbar_error_timeout, Snackbar.LENGTH_INDEFINITE)
+                .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+                .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .setAction(R.string.snackbar_clk_retry){
+                    presenter.getCountryFlags()
+                }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .show()
+        }
     }
 
     override fun getRoot(): View {

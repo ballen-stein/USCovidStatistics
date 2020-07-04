@@ -21,6 +21,8 @@ import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
+import java.net.UnknownHostException
+import kotlin.collections.ArrayList
 
 class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     private lateinit var binding: ActivityMainBinding
@@ -75,6 +77,23 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         super.onResume()
         this.activityResumed()
 
+        // If Wifi is not running, submit request to enable it
+        if (!appUtils.checkNetwork(this)) {
+            dataError(UnknownHostException())
+        } else {
+            updatePermsAndDisplay()
+        }
+    }
+
+    override fun onResumeData() {
+        runOnUiThread {
+            SnackbarUtil(this).info(root.bottom_toolbar, getString(R.string.snackbar_wifi_enabled))
+            updatePermsAndDisplay()
+        }
+    }
+
+    private fun updatePermsAndDisplay() {
+        Log.d("CovidTesting", "Updating Perms and Display")
         appPrefs.userPreferences()
 
         if (AppConstants.User_Prefs.getLong(getString(R.string.preference_frequency), 0L) != 0L) {
@@ -91,6 +110,8 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
                 recyclerView.displaySavedLocations()
             }
         }
+
+        Log.d("CovidTesting", AppConstants.User_Prefs.all.toString())
     }
 
     override fun onStart() {
@@ -104,12 +125,14 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         }
 
         AppConstants.Notification_Service_On = false
+
         //val serviceIntent = Intent(this, ScheduledService::class.java)
         //serviceIntent.putExtra(AppConstants.Service_Start, true)
         //ContextCompat.startForegroundService(this, serviceIntent)
     }
 
     override fun onDestroy() {
+        // Start background service for notifications when the app is closed
         if (appUtils.checkSpecifics(this)) {
             val mContext = this
             Thread().run {
@@ -165,24 +188,36 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         Log.d("CovidTesting", "Error with $throwable")
 
         // Setup a restart function to try and reattempt a network request
-        if (throwable == Exception()) {
+        if (throwable is Exception) {
             Log.d("CovidTesting", "$throwable inside Main is an Exception")
-        } else if (throwable == Error()) {
+        } else if (throwable is Error) {
             Log.d("CovidTesting", "$throwable inside Main is an Error")
         }
-        if (throwable == RuntimeException()) {
+        if (throwable is RuntimeException) {
             Log.d("CovidTesting", "$throwable inside Main is a Runtime Exception")
         }
 
-        Snackbar.make(root, R.string.snackbar_timeout, Snackbar.LENGTH_INDEFINITE)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
-            .setAnchorView(root.bottom_toolbar)
-            .setAction(R.string.snackbar_clk_retry){
-                presenter.onViewCreated()
-            }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
-            .show()
+        if (throwable is UnknownHostException) {
+            // Enables wifi if there's no connection
+            Snackbar.make(root, R.string.snackbar_error_wifi, Snackbar.LENGTH_INDEFINITE)
+                .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+                .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .setAnchorView(root.bottom_toolbar)
+                .setAction(R.string.snackbar_clk_enable) {
+                    presenter.networkStatus(this)
+                }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .show()
+        } else {
+            Snackbar.make(root, R.string.snackbar_error_timeout, Snackbar.LENGTH_INDEFINITE)
+                .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+                .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .setAnchorView(root.bottom_toolbar)
+                .setAction(R.string.snackbar_clk_retry){
+                    presenter.onViewCreated()
+                }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .show()
+        }
     }
-
 
     fun getSavedLocations(): List<BaseCountryDataset> {
         val list = ArrayList<BaseCountryDataset>()

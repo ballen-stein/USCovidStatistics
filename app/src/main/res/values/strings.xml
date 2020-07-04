@@ -102,14 +102,17 @@
     <string name="rv_recovered">Recovered</string>
 
     <string name="saved_locations">Saved Locations Below</string>
+    <string name="snackbar_clk_enable">ENABLE</string>
     <string name="snackbar_clk_retry">RETRY</string>
     <string name="snackbar_clk_undo">UNDO</string>
+    <string name="snackbar_error_timeout">Could not connect to the server</string>
+    <string name="snackbar_error_wifi">No Connection Available</string>
     <string name="snackbar_favorite_added">Added location to homepage</string>
     <string name="snackbar_favorite_removed">Removed location from homepage</string>
     <string name="snackbar_null">Could not display case information</string>
-    <string name="snackbar_timeout">Could not connect to the server</string>
     <string name="snackbar_region">Added country to Homepage</string>
     <string name="snackbar_update">Cases Updated</string>
+    <string name="snackbar_wifi_enabled">Wifi Enabled</string>
 
     <string-array name="territories_list">
         <item>Anguilla</item>
