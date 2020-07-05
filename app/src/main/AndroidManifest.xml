@@ -19,7 +19,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".views.activities.usersettings.UserSettings"
             android:launchMode="singleTop"/>
-        <activity android:name=".views.activities.region.StateActivity"
+        <activity android:name=".views.activities.state.StateActivity"
             android:launchMode="singleTop"/>
         <activity android:name=".views.activities.country.CountryActivity"/>
         <activity android:name=".views.activities.splash.Splash">

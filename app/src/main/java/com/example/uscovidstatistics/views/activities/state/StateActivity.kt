@@ -1,4 +1,4 @@
-package com.example.uscovidstatistics.views.activities.region
+package com.example.uscovidstatistics.views.activities.state
 
 import android.os.Bundle
 import android.util.Log
@@ -11,10 +11,14 @@ import com.example.uscovidstatistics.databinding.ActivityRegionBinding
 import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
 import com.example.uscovidstatistics.model.apidata.StateDataset
 import com.example.uscovidstatistics.utils.AppUtils
+import com.example.uscovidstatistics.utils.SnackbarUtil
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
+import java.lang.Exception
+import java.lang.RuntimeException
+import java.net.UnknownHostException
 
 class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
 
@@ -25,8 +29,6 @@ class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
     private lateinit var regionName: String
 
     private val appUtils = AppUtils.getInstance()
-
-    private lateinit var spinnerData: List<StateDataset>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +44,7 @@ class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
         AppConstants.Data_Specifics = 2
 
         setPresenter(StatePresenter(this, DependencyInjectorImpl()))
-        presenter.onViewCreated()
-        spinnerData = presenter.getStateData()
+        presenter.onViewCreated(this)
 
         setSupportActionBar(binding.root.bottom_toolbar)
         setNavOptions()
@@ -100,24 +101,47 @@ class StateActivity : BaseActivity(), ViewBinding, StateContract.View {
     }
 
     override fun dataError(throwable: Throwable) {
-        Log.d("CovidTesting", throwable.toString())
+        Log.d("CovidTesting", "Error with $throwable")
 
-        if (throwable == Exception()) {
-            Log.d("CovidTesting", "$throwable inside State is an Exception")
-        } else if (throwable == Error()) {
-            Log.d("CovidTesting", "$throwable inside State is an Error")
+        // Setup a restart function to try and reattempt a network request
+        if (throwable is Exception) {
+            Log.d("CovidTesting", "$throwable inside Main is an Exception")
+        } else if (throwable is Error) {
+            Log.d("CovidTesting", "$throwable inside Main is an Error")
         }
-        if (throwable == RuntimeException()) {
-            Log.d("CovidTesting", "$throwable inside State is a Runtime Exception")
+        if (throwable is RuntimeException) {
+            Log.d("CovidTesting", "$throwable inside Main is a Runtime Exception")
         }
 
-        Snackbar.make(root, R.string.snackbar_error_timeout, Snackbar.LENGTH_INDEFINITE)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
-            .setAnchorView(root.bottom_toolbar)
-            .setAction(R.string.snackbar_clk_retry){
-                presenter.onViewCreated()
-            }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
-            .show()
+        // Snackbars for Throwables when I can determine how each Throwable is caused
+        if (throwable is UnknownHostException) {
+            // Enables wifi if there's no connection
+            Snackbar.make(root, R.string.snackbar_error_wifi, Snackbar.LENGTH_INDEFINITE)
+                .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+                .setAnchorView(root.bottom_toolbar)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .setAction(R.string.snackbar_clk_enable){
+                    presenter.networkStatus(this)
+                }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .show()
+        } else {
+            // Restarts the API due to timeout/other errors out of the user's control
+            Snackbar.make(root, R.string.snackbar_error_timeout, Snackbar.LENGTH_INDEFINITE)
+                .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+                .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .setAnchorView(root.bottom_toolbar)
+                .setAction(R.string.snackbar_clk_retry){
+                    presenter.onViewCreated(this)
+                }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .show()
+        }
+    }
+
+    override fun onResumeData() {
+        runOnUiThread {
+            SnackbarUtil(this).info(root.bottom_toolbar, getString(R.string.snackbar_wifi_enabled))
+            presenter.onViewCreated(this)
+        }
     }
 
     override fun getRoot(): View {

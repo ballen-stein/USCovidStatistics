@@ -24,11 +24,12 @@ import com.example.uscovidstatistics.utils.SnackbarUtil
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
-import com.example.uscovidstatistics.views.activities.region.StateActivity
+import com.example.uscovidstatistics.views.activities.state.StateActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import java.lang.Exception
 import java.lang.RuntimeException
+import java.net.UnknownHostException
 import kotlin.collections.ArrayList
 
 class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
@@ -133,6 +134,10 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     override fun onResume() {
         super.onResume()
         this.activityResumed()
+
+        if (!appUtils.checkNetwork(this)) {
+            dataError(UnknownHostException())
+        }
     }
 
     override fun onBackPressed() {
@@ -155,6 +160,13 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     //////////////// MVP methods ////////////////
+
+    override fun onResumeData() {
+        runOnUiThread {
+            SnackbarUtil(this).info(root.bottom_toolbar, getString(R.string.snackbar_wifi_enabled))
+            presenter.onViewCreated(countryDisplay)
+        }
+    }
 
     override fun setPresenter(presenter: CountryContract.Presenter) {
         this.presenter = presenter
@@ -219,6 +231,7 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     }
 
     override fun displayCountryList() {
+        cleanedDataList.clear()
         if (AppConstants.Usa_Check) {
             for (state in AppConstants.Us_Data)
                 cleanedDataList.add(appUtils.createCleanUsaData(state))
@@ -233,11 +246,11 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
                         nullProvinceData()
                         break
                     }
-                    //break
                 }
             }
         }
 
+        // If in the US and clicked the My Location Data setting, navigate to the State activity to display that Data
         if (intent.getBooleanExtra(AppConstants.Load_State, false)) {
             val intent = Intent(this, StateActivity::class.java)
             intent.putExtra(AppConstants.Display_Country, "USA")
@@ -289,21 +302,37 @@ class CountryActivity : BaseActivity(), ViewBinding, CountryContract.View {
     override fun dataError(throwable: Throwable) {
         Log.d("CovidTesting", "Error with $throwable")
 
-        if (throwable == Exception()) {
-            Log.d("CovidTesting", "$throwable inside Country is an Exception")
-        } else if (throwable == Error()) {
-            Log.d("CovidTesting", "$throwable inside Country is an Error")
+        // Setup a restart function to try and reattempt a network request
+        if (throwable is Exception) {
+            Log.d("CovidTesting", "$throwable inside Main is an Exception")
+        } else if (throwable is Error) {
+            Log.d("CovidTesting", "$throwable inside Main is an Error")
         }
-        if (throwable == RuntimeException()) {
-            Log.d("CovidTesting", "$throwable inside Country is a Runtime Exception")
+        if (throwable is RuntimeException) {
+            Log.d("CovidTesting", "$throwable inside Main is a Runtime Exception")
         }
 
-        Snackbar.make(root, R.string.snackbar_error_timeout, Snackbar.LENGTH_INDEFINITE)
-            .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
-            .setAnchorView(root.bottom_toolbar)
-            .setAction(R.string.snackbar_clk_retry){
-                presenter.onViewCreated(countryDisplay)
-            }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
-            .show()
+        // Snackbars for Throwables when I can determine how each Throwable is caused
+        if (throwable is UnknownHostException) {
+            // Enables wifi if there's no connection
+            Snackbar.make(root, R.string.snackbar_error_wifi, Snackbar.LENGTH_INDEFINITE)
+                .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+                .setAnchorView(root.bottom_toolbar)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .setAction(R.string.snackbar_clk_enable){
+                    presenter.networkStatus(this)
+                }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .show()
+        } else {
+            // Restarts the API due to timeout/other errors out of the user's control
+            Snackbar.make(root, R.string.snackbar_error_timeout, Snackbar.LENGTH_INDEFINITE)
+                .setBackgroundTint(ContextCompat.getColor(this, R.color.colorRed))
+                .setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .setAnchorView(root.bottom_toolbar)
+                .setAction(R.string.snackbar_clk_retry){
+                    presenter.onViewCreated(countryDisplay)
+                }.setActionTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                .show()
+        }
     }
 }

@@ -78,6 +78,7 @@ class Splash : BaseActivity(), ViewBinding, SplashContract.View {
             Log.d("CovidTesting", "$throwable inside Main is a Runtime Exception")
         }
 
+        // Snackbars for Throwables when I can determine how each Throwable is caused
         if (throwable is UnknownHostException) {
             // Enables wifi if there's no connection
             Snackbar.make(root, R.string.snackbar_error_wifi, Snackbar.LENGTH_INDEFINITE)

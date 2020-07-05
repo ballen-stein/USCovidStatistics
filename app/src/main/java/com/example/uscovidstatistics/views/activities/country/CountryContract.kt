@@ -10,6 +10,7 @@ interface CountryContract {
         fun onViewCreated(countryName: String)
         fun getRegionalData(getSpecifics: Int, regionList: Array<String>)
         fun onServiceStarted(context: Context)
+        fun networkStatus(mContext: Context)
     }
 
     interface View : BaseView<Presenter> {
@@ -17,5 +18,6 @@ interface CountryContract {
         fun displayCountryList()
         fun displayUsList()
         fun dataError(throwable: Throwable)
+        fun onResumeData()
     }
 }

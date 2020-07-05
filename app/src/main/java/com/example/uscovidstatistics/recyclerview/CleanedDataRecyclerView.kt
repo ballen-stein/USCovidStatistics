@@ -9,7 +9,7 @@ import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.model.CleanedUpData
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
-import com.example.uscovidstatistics.views.activities.region.StateActivity
+import com.example.uscovidstatistics.views.activities.state.StateActivity
 import kotlinx.android.synthetic.main.activity_country_breakdown.view.*
 
 class CleanedDataRecyclerView (private val mContext: Context, private val activity: CountryActivity) {

@@ -10,7 +10,7 @@ import com.example.uscovidstatistics.appconstants.AppConstants
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.views.activities.country.CountryActivity
 import com.example.uscovidstatistics.views.activities.homepage.MainActivity
-import com.example.uscovidstatistics.views.activities.region.StateActivity
+import com.example.uscovidstatistics.views.activities.state.StateActivity
 import com.example.uscovidstatistics.views.activities.usersettings.UserSettings
 import com.example.uscovidstatistics.views.dialogs.CountryListDialog
 

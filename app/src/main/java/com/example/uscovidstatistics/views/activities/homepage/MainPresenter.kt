@@ -173,6 +173,7 @@ class MainPresenter @Inject constructor(view: MainContract.View, dependencyInjec
                 if (appUtils.checkNetwork(mContext) && AppConstants.Wifi_Check) {
                     this.cancel()
                     onResumeCheck()
+                    //view?.onResumeData()
                     AppConstants.Wifi_Check = false
                 }
             }

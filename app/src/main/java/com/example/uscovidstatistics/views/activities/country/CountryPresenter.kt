@@ -8,6 +8,7 @@ import com.example.uscovidstatistics.manualdependency.DependencyInjector
 import com.example.uscovidstatistics.model.DataModelRepository
 import com.example.uscovidstatistics.model.apidata.*
 import com.example.uscovidstatistics.network.NetworkRequests
+import com.example.uscovidstatistics.utils.AppUtils
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -18,6 +19,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.Response
 import java.lang.Exception
 import java.lang.reflect.ParameterizedType
+import java.net.UnknownHostException
 import java.util.*
 
 class CountryPresenter(view: CountryContract.View, dependencyInjector: DependencyInjector, private val mContext: Context) : CountryContract.Presenter {
@@ -27,6 +29,8 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
     private var view: CountryContract.View? = view
+
+    private val appUtils = AppUtils.getInstance()
 
     private val timer = Timer()
 
@@ -157,5 +161,18 @@ class CountryPresenter(view: CountryContract.View, dependencyInjector: Dependenc
                 }).start()
             }
         },0, (AppConstants.Update_Frequency)*60*1000)
+    }
+
+    override fun networkStatus(mContext: Context) {
+        appUtils.restoreNetwork(mContext)
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                if (appUtils.checkNetwork(mContext) && AppConstants.Wifi_Check) {
+                    this.cancel()
+                    view?.onResumeData()
+                    AppConstants.Wifi_Check = false
+                }
+            }
+        }, 0, 500)
     }
 }
