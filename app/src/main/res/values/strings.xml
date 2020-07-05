@@ -96,9 +96,10 @@
     <string name="preference_title_requests">Network &amp; Location</string>
     <string name="preference_title_notifications">Notifications</string>
 
-    <string name="rv_country">Region</string>
     <string name="rv_cases">Cases</string>
+    <string name="rv_country">Region</string>
     <string name="rv_deaths">Deaths</string>
+    <string name="rv_projected">Projected Values for the Next Few Days</string>
     <string name="rv_recovered">Recovered</string>
 
     <string name="saved_locations">Saved Locations Below</string>

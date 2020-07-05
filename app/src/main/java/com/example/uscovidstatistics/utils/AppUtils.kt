@@ -359,7 +359,7 @@ class AppUtils {
         } else {
             var newName = ""
             for (value in nameArr) {
-                newName += "$value "
+                newName += value
             }
             return newName.trim()
         }

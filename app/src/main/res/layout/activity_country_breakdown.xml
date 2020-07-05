@@ -261,6 +261,15 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="10dp"
+                        android:gravity="center"
+                        android:text="@string/rv_projected"
+                        android:textSize="16sp" />
+
                     <LinearLayout
                         android:id="@+id/header_layout"
                         android:layout_width="match_parent"

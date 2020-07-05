@@ -19,6 +19,7 @@ import com.example.uscovidstatistics.utils.PreferenceUtils
 import com.example.uscovidstatistics.utils.SnackbarUtil
 import com.example.uscovidstatistics.views.dialogs.BottomDialog
 import com.example.uscovidstatistics.views.activities.BaseActivity
+import com.example.uscovidstatistics.views.activities.splash.Splash
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_toolbar.view.*
 import java.net.UnknownHostException
@@ -220,9 +221,15 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     }
 
     fun getSavedLocations(): List<BaseCountryDataset> {
+        // Tries to get the Saved Countries list. If it fails, that means there's missing data from the API requests and will return to the Splash to get that data
         val list = ArrayList<BaseCountryDataset>()
-        for (countryName in  AppConstants.Saved_Locations) {
-            if (countryName == "Global") list.add(globalData!!) else list.add(AppConstants.World_Data_Mapped[countryName]!!)
+        try {
+            for (countryName in  AppConstants.Saved_Locations) {
+                if (countryName == "Global") list.add(globalData!!) else list.add(AppConstants.World_Data_Mapped[countryName]!!)
+            }
+        } catch (e: Exception) {
+            startActivity(Intent(this, Splash::class.java))
+            finish()
         }
         return list
     }

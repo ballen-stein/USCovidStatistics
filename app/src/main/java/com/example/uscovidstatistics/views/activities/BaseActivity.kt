@@ -3,6 +3,7 @@ package com.example.uscovidstatistics.views.activities
 import android.Manifest
 import android.content.Intent
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -56,7 +57,15 @@ open class BaseActivity : AppCompatActivity() {
                 SearchDialog(this).newInstance().show(supportFragmentManager, "SearchDialog")
             }
             R.id.app_bar_contact -> {
-                Toasty.info(this, "Contact Us", Toast.LENGTH_SHORT).show()
+                val msgIntent = Intent(Intent.ACTION_SENDTO).apply {
+                    type = "text/plain"
+                    data = Uri.parse("mailto:")
+                    putExtra(Intent.EXTRA_EMAIL, "ballenstein58@gmail.com")
+                    putExtra(Intent.EXTRA_SUBJECT, "Question about the Covid Statistic App")
+                }
+                
+                if (msgIntent.resolveActivity(packageManager) != null)
+                    startActivity(msgIntent)
             }
             R.id.app_bar_favorite -> {
                 val activityView = findViewById<BottomAppBar>(R.id.bottom_toolbar)
