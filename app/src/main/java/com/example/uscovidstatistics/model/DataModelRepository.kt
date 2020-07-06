@@ -33,6 +33,14 @@ class DataModelRepository {
         return AppConstants.Country_Data
     }
 
+    fun getMappedWorldData(): HashMap<String, BaseCountryDataset> {
+        return AppConstants.World_Data_Mapped
+    }
+
+    fun getWorldData(): List<BaseCountryDataset> {
+        return AppConstants.World_Data
+    }
+
     fun getProvinceData(): JhuProvinceDataset {
         return AppConstants.Country_Province_Data
     }

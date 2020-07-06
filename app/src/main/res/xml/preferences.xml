@@ -27,6 +27,7 @@
 
 
     <PreferenceCategory
+        app:key="@string/preference_title_notifications_key"
         android:title="@string/preference_title_notifications" >
 
         <SwitchPreferenceCompat
@@ -35,12 +36,6 @@
             app:summary="@string/preference_notif_desc">
 
         </SwitchPreferenceCompat>
-
-        <EditTextPreference
-            app:key="@string/preference_notif_locations"
-            android:title="@string/preference_notif_add_location"
-            android:summary="@string/preference_notif_enter_locations"
-            android:dependency="@string/preference_notifications" />
 
         <CheckBoxPreference
             app:key="@string/preference_notif_cases"

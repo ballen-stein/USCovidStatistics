@@ -39,7 +39,6 @@ class AppConstants {
         var Global_Service_On = false
         var Country_Service_On = false
         var Notification_Service_On = true
-        var Regional_Service_On = false
 
         // API Urls
         const val Api_Data_Url_Global = "https://corona.lmao.ninja/v2/countries"

@@ -114,6 +114,7 @@
     <string name="snackbar_region">Added country to Homepage</string>
     <string name="snackbar_update">Cases Updated</string>
     <string name="snackbar_wifi_enabled">Wifi Enabled</string>
+    <string name="preference_title_notifications_key">user_pref_notif_title_key</string>
 
     <string-array name="territories_list">
         <item>Anguilla</item>

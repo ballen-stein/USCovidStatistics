@@ -10,6 +10,8 @@ import kotlinx.android.synthetic.main.navigation_country_selection.view.*
 
 class NavRecyclerViewAdapter internal constructor(private val countryList: Array<String>) : RecyclerView.Adapter<NavRecyclerViewAdapter.ViewHolder>(), ViewBinding {
 
+    lateinit var binding: NavigationCountrySelectionBinding
+
     companion object{
         private var clickListener : OnClickListener? = null
     }
@@ -21,7 +23,7 @@ class NavRecyclerViewAdapter internal constructor(private val countryList: Array
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = NavigationCountrySelectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding = NavigationCountrySelectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -55,7 +57,7 @@ class NavRecyclerViewAdapter internal constructor(private val countryList: Array
     }
 
     override fun getRoot(): View {
-        TODO("Not yet implemented")
+        return binding.root
     }
 
 }

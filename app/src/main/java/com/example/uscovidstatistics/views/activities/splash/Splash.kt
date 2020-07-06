@@ -3,7 +3,6 @@ package com.example.uscovidstatistics.views.activities.splash
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
@@ -15,7 +14,6 @@ import com.example.uscovidstatistics.views.activities.BaseActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import java.lang.Exception
 import java.net.UnknownHostException
 import kotlin.collections.HashMap
 
@@ -66,19 +64,7 @@ class Splash : BaseActivity(), ViewBinding, SplashContract.View {
     }
 
     override fun onError(throwable: Throwable) {
-        Log.d("CovidTesting", "Error with $throwable")
-
-        // Setup a restart function to try and reattempt a network request
-        if (throwable is Exception) {
-            Log.d("CovidTesting", "$throwable inside Main is an Exception")
-        } else if (throwable is Error) {
-            Log.d("CovidTesting", "$throwable inside Main is an Error")
-        }
-        if (throwable is RuntimeException) {
-            Log.d("CovidTesting", "$throwable inside Main is a Runtime Exception")
-        }
-
-        // Snackbars for Throwables when I can determine how each Throwable is caused
+        // SnackBar to turn on Wifi/Data if both are off, otherwise SnackBar to attempt another API call due to timeout, incomplete data, etc.
         if (throwable is UnknownHostException) {
             // Enables wifi if there's no connection
             Snackbar.make(root, R.string.snackbar_error_wifi, Snackbar.LENGTH_INDEFINITE)

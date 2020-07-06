@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.preference.*
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
+import com.example.uscovidstatistics.manualdependency.DependencyInjectorImpl
 import com.example.uscovidstatistics.utils.AppUtils
 import com.example.uscovidstatistics.utils.PreferenceUtils
 import java.util.*
@@ -19,16 +20,51 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
 
     private val settingsTimer = Timer()
 
-    private lateinit var countryList: List<String>
+    private var countryList = ArrayList<String>()
 
     private var listWithData = ArrayList<String>()
+
+    private val dataModel = DependencyInjectorImpl().covidDataRepository()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
         prefUtils = PreferenceUtils.getInstance(mActivity)
         appUtils = AppUtils.getInstance()
 
+        val screen = this.preferenceScreen
+        val listPrefLocation = screen.findPreference<PreferenceCategory>(getString(R.string.preference_title_notifications_key))!!
+        val listPref = setCountryList(screen)
+        listPrefLocation.addPreference(listPref)
         setPrefListeners()
+    }
+
+    private fun setCountryList(screen: PreferenceScreen): MultiSelectListPreference {
+        val mappedValues = dataModel.getMappedWorldData()
+        val nonCountries = resources.getStringArray(R.array.territories_list)
+        for (countryName in nonCountries) {
+            if (mappedValues.contains(countryName)) {
+                mappedValues.remove(countryName)
+            }
+        }
+
+
+        val listVals = mappedValues.keys.toTypedArray()
+        listVals.sort(0, listVals.size-1)
+
+        val emptySet = HashSet<String>()
+
+        val prefMultiList = MultiSelectListPreference(screen.context)
+        prefMultiList.apply {
+            key = getString(R.string.preference_notif_locations)
+            title = getString(R.string.preference_notif_add_location)
+            summary = getString(R.string.preference_notification_desc)
+            entryValues = listVals
+            entries = listVals
+            isEnabled = AppConstants.User_Prefs.getBoolean(getString(R.string.preference_notifications), false)
+            setDefaultValue(emptySet)
+        }
+
+        return prefMultiList
     }
 
     private fun setPrefListeners() {
@@ -57,45 +93,31 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
 
         findPreference<SwitchPreferenceCompat>(getString(R.string.preference_notifications))!!.setOnPreferenceChangeListener { preference, newValue ->
             prefUtils.prefSaveNotifications(preference.key, newValue as Boolean)
+            findPreference<MultiSelectListPreference>(getString(R.string.preference_notif_locations))!!.isEnabled = newValue
             true
         }
 
         findPreference<CheckBoxPreference>(getString(R.string.preference_notif_cases))!!.setOnPreferenceChangeListener { preference, newValue ->
             prefUtils.prefSaveNotifications(preference.key, newValue as Boolean)
-            countryList = appUtils.getNotificationCountries(mActivity.applicationContext)
-            if (countryList.isNotEmpty()) {
-                setCountryNotificationData()
-                val savedNotifLocations: Set<String> = HashSet<String>(listWithData)
-                prefUtils.prefSaveNotifications(getString(R.string.preference_notif_locations), savedNotifLocations)
-            }
             true
         }
 
         findPreference<CheckBoxPreference>(getString(R.string.preference_notif_recovered))!!.setOnPreferenceChangeListener { preference, newValue ->
             prefUtils.prefSaveNotifications(preference.key, newValue as Boolean)
-            countryList = appUtils.getNotificationCountries(mActivity.applicationContext)
-            if (countryList.isNotEmpty()) {
-                setCountryNotificationData()
-                val savedNotifLocations: Set<String> = HashSet<String>(listWithData)
-                prefUtils.prefSaveNotifications(getString(R.string.preference_notif_locations), savedNotifLocations)
-            }
             true
         }
 
         findPreference<CheckBoxPreference>(getString(R.string.preference_notif_deaths))!!.setOnPreferenceChangeListener { preference, newValue ->
             prefUtils.prefSaveNotifications(preference.key, newValue as Boolean)
-            countryList = appUtils.getNotificationCountries(mActivity.applicationContext)
-            if (countryList.isNotEmpty()) {
-                setCountryNotificationData()
-                val savedNotifLocations: Set<String> = HashSet<String>(listWithData)
-                prefUtils.prefSaveNotifications(getString(R.string.preference_notif_locations), savedNotifLocations)
-            }
             true
         }
 
-        findPreference<EditTextPreference>(getString(R.string.preference_notif_locations))!!.setOnPreferenceChangeListener { preference, newValue ->
-            if ((newValue as String).isNotBlank()) {
-                countryList = newValue.split(",", ignoreCase = true, limit = 3).toMutableList()
+        findPreference<MultiSelectListPreference>(getString(R.string.preference_notif_locations))!!.setOnPreferenceChangeListener { preference, newValue ->
+            // Unchecked but value will always be a string
+            newValue as Set<String>
+
+            if ((newValue).isNotEmpty()) {
+                countryList.addAll(newValue)
                 setCountryNotificationData()
                 val savedNotifLocations: Set<String> = HashSet<String>(listWithData)
                 prefUtils.prefSaveNotifications(preference.key, savedNotifLocations)
@@ -104,6 +126,7 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
             }
             true
         }
+
 
         findPreference<ListPreference>(getString(R.string.preference_notification_frequency))!!.setOnPreferenceChangeListener { _, newValue ->
             prefUtils.prefSaveNotificationFreq((newValue as String).toLong())
@@ -119,11 +142,7 @@ class SettingsFragment(private val mActivity: Activity) : PreferenceFragmentComp
 
     private fun setCountryNotificationData() {
         for (value in countryList) {
-            val tempVal = if (value.contains(",")) {
-                value.split(",")[0].trim()
-            } else {
-                value.trim()
-            }
+            val tempVal = value.trim()
             listWithData.add("${tempVal}/${appUtils.createHigherNotificationNumber(AppConstants.World_Data_Mapped[tempVal]!!.cases!!)}/false" +
                     "/${appUtils.createHigherNotificationNumber(AppConstants.World_Data_Mapped[tempVal]!!.recovered!!)}/false" +
                     "/${appUtils.createHigherNotificationNumber(AppConstants.World_Data_Mapped[tempVal]!!.deaths!!)}/false")

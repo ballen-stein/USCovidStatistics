@@ -3,7 +3,6 @@ package com.example.uscovidstatistics.views.activities.homepage
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
@@ -94,7 +93,6 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     }
 
     private fun updatePermsAndDisplay() {
-        Log.d("CovidTesting", "Updating Perms and Display")
         appPrefs.userPreferences()
 
         if (AppConstants.User_Prefs.getLong(getString(R.string.preference_frequency), 0L) != 0L) {
@@ -111,8 +109,6 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
                 recyclerView.displaySavedLocations()
             }
         }
-
-        Log.d("CovidTesting", AppConstants.User_Prefs.all.toString())
     }
 
     override fun onStart() {
@@ -120,16 +116,12 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
         AppConstants.Timer_Delay = appUtils.setTimerDelay()
         if (!AppConstants.Global_Service_On) {
             Handler().postDelayed(
-                {presenter.onServiceStarted()}, AppConstants.Timer_Delay
+                { presenter.onServiceStarted() }, AppConstants.Timer_Delay
             )
             AppConstants.Global_Service_On = true
         }
 
         AppConstants.Notification_Service_On = false
-
-        //val serviceIntent = Intent(this, ScheduledService::class.java)
-        //serviceIntent.putExtra(AppConstants.Service_Start, true)
-        //ContextCompat.startForegroundService(this, serviceIntent)
     }
 
     override fun onDestroy() {
@@ -186,18 +178,7 @@ class MainActivity : BaseActivity(), ViewBinding, MainContract.View {
     }
 
     override fun dataError(throwable: Throwable) {
-        Log.d("CovidTesting", "Error with $throwable")
-
-        // Setup a restart function to try and reattempt a network request
-        if (throwable is Exception) {
-            Log.d("CovidTesting", "$throwable inside Main is an Exception")
-        } else if (throwable is Error) {
-            Log.d("CovidTesting", "$throwable inside Main is an Error")
-        }
-        if (throwable is RuntimeException) {
-            Log.d("CovidTesting", "$throwable inside Main is a Runtime Exception")
-        }
-
+        // SnackBar to turn on Wifi/Data if both are off, otherwise SnackBar to attempt another API call due to timeout, incomplete data, etc.
         if (throwable is UnknownHostException) {
             // Enables wifi if there's no connection
             Snackbar.make(root, R.string.snackbar_error_wifi, Snackbar.LENGTH_INDEFINITE)

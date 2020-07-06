@@ -25,17 +25,12 @@ class UserSettings : BaseActivity(), ViewBinding {
             .commit()
 
         setNavOptions()
-        setGpsObserver()
     }
 
     private fun setNavOptions() {
         binding.regionBackBtn.setOnClickListener {
             onBackPressed()
         }
-    }
-
-    private fun setGpsObserver() {
-
     }
 
     override fun getRoot(): View {

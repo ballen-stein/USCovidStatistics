@@ -2,9 +2,9 @@ package com.example.uscovidstatistics.service
 
 import android.app.Service
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import com.example.uscovidstatistics.R
 import com.example.uscovidstatistics.appconstants.AppConstants
@@ -79,7 +79,7 @@ class ScheduledService : Service() {
                 .subscribe (
                     { onNext -> response = onNext as Response
                         setData(response) },
-                    { onError ->  Log.d("CovidTesting", "Error in the subscription for service : $onError")},
+                    { onError ->  serviceErrors(onError) },
                     { startUpdateCheck() }
                 )
         }
@@ -97,7 +97,6 @@ class ScheduledService : Service() {
                     override fun run() {
                         Thread(Runnable {
                             Looper.prepare()
-                            Log.d("CovidTesting", "Running update service . . ")
                             Observable.defer {
                                 try {
                                     val networkRequests = NetworkRequests(7, null, country.name).getLocationData()
@@ -110,7 +109,7 @@ class ScheduledService : Service() {
                                 .subscribe (
                                     { onNext -> response = onNext as Response
                                         setData(response) },
-                                    { onError ->  Log.d("CovidTesting", "Error in the subscription for service : $onError")},
+                                    { onError ->  serviceErrors(onError) },
                                     { notificationsCheck(country.name, i)
                                         if (i == notificationCountriesList.size-1)
                                             endOfList = true
@@ -120,6 +119,15 @@ class ScheduledService : Service() {
                     }
                 }, 5000, checkValue*60*1000)
             }
+        }
+    }
+
+    private fun serviceErrors(onError: Throwable?) {
+        if (onError is Error) {
+            this.stopSelf()
+            Handler().postDelayed({
+                startService(Intent(this, ScheduledService::class.java))
+            }, 1*60*1000)
         }
     }
 
@@ -226,7 +234,6 @@ class ScheduledService : Service() {
     }
 
     private fun notifications(index: Int, compiledData: String, country: String) {
-        Log.d("CovidTesting", index.toString())
         with(NotificationManagerCompat.from(applicationContext)) {
             // notificationId is a unique int for each notification that you must define
             notify(index, appUtils.newNotification(applicationContext, compiledData, country)!!.build())

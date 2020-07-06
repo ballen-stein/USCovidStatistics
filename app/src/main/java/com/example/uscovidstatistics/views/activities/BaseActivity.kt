@@ -99,8 +99,6 @@ open class BaseActivity : AppCompatActivity() {
 
         if (requestCode == AppConstants.Request_Gps_Location && permissionMap[Manifest.permission.ACCESS_COARSE_LOCATION] == 0) {
             setGpsCoords()
-        } else if (requestCode == AppConstants.Request_Wifi_Change_Perm) {
-            // TODO Add update to Wifi/Data enabling -- Data may not work sub Android 10 due to OS changes
         }
     }
 
