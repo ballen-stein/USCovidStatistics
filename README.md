@@ -28,4 +28,4 @@ When notifications are enabled, a service will run in the background, even when 
 Essentially, if Cases has a trigger at 1,000 and Recoveries at 500 and a request to the API is made and Cases surpassed 1000 but Recoveries didn't, Cases will be marked as having made a notification, the metric will be incremented, and Cases will be marked eligible for another notification. Recoveries, not meeting its metric, will not receive a new metric.
 
 
-[The app can be downloaded here (will require/requested external downloads to be enabled)](https://github.com/bma33/USCovidStatistics/releases/tag/v1.0)
+[The app can be downloaded here (will require/requested external downloads to be enabled)](https://github.com/bma33/USCovidStatistics/releases)
