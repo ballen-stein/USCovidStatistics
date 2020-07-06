@@ -230,6 +230,30 @@ class AppUtils {
         return hashMap
     }
 
+    fun searchResultsList(mContext: Context): ArrayList<String> {
+        val countryList = ArrayList<String>()
+        val noDataList = mContext.resources.getStringArray(R.array.no_data_territories_list)
+
+        for (country in AppConstants.World_Data_Mapped) {
+            if (country.key.toLowerCase(Locale.getDefault()).contains(AppConstants.Searched_Country.toLowerCase(Locale.getDefault())) && AppConstants.Searched_Country.isNotEmpty() && !noDataList.contains(country.key)) {
+                countryList.add(country.key)
+            } else if (AppConstants.Searched_Country.isEmpty() && !noDataList.contains(country.key)) {
+                countryList.add(country.key)
+            }
+        }
+
+        countryList.sort()
+        return countryList
+    }
+
+    fun getContinent(countryName: String): String {
+        for (continent in AppConstants.Continent_Data) {
+            if (continent.countriesOnContinent!!.contains(countryName))
+                return continent.continent!!
+        }
+        return ""
+    }
+
     fun cleanHashMap(continentCountryList: Array<String>, temp2: ArrayList<String>): Array<String> {
         val tempList = continentCountryList.toMutableList()
         for (data in temp2) {
@@ -363,16 +387,6 @@ class AppUtils {
             }
             return newName.trim()
         }
-    }
-
-    fun getNotificationCountries(mContext: Context): ArrayList<String> {
-        val notificationSet = AppConstants.User_Prefs.getStringSet(mContext.getString(R.string.preference_notif_locations), HashSet<String>())!!
-        val tempList = ArrayList<String>()
-        for (countryData in notificationSet) {
-            val notificationDataset = splitNotificationData(countryData!!)
-            tempList.add(notificationDataset.name)
-        }
-        return tempList
     }
 
     fun startNotificationService(mContext: Context): ArrayList<NotificationDataset> {

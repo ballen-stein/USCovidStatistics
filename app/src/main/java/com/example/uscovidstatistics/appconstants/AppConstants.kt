@@ -24,6 +24,7 @@ class AppConstants {
         var Region_Name: String? = null
         var Recycler_Clickable = true
         var Saved_Locations: ArrayList<String> = ArrayList()
+        var Searched_Country = ""
         var Settings_Updated = false
         var Timer_Delay = 0L
         var Update_Frequency = 5L

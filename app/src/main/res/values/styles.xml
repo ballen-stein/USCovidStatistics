@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <!--<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>-->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
     </style>
 
     <style name="SettingsTextTheme">
@@ -30,9 +31,11 @@
         <item name="android:backgroundTint">@color/colorWhite</item>
     </style>
 
-    <style name="BottomDialogAnimations">
-        <item name="android:windowEnterAnimation">@anim/enter_bottom</item>
-        <item name="android:windowExitAnimation">@anim/exit_bottom</item>
+
+    <style name="BottomSheetDialogTheme" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
 </resources>

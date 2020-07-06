@@ -19,6 +19,14 @@
             android:layout_weight="1"
             android:theme="@style/SettingsTextTheme"/>
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/country_continent"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:theme="@style/SettingsTextTheme"/>
+
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
